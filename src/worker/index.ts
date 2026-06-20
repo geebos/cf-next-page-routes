@@ -1,24 +1,19 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
-import type { D1Database } from "@cloudflare/workers-types";
+import type { AppEnv } from "@/worker/types";
 import { healthRoute } from "./routes/health";
 import { helloRoute } from "./routes/hello";
+import { createErrorHandler } from "./middleware/error";
+import { createDbMiddleware } from "./middleware/db";
 
-type Bindings = {
-  DB: D1Database;
-  APP_ENV: string;
-};
-
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<AppEnv>();
 
 app.use("*", logger());
+app.use("*", createDbMiddleware());
 
 app.route("/api", healthRoute);
 app.route("/api", helloRoute);
 
-app.onError((err, c) => {
-  console.error(`${c.req.method} ${c.req.url}`, err);
-  return c.json({ error: "Internal Server Error" }, 500);
-});
+app.onError(createErrorHandler<AppEnv>());
 
 export default app;
