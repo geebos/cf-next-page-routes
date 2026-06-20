@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-app-api",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-05-01",
+  "vars": {
+    "APP_ENV": "development"
+  },
+  // 本地实验阶段先不绑定 routes，正式部署绑定 /api/* 域名时再加：
+  // "routes": [
+  //   { "pattern": "your-domain.com/api/*", "zone_name": "your-domain.com" }
+  // ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "my-app-db",
+      "database_id": "replace-with-d1-database-id"
+    }
+  ]
+}
