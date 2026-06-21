@@ -176,6 +176,9 @@ function SingleSelect({
       value={currentValue}
       onValueChange={(nextValue) => setCurrentValue(String(nextValue ?? ""))}
       disabled={disabled}
+      itemToStringLabel={(itemValue) =>
+        optionMap.get(String(itemValue))?.label ?? String(itemValue)
+      }
     >
       <ComboboxInput
         aria-invalid={ariaInvalid}

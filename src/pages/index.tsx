@@ -22,7 +22,6 @@ import {
   SaveIcon,
   RotateCcwIcon,
   MoreHorizontalIcon,
-  ChevronRightIcon,
   CalendarIcon,
 } from "lucide-react";
 
@@ -106,67 +105,82 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Select, type SelectOption } from "@/components/select";
+import { cn } from "@/lib/utils";
 
 const modelOptions: SelectOption[] = [
   {
-    value: "m2.7",
-    label: "MiniMax M2.7",
-    description: "Frontier reasoning model",
+    value: "iphone-17-pro",
+    label: "iPhone 17 Pro",
+    description: "Titanium flagship",
   },
   {
-    value: "music-2.6",
-    label: "Music 2.6",
-    description: "Audio generation",
+    value: "airpods-4",
+    label: "AirPods 4",
+    description: "Active noise cancellation",
   },
   {
-    value: "hailuo",
-    label: "Hailuo Video",
-    description: "Text-to-video",
+    value: "watch-series-11",
+    label: "Apple Watch Series 11",
+    description: "Health & fitness",
   },
   {
-    value: "speech-2.8",
-    label: "Speech 2.8",
-    description: "Voice synthesis",
+    value: "vision-pro",
+    label: "Apple Vision Pro",
+    description: "Spatial computing",
     disabled: true,
   },
 ];
 
 const toneOptions: SelectOption[] = [
-  { value: "neutral", label: "Neutral" },
-  { value: "warm", label: "Warm" },
-  { value: "bright", label: "Bright" },
-  { value: "cinematic", label: "Cinematic" },
+  { value: "natural", label: "Natural Titanium" },
+  { value: "blue", label: "Blue Titanium" },
+  { value: "white", label: "White Titanium" },
+  { value: "black", label: "Black Titanium" },
 ];
 
 const pricingRows = [
-  { model: "M2.7", context: "1M tokens", input: "$0.70", output: "$2.80" },
-  { model: "Music 2.6", context: "—", input: "$0.40", output: "$0.80" },
-  { model: "Hailuo Video", context: "6s clip", input: "$0.45", output: "—" },
-  { model: "Speech 2.8", context: "per 1k chars", input: "$0.18", output: "—" },
+  { model: "iPhone 17 Pro", context: "256GB", input: "$1,099", output: "—" },
+  { model: "iPhone 17 Pro Max", context: "256GB", input: "$1,199", output: "—" },
+  { model: "iPhone 17", context: "128GB", input: "$799", output: "—" },
+  { model: "iPhone 17 Plus", context: "128GB", input: "$899", output: "—" },
 ];
 
 function Section({
   id,
   title,
   description,
+  tone = "light",
   children,
 }: {
   id: string;
   title: string;
   description: string;
+  tone?: "light" | "dark" | "parchment";
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-24">
-      <div className="mb-6 flex flex-col gap-2">
-        <h2 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-          {title}
-        </h2>
-        <p className="text-sm text-muted-foreground">{description}</p>
+    <section
+      id={id}
+      className={cn(
+        "scroll-mt-24 px-6 py-16",
+        tone === "light" && "bg-background text-foreground",
+        tone === "dark" && "bg-[#272729] text-white",
+        tone === "parchment" && "bg-[#f5f5f7] text-foreground",
+      )}
+    >
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-8 flex flex-col gap-2">
+          <h2 className="font-heading text-[34px] font-semibold leading-[1.47] tracking-[-0.374px]">
+            {title}
+          </h2>
+          <p className="text-[17px] leading-[1.47] tracking-[-0.374px] text-muted-foreground">
+            {description}
+          </p>
+        </div>
+        <Card className="p-6">
+          <div className="flex flex-col gap-8">{children}</div>
+        </Card>
       </div>
-      <Card className="p-6">
-        <div className="flex flex-col gap-8">{children}</div>
-      </Card>
     </section>
   );
 }
@@ -180,7 +194,7 @@ function Row({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      <span className="text-[14px] font-normal leading-[1.43] tracking-[-0.224px] text-muted-foreground">
         {label}
       </span>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
@@ -191,58 +205,27 @@ function Row({
 export default function Home() {
   const [sliderValue, setSliderValue] = useState<number[]>([40]);
   const [progress, setProgress] = useState(60);
-  const [singleModel, setSingleModel] = useState("m2.7");
+  const [singleModel, setSingleModel] = useState("iphone-17-pro");
   const [multiTones, setMultiTones] = useState<string[]>(["warm", "bright"]);
   const [notifications, setNotifications] = useState(true);
   const [sliderInDialog, setSliderInDialog] = useState<number[]>([25]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Promo banner */}
-      <div className="bg-primary px-5 py-2.5 text-center text-sm font-medium text-on-primary text-primary-foreground">
-        MiniMax × shadcn/ui — a components showcase in the MiniMax visual language.
-      </div>
-
-      {/* Top nav */}
-      <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <div className="flex items-center gap-8">
-            <span className="font-heading text-lg font-semibold tracking-tight">
-              MiniMax
-            </span>
-            <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-              <a href="#buttons" className="hover:text-foreground">Buttons</a>
-              <a href="#badges" className="hover:text-foreground">Badges</a>
-              <a href="#cards" className="hover:text-foreground">Cards</a>
-              <a href="#forms" className="hover:text-foreground">Forms</a>
-              <a href="#select" className="hover:text-foreground">Select</a>
-              <a href="#overlays" className="hover:text-foreground">Overlays</a>
-            </nav>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">Login</Button>
-            <Button size="sm">
-              Sign Up
-              <ArrowRightIcon data-icon="inline-end" />
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-6xl px-6 py-16">
+    <div className="min-h-svh">
+      <main>
         {/* Hero */}
-        <section className="mb-20 flex flex-col items-start gap-6">
-          <Badge variant="outline" className="border-brand-coral/30 bg-brand-coral/5 text-brand-coral">
+        <section className="mx-auto mb-20 flex max-w-5xl flex-col items-start gap-6 px-6 pt-20">
+          <Badge variant="outline" className="border-primary/30 bg-primary/5 text-primary">
             <SparklesIcon /> Components showcase
           </Badge>
-          <h1 className="font-heading text-5xl font-semibold leading-[1.1] tracking-tight text-foreground md:text-6xl">
+          <h1 className="font-heading text-[56px] font-semibold leading-[1.07] tracking-[-0.28px] text-foreground">
             shadcn/ui, styled in
             <br />
-            the MiniMax language.
+            the Apple language.
           </h1>
-          <p className="max-w-2xl text-lg text-muted-foreground">
+          <p className="max-w-2xl text-[17px] leading-[1.47] tracking-[-0.374px] text-muted-foreground">
             Every component on this page is the stock shadcn/ui source — restyled with
-            the MiniMax palette, DM Sans typography, and pill-button signature.
+            Action Blue, SF Pro typography, and pill-button signature.
             Scroll for buttons, cards, forms, the Select component, and overlays.
           </p>
           <div className="flex flex-wrap items-center gap-3">
@@ -256,12 +239,12 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="flex flex-col gap-16">
-          {/* Buttons */}
-          <Section
+        {/* Buttons */}
+        <Section
             id="buttons"
             title="Buttons"
-            description="Pill-shaped (`rounded-full`) with a two-tier system: black-pill primary as the dominant CTA, outline-pill secondary."
+            tone="light"
+            description="Pill-shaped (`rounded-full`) primary CTA in Action Blue, plus secondary outline-pill and ghost variants."
           >
             <Row label="Variants">
               <Button>Primary</Button>
@@ -319,7 +302,8 @@ export default function Home() {
           <Section
             id="badges"
             title="Badges"
-            description="Brand colors are reserved for product-identity moments: coral for NEW, blue for BETA, green for success."
+            tone="dark"
+            description="A single-accent system: Action Blue for NEW and emphasis, neutral surfaces for status and labels."
           >
             <Row label="Variants">
               <Badge>Default</Badge>
@@ -329,18 +313,18 @@ export default function Home() {
             </Row>
 
             <Row label="Product identity">
-              <Badge className="bg-brand-coral text-white">NEW</Badge>
-              <Badge className="bg-brand-blue-200 text-brand-blue-deep">BETA</Badge>
-              <Badge className="bg-success-bg text-success-text">Available</Badge>
-              <Badge className="bg-brand-magenta text-white">Live</Badge>
-              <Badge className="bg-brand-blue-200 text-brand-blue-deep rounded-sm">CODE</Badge>
+              <Badge className="bg-primary text-white">NEW</Badge>
+              <Badge className="bg-secondary text-foreground">BETA</Badge>
+              <Badge className="bg-secondary text-foreground">Available</Badge>
+              <Badge className="bg-foreground text-background">Live</Badge>
+              <Badge className="bg-secondary text-foreground rounded-sm">CODE</Badge>
             </Row>
 
             <Row label="With icons">
               <Badge variant="secondary">
                 <CheckIcon /> Verified
               </Badge>
-              <Badge className="bg-brand-coral text-white">
+              <Badge className="bg-primary text-white">
                 <SparklesIcon /> Featured
               </Badge>
             </Row>
@@ -350,36 +334,37 @@ export default function Home() {
           <Section
             id="cards"
             title="Cards"
-            description="Two families: vibrant gradient product cards at 32px radius (product-identity moments) and quiet white documentation cards at 16px radius."
+            tone="parchment"
+            description="Alternating light and dark product tiles (edge-to-edge, no radius) plus a standard utility card at 18px radius."
           >
-            <Row label="Vibrant product cards">
+            <Row label="Product tiles">
               <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="flex h-56 flex-col justify-between rounded-[32px] bg-brand-coral p-6 text-white">
-                  <Badge className="w-fit bg-white/20 text-white">NEW</Badge>
+                <div className="flex h-56 flex-col justify-between rounded-none bg-background p-6 text-foreground">
+                  <Badge className="w-fit bg-primary/10 text-primary">NEW</Badge>
                   <div>
-                    <div className="font-heading text-3xl font-semibold tracking-tight">M2.7</div>
-                    <p className="mt-1 text-sm text-white/80">Frontier reasoning</p>
+                    <div className="font-heading text-[40px] font-semibold leading-[1.1]">iPhone 17 Pro</div>
+                    <p className="mt-1 text-[14px] text-muted-foreground">Titanium flagship</p>
                   </div>
                 </div>
-                <div className="flex h-56 flex-col justify-between rounded-[32px] bg-brand-magenta p-6 text-white">
-                  <Badge className="w-fit bg-white/20 text-white">MUSIC</Badge>
+                <div className="flex h-56 flex-col justify-between rounded-none bg-[#272729] p-6 text-white">
+                  <Badge className="w-fit bg-white/10 text-white">AUDIO</Badge>
                   <div>
-                    <div className="font-heading text-2xl font-semibold tracking-tight">Music 2.6</div>
-                    <p className="mt-1 text-sm text-white/80">Audio generation</p>
+                    <div className="font-heading text-[32px] font-semibold leading-[1.1]">AirPods 4</div>
+                    <p className="mt-1 text-[14px] text-white/80">Active noise cancellation</p>
                   </div>
                 </div>
-                <div className="flex h-56 flex-col justify-between rounded-[32px] bg-brand-blue p-6 text-white">
-                  <Badge className="w-fit bg-white/20 text-white">VIDEO</Badge>
+                <div className="flex h-56 flex-col justify-between rounded-none bg-[#f5f5f7] p-6 text-foreground">
+                  <Badge className="w-fit bg-primary/10 text-primary">WATCH</Badge>
                   <div>
-                    <div className="font-heading text-2xl font-semibold tracking-tight">Hailuo</div>
-                    <p className="mt-1 text-sm text-white/80">Text-to-video</p>
+                    <div className="font-heading text-[32px] font-semibold leading-[1.1]">Apple Watch</div>
+                    <p className="mt-1 text-[14px] text-muted-foreground">Health & fitness</p>
                   </div>
                 </div>
-                <div className="flex h-56 flex-col justify-between rounded-[32px] bg-brand-purple p-6 text-white">
-                  <Badge className="w-fit bg-white/20 text-white">SPEECH</Badge>
+                <div className="flex h-56 flex-col justify-between rounded-none bg-[#2a2a2c] p-6 text-white">
+                  <Badge className="w-fit bg-white/10 text-white">SPATIAL</Badge>
                   <div>
-                    <div className="font-heading text-2xl font-semibold tracking-tight">Speech 2.8</div>
-                    <p className="mt-1 text-sm text-white/80">Voice synthesis</p>
+                    <div className="font-heading text-[32px] font-semibold leading-[1.1]">Vision Pro</div>
+                    <p className="mt-1 text-[14px] text-white/80">Spatial computing</p>
                   </div>
                 </div>
               </div>
@@ -390,10 +375,10 @@ export default function Home() {
                 <CardHeader>
                   <CardTitle>Token plan</CardTitle>
                   <CardDescription>
-                    Pay-as-you-go pricing across every MiniMax model.
+                    Pay-as-you-go pricing across every Apple product.
                   </CardDescription>
                   <CardAction>
-                    <Badge className="bg-brand-coral text-white">NEW</Badge>
+                    <Badge className="bg-primary text-white">NEW</Badge>
                   </CardAction>
                 </CardHeader>
                 <CardContent>
@@ -416,6 +401,7 @@ export default function Home() {
           <Section
             id="forms"
             title="Form controls"
+            tone="light"
             description="Input, Textarea, Checkbox, Switch, RadioGroup, Slider, Progress — the building blocks for settings and onboarding flows."
           >
             <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
@@ -425,7 +411,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="search">
-                  <SearchIcon data-icon="inline-start" />
+                  <SearchIcon className="size-4" data-icon="inline-start" />
                   Search models
                 </Label>
                 <Input id="search" placeholder="Try “reasoning” or “video”" />
@@ -561,6 +547,7 @@ export default function Home() {
           <Section
             id="select"
             title="Select"
+            tone="dark"
             description="A custom Select built on Combobox. Supports single and multiple modes, search, descriptions, and disabled options."
           >
             <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
@@ -625,6 +612,7 @@ export default function Home() {
           <Section
             id="feedback"
             title="Feedback"
+            tone="parchment"
             description="Alerts for inline messaging, Skeleton for loading, and toast for transient confirmations."
           >
             <Row label="Alerts">
@@ -648,11 +636,11 @@ export default function Home() {
                     </Button>
                   </AlertAction>
                 </Alert>
-                <Alert className="border-success-text/30 bg-success-bg text-success-text">
-                  <CircleCheckIcon />
+                <Alert className="border-border bg-secondary text-foreground">
+                  <CircleCheckIcon className="text-primary" />
                   <AlertTitle>Deployment live</AlertTitle>
-                  <AlertDescription className="text-success-text/90">
-                    Your model is now serving traffic from 14 regions.
+                  <AlertDescription className="text-muted-foreground">
+                    Your product is now serving traffic from 14 regions.
                   </AlertDescription>
                 </Alert>
               </div>
@@ -691,7 +679,7 @@ export default function Home() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  toast("Model M2.7 is now generally available.", {
+                  toast("iPhone 17 Pro is now available for pre-order.", {
                     description: "Read the release notes for what changed.",
                   })
                 }
@@ -706,6 +694,7 @@ export default function Home() {
           <Section
             id="overlays"
             title="Overlays"
+            tone="light"
             description="Dialog for modal flows, DropdownMenu for action menus, Tooltip for inline hints."
           >
             <Row label="Dialog">
@@ -718,7 +707,7 @@ export default function Home() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Deploy M2.7</DialogTitle>
+                    <DialogTitle>Pre-order iPhone 17 Pro</DialogTitle>
                     <DialogDescription>
                       Pick a name and an initial temperature for your deployment.
                       You can change these later.
@@ -727,7 +716,7 @@ export default function Home() {
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-2">
                       <Label htmlFor="deploy-name">Deployment name</Label>
-                      <Input id="deploy-name" defaultValue="prod-m27-fallback" />
+                      <Input id="deploy-name" defaultValue="prod-iphone-17-pro" />
                     </div>
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
@@ -836,7 +825,8 @@ export default function Home() {
           <Section
             id="nav-data"
             title="Navigation & data display"
-            description="Tabs, Accordion, Avatar, and Table for the dense information surfaces MiniMax uses on docs and pricing pages."
+            tone="dark"
+            description="Tabs, Accordion, Avatar, and Table for dense information surfaces like docs and pricing pages."
           >
             <Row label="Tabs">
               <Tabs defaultValue="bench" className="w-full">
@@ -846,7 +836,7 @@ export default function Home() {
                   <TabsTrigger value="agents">Multi-agent</TabsTrigger>
                 </TabsList>
                 <TabsContent value="bench" className="mt-4 text-sm text-muted-foreground">
-                  M2.7 scores 84.6 on MMLU-Pro, leading the open-weight frontier.
+                  iPhone 17 Pro scores 3,546 on Geekbench 6 single-core, leading mobile silicon.
                 </TabsContent>
                 <TabsContent value="self" className="mt-4 text-sm text-muted-foreground">
                   Self-evaluated against 12 reasoning categories with calibrated confidence.
@@ -876,8 +866,8 @@ export default function Home() {
                 <AccordionItem value="q3">
                   <AccordionTrigger>Can I fine-tune a model?</AccordionTrigger>
                   <AccordionContent>
-                    Yes — fine-tuning is available on M2.7 and Speech 2.8. Bring your
-                    dataset in JSONL format and we handle the rest.
+                    Yes — engraving is available on iPhone 17 Pro and AirPods 4. Add your
+                    text at checkout and we handle the rest.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -911,10 +901,10 @@ export default function Home() {
             </Row>
 
             <Row label="Table">
-              <div className="overflow-hidden rounded-lg border border-hairline">
+              <div className="overflow-hidden rounded-sm border border-border">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-surface hover:bg-surface">
+                    <TableRow className="bg-muted hover:bg-muted">
                       <TableHead className="pl-4">Model</TableHead>
                       <TableHead>Context</TableHead>
                       <TableHead>Input / 1M</TableHead>
@@ -935,28 +925,7 @@ export default function Home() {
               </div>
             </Row>
           </Section>
-        </div>
       </main>
-
-      {/* Footer */}
-      <footer className="mt-20 bg-primary px-6 py-12 text-primary-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-col gap-1">
-            <span className="font-heading text-lg font-semibold">MiniMax</span>
-            <span className="text-sm text-primary-foreground/60">
-              intelligence with everyone
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-6 text-sm text-primary-foreground/60">
-            <a href="#buttons" className="hover:text-primary-foreground">Buttons</a>
-            <a href="#cards" className="hover:text-primary-foreground">Cards</a>
-            <a href="#forms" className="hover:text-primary-foreground">Forms</a>
-            <a href="#select" className="hover:text-primary-foreground">Select</a>
-            <a href="#overlays" className="hover:text-primary-foreground">Overlays</a>
-            <ChevronRightIcon className="size-4" />
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

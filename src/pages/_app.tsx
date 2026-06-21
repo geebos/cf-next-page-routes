@@ -1,12 +1,11 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { Toaster } from "@/components/ui/sonner";
+import { AppShell } from "@/components/layout/app-shell";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <AppShell>
       <Component {...pageProps} />
-      <Toaster />
-    </>
+    </AppShell>
   );
 }

@@ -5,86 +5,62 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* MiniMax design tokens — see DESIGN.md */
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  /* Apple design tokens — see DESIGN.md */
 
-  --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --background: #ffffff; /* canvas */
+  --foreground: #1d1d1f; /* ink */
+
+  --card: #ffffff; /* canvas — store-utility-card */
+  --card-foreground: #1d1d1f;
 
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
+  --popover-foreground: #1d1d1f;
 
-  --primary: #0a0a0a;
+  /* Action Blue — the single accent for every interactive element */
+  --primary: #0066cc;
   --primary-foreground: #ffffff;
 
-  --secondary: #f7f8fa;
-  --secondary-foreground: #0a0a0a;
+  --secondary: #f5f5f7; /* canvas-parchment */
+  --secondary-foreground: #1d1d1f;
 
-  --muted: #f2f3f5;
-  --muted-foreground: #8e8e93;
+  --muted: #f5f5f7; /* canvas-parchment */
+  --muted-foreground: #7a7a7a; /* ink-muted-48 */
 
-  --accent: #f7f8fa;
-  --accent-foreground: #0a0a0a;
+  --accent: #f5f5f7; /* canvas-parchment — hover surface */
+  --accent-foreground: #1d1d1f;
 
-  --destructive: #d45656;
+  --destructive: #d70015; /* Apple system red */
 
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #1d4ed8;
+  --border: #e0e0e0; /* hairline */
+  --input: #e0e0e0;
+  --ring: #0071e3; /* primary-focus */
 
-  --chart-1: #ff5530;
-  --chart-2: #ea5ec1;
-  --chart-3: #1456f0;
-  --chart-4: #a855f7;
-  --chart-5: #3daeff;
+  --chart-1: #0066cc;
+  --chart-2: #2997ff;
+  --chart-3: #0071e3;
+  --chart-4: #7a7a7a;
+  --chart-5: #1d1d1f;
 
-  --radius: 0.5rem;
+  --radius: 11px; /* Apple md anchor */
 
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0a0a0a;
+  /* Sidebar — parchment + ink for a frosted sub-nav feel */
+  --sidebar: #f5f5f7; /* canvas-parchment */
+  --sidebar-foreground: #1d1d1f;
+  --sidebar-primary: #0066cc;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f7f8fa;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #1d4ed8;
-
-  /* MiniMax brand colors (product-card identity) */
-  --brand-coral: #ff5530;
-  --brand-magenta: #ea5ec1;
-  --brand-blue: #1456f0;
-  --brand-blue-mid: #3b82f6;
-  --brand-blue-deep: #1d4ed8;
-  --brand-blue-700: #17437d;
-  --brand-cyan: #3daeff;
-  --brand-blue-200: #bfdbfe;
-  --brand-purple: #a855f7;
-
-  /* MiniMax ink scale */
-  --ink: #0a0a0a;
-  --ink-strong: #000000;
-  --charcoal: #222222;
-  --slate: #45515e;
-  --steel: #5f5f5f;
-  --stone: #8e8e93;
-  --muted-text: #a8aab2;
-
-  /* MiniMax surfaces */
-  --canvas: #ffffff;
-  --surface: #f7f8fa;
-  --surface-soft: #f2f3f5;
-  --hairline: #e5e7eb;
-  --hairline-soft: #eaecf0;
-  --success-bg: #e8ffea;
-  --success-text: #1ba673;
+  --sidebar-accent: #e0e0e0; /* hairline as hover tint */
+  --sidebar-accent-foreground: #1d1d1f;
+  --sidebar-border: #e0e0e0;
+  --sidebar-ring: #0071e3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "DM Sans", "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "SF Pro Display", "SF Pro Text", system-ui, -apple-system,
+    BlinkMacSystemFont, "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Menlo", "Monaco", "Consolas",
+    monospace;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -115,74 +91,58 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-brand-coral: var(--brand-coral);
-  --color-brand-magenta: var(--brand-magenta);
-  --color-brand-blue: var(--brand-blue);
-  --color-brand-blue-mid: var(--brand-blue-mid);
-  --color-brand-blue-deep: var(--brand-blue-deep);
-  --color-brand-blue-700: var(--brand-blue-700);
-  --color-brand-cyan: var(--brand-cyan);
-  --color-brand-blue-200: var(--brand-blue-200);
-  --color-brand-purple: var(--brand-purple);
-  --color-ink: var(--ink);
-  --color-ink-strong: var(--ink-strong);
-  --color-charcoal: var(--charcoal);
-  --color-slate: var(--slate);
-  --color-steel: var(--steel);
-  --color-stone: var(--stone);
-  --color-success-bg: var(--success-bg);
-  --color-success-text: var(--success-text);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xs: 5px; /* Apple xs */
+  --radius-sm: 8px; /* Apple sm */
+  --radius-md: 11px; /* Apple md */
+  --radius-lg: 18px; /* Apple lg — store-utility-card */
+  --radius-xl: 18px; /* Apple lg — Card uses rounded-xl */
+  --radius-2xl: 18px;
+  --radius-3xl: 9999px; /* pill */
+  --radius-4xl: 9999px; /* pill */
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
+  --background: #1d1d1f; /* ink */
+  --foreground: #ffffff; /* body-on-dark */
 
-  --card: #181e25;
+  --card: #272729; /* surface-tile-1 */
   --card-foreground: #ffffff;
 
-  --popover: #181e25;
+  --popover: #272729;
   --popover-foreground: #ffffff;
 
-  --primary: #ffffff;
-  --primary-foreground: #0a0a0a;
+  --primary: #2997ff; /* primary-on-dark — Sky Link Blue */
+  --primary-foreground: #1d1d1f;
 
-  --secondary: #222222;
+  --secondary: #2a2a2c; /* surface-tile-2 */
   --secondary-foreground: #ffffff;
 
-  --muted: #222222;
-  --muted-foreground: #8e8e93;
+  --muted: #2a2a2c;
+  --muted-foreground: #cccccc; /* body-muted */
 
-  --accent: #222222;
+  --accent: #2a2a2c;
   --accent-foreground: #ffffff;
 
-  --destructive: #d45656;
+  --destructive: #d70015;
 
-  --border: #2a2f37;
-  --input: #2a2f37;
-  --ring: #3daeff;
+  --border: #2a2a2c;
+  --input: #2a2a2c;
+  --ring: #2997ff;
 
-  --chart-1: #ff5530;
-  --chart-2: #ea5ec1;
-  --chart-3: #3daeff;
-  --chart-4: #a855f7;
-  --chart-5: #1456f0;
+  --chart-1: #2997ff;
+  --chart-2: #0066cc;
+  --chart-3: #0071e3;
+  --chart-4: #cccccc;
+  --chart-5: #ffffff;
 
-  --sidebar: #181e25;
+  --sidebar: #272729;
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #222222;
+  --sidebar-primary: #2997ff;
+  --sidebar-primary-foreground: #1d1d1f;
+  --sidebar-accent: #2a2a2c;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2a2f37;
-  --sidebar-ring: #3daeff;
+  --sidebar-border: #2a2a2c;
+  --sidebar-ring: #2997ff;
 }
 
 @layer base {
@@ -191,9 +151,20 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Apple body typography — 17px, line-height 1.47, -0.374px tracking */
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.374px;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+  /* Apple system-wide micro-interaction: scale(0.95) on press */
+  button:not(:disabled):active,
+  [role="button"]:not(:disabled):active {
+    transform: scale(0.95);
+    transition: transform 120ms ease-out;
   }
   html {
     @apply font-sans;
