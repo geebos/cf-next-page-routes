@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { asc, sql, eq } from "drizzle-orm";
 import type { AppEnv } from "@/worker/types";
 import { BusinessError } from "@/worker/lib/errors";
+import { jsonValidator } from "@/worker/lib/validator";
 import {
   todos,
   createTodoSchema,
@@ -43,42 +44,27 @@ todosRoute.get("/todos", async (c) => {
 });
 
 // POST /api/todos
-todosRoute.post("/todos", async (c) => {
-  const parsed = createTodoSchema.safeParse(await c.req.json());
-  if (!parsed.success) {
-    throw new BusinessError(
-      parsed.error.issues[0]?.message ?? "参数错误",
-      400,
-    );
-  }
-  const input: CreateTodoInput = parsed.data;
+todosRoute.post("/todos", jsonValidator(createTodoSchema), async (c) => {
+  const input = c.req.valid("json") as CreateTodoInput;
   const now = Date.now();
   const id = crypto.randomUUID();
   const db = c.get("db");
   const row = {
+    ...input,
     id,
-    task: input.task,
-    priority: input.priority,
-    dueDate: input.dueDate,
     completed: 0,
     createdAt: now,
     updatedAt: now,
   };
   await db.insert(todos).values(row);
   return c.json(toTodo({ ...row, completed: 0 }), 201);
-});
+},
+);
 
 // PATCH /api/todos/:id — partial update; updatedAt always refreshed.
-todosRoute.patch("/todos/:id", async (c) => {
+todosRoute.patch("/todos/:id", jsonValidator(updateTodoSchema), async (c) => {
   const id = c.req.param("id");
-  const parsed = updateTodoSchema.safeParse(await c.req.json());
-  if (!parsed.success) {
-    throw new BusinessError(
-      parsed.error.issues[0]?.message ?? "参数错误",
-      400,
-    );
-  }
-  const input: UpdateTodoInput = parsed.data;
+  const input = c.req.valid("json") as UpdateTodoInput;
   const db = c.get("db");
 
   const patch: Partial<typeof todos.$inferInsert> = { updatedAt: Date.now() };
@@ -99,7 +85,8 @@ todosRoute.patch("/todos/:id", async (c) => {
     throw new BusinessError("任务不存在", 404);
   }
   return c.json(toTodo(updated));
-});
+},
+);
 
 // DELETE /api/todos/:id
 todosRoute.delete("/todos/:id", async (c) => {
