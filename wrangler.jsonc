@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-app-api",
+  "name": "cf-next-page-routes",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-05-01",
   "vars": {
@@ -13,8 +13,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "my-app-db",
-      "database_id": "replace-with-d1-database-id"
+      "database_name": "todos",
+      "database_id": "4c9a210c-da15-4720-8cf6-6df135944924",
+      "migrations_dir": "drizzle"
     }
   ]
 }

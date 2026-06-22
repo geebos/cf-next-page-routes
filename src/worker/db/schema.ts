@@ -1,5 +1,4 @@
-// Drizzle schema 占位。
-// 表定义在此文件内联，db.ts 通过 `import * as schema` 传给 drizzle()，
-// 让 WorkerDB 类型能推断出 query API。当前没有表，先留一个空导出。
-// 新增表时用 `sqliteTable(...)` 定义并 export，无需改动 db.ts。
-export {};
+// Worker 的 schema 入口：转发到前后端共享的 schema 目录。
+// db.ts 通过 `import * as schema` 拿到所有表定义，WorkerDB 类型据此推断。
+// 新增域时在 src/shared/schemas/ 下加文件并在 index.ts 转发，无需改这里。
+export * from "@/shared/schemas";

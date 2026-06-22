@@ -6,12 +6,15 @@
     "dev": "concurrently -k -n web,worker \"pnpm dev:web\" \"pnpm dev:worker\"",
     "dev:web": "next dev",
     "dev:worker": "wrangler dev --local --port 8787",
-    "build": "next build",
+    "lint": "eslint",
+    "build": "pnpm build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint",
-    "deploy:web": "pnpm build",
-    "deploy:worker": "wrangler deploy"
+    "db:generate": "drizzle-kit generate",
+    "migrate:local": "wrangler d1 migrations apply todos --local",
+    "migrate:remote": "wrangler d1 migrations apply todos --remote",
+    "deploy": "wrangler deploy",
+    "versions": "wrangler versions upload"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -42,13 +45,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2",
     "@cloudflare/workers-types": "^4.20260619.1",
     "@tailwindcss/postcss": "^4",
+    "@tauri-apps/cli": "^2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "concurrently": "^10.0.3",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
