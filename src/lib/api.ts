@@ -1,9 +1,21 @@
+import { isTauri } from "@tauri-apps/api/core";
+import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
+
 import type {
   Todo,
   CreateTodoInput,
   UpdateTodoInput,
 } from "@/shared/schemas";
-import { fetch } from "@tauri-apps/plugin-http"
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || ""
+
+// plugin-http uses Tauri's IPC (window.__TAURI_INTERNALS__.invoke),
+// which doesn't exist in a regular browser. Fall back to native fetch
+// there so the same code works in `next dev` and the Tauri webview.
+const fetch = function (input: string, init?: RequestInit): Promise<Response> {
+  const url = BASE_URL + input;
+  return isTauri() ? tauriFetch(url, init) : window.fetch(url, init);
+}
 
 export class ApiError extends Error {
   code: number;
