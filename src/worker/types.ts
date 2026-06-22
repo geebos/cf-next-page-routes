@@ -1,6 +1,6 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import type * as schema from "./db/schema";
+import type * as schema from "@/shared/schemas";
 
 // Worker 全局复用的 Hono 环境类型。
 // - Bindings：对应 wrangler.jsonc 里 d1_databases / vars 暴露给 Worker 的绑定。
@@ -19,6 +19,6 @@ export type AppEnv = {
   };
 };
 
-// drizzle D1 实例类型，schema 来自 ./db/schema。
+// drizzle D1 实例类型，schema 来自 @/shared/schemas。
 // 路由里通过 c.get("db") 拿到时就是这个类型，query 会有完整的类型提示。
 export type WorkerDB = DrizzleD1Database<typeof schema>;

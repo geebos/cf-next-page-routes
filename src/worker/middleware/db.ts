@@ -3,7 +3,7 @@ import { getCookie, setCookie } from "hono/cookie";
 import { drizzle } from "drizzle-orm/d1";
 import type { D1Database } from "@cloudflare/workers-types";
 import type { AppEnv } from "../types";
-import * as schema from "../db/schema";
+import * as schema from "@/shared/schemas";
 
 // D1 session bookmark cookie 名。
 // 用 withSession(bookmark) 让同一 bookmark 窗口内的写操作对后续读可见，
