@@ -105,4 +105,45 @@ Use `git log main..<dev-branch> --oneline` to review all commits before writing 
 
 # 6. Project Structure
 
-- use 
+```txt
+src/
+├── pages/              # Page routes, organized by route
+│   ├── _app.tsx        # Injects global Layout and globals.css
+│   ├── _document.tsx   # HTML skeleton
+│   ├── index.tsx       # Home / Demo page
+│   └── todo.tsx        # Example: /todo/
+├── components/
+│   ├── ui/             # shadcn/ui component library, do not edit directly
+│   ├── layout/         # Layout / Page / Navigate
+│   ├── showcase/       # Demo showcase components
+│   └── <domain>/       # Domain-specific components
+│       └── form.tsx    # Form components for the current domain
+├── hooks/              # React hooks
+├── lib/                # Frontend utilities; api.ts is the only API entry
+├── shared/
+│   └── schemas/        # Shared frontend/backend schemas
+│       ├── index.ts    # Unified exports
+│       └── <domain>.ts # One file per domain
+├── styles/             # Global styles
+└── worker/
+    ├── index.ts        # Worker entry; imports routes centrally
+    ├── types.ts        # Worker types
+    ├── routes/         # Routes split by domain, as files or directories
+    ├── middleware/     # Worker middleware
+    └── lib/            # Worker utilities
+
+drizzle/                # Database migrations
+drizzle.config.ts       # Drizzle config
+next.config.ts          # Next.js config
+wrangler.jsonc          # Cloudflare Worker config
+components.json         # shadcn config
+```
+
+**Rules**
+
+* Pages are placed under `src/pages/` according to their routes. Page content must be wrapped with `Page` from `components/layout/page`.
+* Prefer existing reusable components under `components/`, `components/ui/`, and `components/layout/` before creating new domain-specific components.
+* Schemas are placed under `src/shared/schemas/`, with one file per domain. Zod schemas, Drizzle table definitions, and inferred types all live in the same domain file.
+* Worker routes are split by domain as separate files or directories, then imported and mounted centrally in `worker/index.ts`.
+* Forms are defined separately in `src/components/<domain>/form.tsx`. Pages only import and use Forms; form details should not be written inside page files.
+* Form props do not need to be overly generic. Forms are domain-specific by design, so form-related business logic can be handled directly inside the Form component.
