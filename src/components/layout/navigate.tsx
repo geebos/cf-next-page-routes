@@ -13,14 +13,8 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import {
-  MousePointerIcon,
-  TagIcon,
-  SquareIcon,
-  TextCursorInputIcon,
-  ChevronDownIcon,
-  MessageSquareIcon,
-  LayersIcon,
-  TablePropertiesIcon,
+  SparklesIcon,
+  ListTodoIcon,
   type LucideIcon,
 } from "lucide-react";
 
@@ -31,14 +25,8 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { title: "Buttons", href: "/buttons/", icon: MousePointerIcon },
-  { title: "Badges", href: "/badges/", icon: TagIcon },
-  { title: "Cards", href: "/cards/", icon: SquareIcon },
-  { title: "Forms", href: "/forms/", icon: TextCursorInputIcon },
-  { title: "Select", href: "/select/", icon: ChevronDownIcon },
-  { title: "Feedback", href: "/feedback/", icon: MessageSquareIcon },
-  { title: "Overlays", href: "/overlays/", icon: LayersIcon },
-  { title: "Nav & Data", href: "/nav-data/", icon: TablePropertiesIcon },
+  { title: "Demo", href: "/", icon: SparklesIcon },
+  { title: "Todo", href: "/todo/", icon: ListTodoIcon },
 ];
 
 // `useRouter().pathname` returns the route without a trailing slash (e.g. "/buttons"),
@@ -104,7 +92,7 @@ export function Tabbar() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 flex items-stretch border-t border-border bg-background/95 backdrop-blur md:hidden"
+      className="inset-x-0 flex items-stretch border-t border-border bg-background/95 backdrop-blur md:hidden pb-[env(safe-area-inset-bottom)]"
     >
       {navItems.map((item) => {
         const Icon = item.icon;

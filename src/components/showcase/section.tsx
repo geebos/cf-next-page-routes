@@ -14,7 +14,7 @@ export function Section({
 }) {
   return (
     <section
-      className="scroll-mt-24 px-6 py-16 bg-secondary text-foreground"
+      className="scroll-mt-24 py-16 bg-secondary text-foreground"
     >
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 flex flex-col gap-2">

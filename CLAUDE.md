@@ -87,47 +87,22 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Squash Commit Message Format
 
-```
-<short title summarizing all changes on this branch>
+Use Conventional Commits:
+
+```text
+<type>[optional scope]: <description>
 
 - <change 1>
 - <change 2>
 - <change 3>
+
+[optional footer(s)]
 ```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
 
 Use `git log main..<dev-branch> --oneline` to review all commits before writing the squash message. The message must cover every meaningful change, not just the last commit.
 
-# 6. Subagent & Worktree Discipline
+# 6. Project Structure
 
-**When dispatching multiple subagents for parallel implementation:**
-
-## File Ownership
-
-- **One file, one agent.** Never dispatch two agents that modify the same file — they will conflict on cherry-pick.
-- Design implementation tracks along file boundaries. If two tracks conceptually overlap on a file, merge them into one track or sequence them.
-- Check file overlap before dispatching: scan each track's "Files" list for shared paths.
-
-## Isolation
-
-- **Always use `isolation: "worktree"`** when dispatching implementation agents. Without it, agents commit directly to the dev branch, bypassing isolation.
-- The worktree handles branch creation and cleanup automatically — just pass the parameter.
-- Agents in worktrees cannot pollute the dev branch or each other's working trees.
-
-## Agent Scope
-
-- Each agent prompt must start with a hard boundary: "Only modify these files: [list]. Do NOT touch any other file."
-- Specify exact file paths, not patterns or directories.
-- If an agent needs to read a file for context but not modify it, state that explicitly: "Read X for context. Do NOT edit X."
-
-## Cherry-pick Hygiene
-
-- Before cherry-picking an agent's worktree commit, ensure the working tree is clean: `git checkout HEAD -- <file>` for any dirty files.
-- **After every cherry-pick, verify the target branch actually got the commit.** Cherry-pick can silently skip (empty commit), leaving the worktree commit orphaned. Run `git log --oneline -3` and confirm the commit message appears on the current branch.
-- If a cherry-pick is empty (changes already applied or skipped), use the raw commit hash from the agent's worktree branch: `git cherry-pick <hash>` — don't rely on branch refs which may have been deleted.
-- Verify each cherry-pick with `npx tsc --noEmit` before moving on.
-
-## Sequential vs Parallel
-
-- Parallel dispatch is safe only when file ownership is non-overlapping.
-- When uncertain, dispatch sequentially. The time saved by parallelism is not worth the merge conflict cost.
-- Review agents can always run in parallel with implementation agents (they only read files).
+- use 

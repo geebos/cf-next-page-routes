@@ -33,6 +33,7 @@ type SelectBaseProps = {
   className?: string
   contentClassName?: string
   disabled?: boolean
+  filter?: boolean
   "aria-label"?: string
   "aria-invalid"?: boolean
 }
@@ -93,6 +94,7 @@ function Select(props: SelectProps) {
     className,
     contentClassName,
     disabled,
+    filter = false,
     "aria-label": ariaLabel,
     "aria-invalid": ariaInvalid,
   } = props
@@ -116,6 +118,7 @@ function Select(props: SelectProps) {
         defaultValue={props.defaultValue}
         disabled={disabled}
         emptyText={emptyText}
+        filter={filter}
         onValueChange={props.onValueChange}
         optionMap={optionMap}
         placeholder={placeholder}
@@ -135,6 +138,7 @@ function Select(props: SelectProps) {
       defaultValue={props.defaultValue}
       disabled={disabled}
       emptyText={emptyText}
+      filter={filter}
       onValueChange={props.onValueChange}
       optionMap={optionMap}
       placeholder={placeholder}
@@ -155,6 +159,7 @@ function SingleSelect({
   className,
   contentClassName,
   disabled,
+  filter,
   "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
 }: Omit<SelectSingleProps, "multiple" | "options"> & {
@@ -175,7 +180,9 @@ function SingleSelect({
       items={values}
       value={currentValue}
       onValueChange={(nextValue) => setCurrentValue(String(nextValue ?? ""))}
+      autoComplete={filter ? "list" : "none"}
       disabled={disabled}
+      filter={filter ? undefined : null}
       itemToStringLabel={(itemValue) =>
         optionMap.get(String(itemValue))?.label ?? String(itemValue)
       }
@@ -186,6 +193,7 @@ function SingleSelect({
         className={cn("w-full", className)}
         disabled={disabled}
         placeholder={placeholder}
+        readOnly={!filter}
       />
       <SelectContent
         className={contentClassName}
@@ -208,6 +216,7 @@ function MultipleSelect({
   className,
   contentClassName,
   disabled,
+  filter,
   clearButton,
   "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
@@ -233,7 +242,9 @@ function MultipleSelect({
       onValueChange={(nextValue) =>
         setCurrentValue(Array.isArray(nextValue) ? nextValue : [])
       }
+      autoComplete={filter ? "list" : "none"}
       disabled={disabled}
+      filter={filter ? undefined : null}
     >
       <ComboboxChips
         ref={anchorRef}
@@ -257,6 +268,7 @@ function MultipleSelect({
           placeholder={
             currentValue.length === 0 ? placeholder : searchPlaceholder
           }
+          readOnly={!filter}
         />
         {clearButton && currentValue.length > 0 && (
           <ComboboxClear aria-label="Clear selections" disabled={disabled} />
