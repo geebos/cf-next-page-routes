@@ -7,7 +7,7 @@
     "dev:web": "next dev",
     "dev:worker": "wrangler dev --local --port 8787",
     "lint": "eslint",
-    "build": "pnpm build",
+    "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.4.0",
+    "@tauri-apps/plugin-http": "~2.5.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

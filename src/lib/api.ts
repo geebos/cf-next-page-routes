@@ -3,6 +3,7 @@ import type {
   CreateTodoInput,
   UpdateTodoInput,
 } from "@/shared/schemas";
+import { fetch } from "@tauri-apps/plugin-http"
 
 export class ApiError extends Error {
   code: number;
