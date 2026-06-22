@@ -238,7 +238,7 @@ function MultipleSelect({
       <ComboboxChips
         ref={anchorRef}
         aria-invalid={ariaInvalid}
-        className={cn("min-h-9 w-full", className)}
+        className={cn("w-full", className)}
       >
         <ComboboxValue>
           {currentValue.map((item) => {

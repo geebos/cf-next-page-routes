@@ -104,3 +104,32 @@ pnpm deploy:worker  # wrangler deploy
 4. **D1（可选）**：`wrangler.jsonc` 中已保留 D1 占位配置，启用时替换 `database_id` 并参考 [Cloudflare D1 文档](https://developers.cloudflare.com/d1/) 创建数据库与应用迁移。
 
 5. **敏感配置**：使用 `wrangler secret put <NAME>` 设置，不要放入前端环境变量。
+
+## Tauri iOS
+
+仓库已包含 `src-tauri/`（Tauri v2），可将同一套静态导出的 Next.js 前端打包成 iOS App。首次使用按以下步骤配置：
+
+1. **安装 Rust**：参考 [rustup 官网](https://rustup.rs) 安装 Rust 工具链。
+
+2. **安装 iOS Rust targets**：
+   ```bash
+   rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
+   ```
+
+3. **初始化 iOS 工程**：
+   ```bash
+   pnpm tauri ios init
+   ```
+   生成 `src-tauri/gen/apple/` 下的 Xcode 工程。
+
+4. **配置签名**：用 Xcode 打开 `src-tauri/gen/apple/native.xcodeproj`，在 Signing & Capabilities 中选择开发 Team（`tauri.conf.json` 里已预填 `developmentTeam: 9CXCT8UD3F`，按需替换为你自己的 Team ID）。
+
+5. **开发运行**：
+   ```bash
+   pnpm tauri ios dev
+   ```
+
+6. **编译 IPA**：
+   ```bash
+   pnpm tauri ios build
+   ```

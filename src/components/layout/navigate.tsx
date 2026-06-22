@@ -1,39 +1,62 @@
-import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import {
-  Sidebar,
+  Sidebar as SidebarPrimitive,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInset,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarProvider,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Toaster } from "@/components/ui/sonner";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useActiveSection } from "@/hooks/use-active-section";
 import { cn } from "@/lib/utils";
-import { navItems, type NavItem } from "./nav-items";
+import {
+  MousePointerIcon,
+  TagIcon,
+  SquareIcon,
+  TextCursorInputIcon,
+  ChevronDownIcon,
+  MessageSquareIcon,
+  LayersIcon,
+  TablePropertiesIcon,
+  type LucideIcon,
+} from "lucide-react";
 
-// Collapsed sidebar shows icon stacked over smaller label, so it needs more
-// width than shadcn's default 3rem (which only fits a square icon).
-const SIDEBAR_WIDTH_ICON = "4.5rem";
+export type NavItem = {
+  title: string;
+  href: string;
+  icon: LucideIcon;
+};
 
-// Strip the leading "#" from href to get a section id.
-const sectionIds = navItems.map((item) => item.href.slice(1));
+export const navItems: NavItem[] = [
+  { title: "Buttons", href: "/buttons/", icon: MousePointerIcon },
+  { title: "Badges", href: "/badges/", icon: TagIcon },
+  { title: "Cards", href: "/cards/", icon: SquareIcon },
+  { title: "Forms", href: "/forms/", icon: TextCursorInputIcon },
+  { title: "Select", href: "/select/", icon: ChevronDownIcon },
+  { title: "Feedback", href: "/feedback/", icon: MessageSquareIcon },
+  { title: "Overlays", href: "/overlays/", icon: LayersIcon },
+  { title: "Nav & Data", href: "/nav-data/", icon: TablePropertiesIcon },
+];
+
+// `useRouter().pathname` returns the route without a trailing slash (e.g. "/buttons"),
+// while navItems hrefs are stored with one (e.g. "/buttons/") per trailingSlash: true.
+// Normalize both sides before comparing.
+function isActive(pathname: string, href: string) {
+  return pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
+}
 
 function NavButton({ item, active }: { item: NavItem; active: boolean }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const Icon = item.icon;
   return (
-    <a
+    <Link
       href={item.href}
       data-collapsed={collapsed}
-      aria-current={active ? "true" : undefined}
+      aria-current={active ? "page" : undefined}
       className={cn(
         "flex items-center rounded-md transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         collapsed
@@ -44,14 +67,14 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
     >
       <Icon className={cn("shrink-0", collapsed ? "size-5" : "size-4")} />
       <span className={cn("truncate", collapsed && "max-w-full")}>{item.title}</span>
-    </a>
+    </Link>
   );
 }
 
-function AppSidebar() {
-  const activeId = useActiveSection(sectionIds);
+export function Sidebar() {
+  const { pathname } = useRouter();
   return (
-    <Sidebar collapsible="icon">
+    <SidebarPrimitive collapsible="icon">
       <SidebarHeader className="flex-row items-center justify-between px-2">
         <span className="font-heading text-[17px] font-semibold tracking-tight">
           Apple
@@ -64,19 +87,19 @@ function AppSidebar() {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <NavButton item={item} active={item.href.slice(1) === activeId} />
+                  <NavButton item={item} active={isActive(pathname, item.href)} />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-    </Sidebar>
+    </SidebarPrimitive>
   );
 }
 
-function BottomNav() {
-  const activeId = useActiveSection(sectionIds);
+export function Tabbar() {
+  const { pathname } = useRouter();
 
   return (
     <nav
@@ -85,49 +108,24 @@ function BottomNav() {
     >
       {navItems.map((item) => {
         const Icon = item.icon;
-        const isActive = item.href.slice(1) === activeId;
+        const isActiveItem = isActive(pathname, item.href);
         return (
-          <a
+          <Link
             key={item.href}
             href={item.href}
+            aria-current={isActiveItem ? "page" : undefined}
             className={cn(
               "flex flex-1 flex-col items-center gap-1 py-2 transition-colors",
-              isActive
+              isActiveItem
                 ? "text-primary"
                 : "text-muted-foreground/60 hover:text-foreground",
             )}
           >
             <Icon className="size-5" />
             <span className="text-[10px] leading-none">{item.title}</span>
-          </a>
+          </Link>
         );
       })}
     </nav>
-  );
-}
-
-export function AppShell({ children }: { children: React.ReactNode }) {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return (
-      <div className="flex min-h-svh flex-col bg-background text-foreground">
-        <div className="flex-1 pb-16">{children}</div>
-        <BottomNav />
-        <Toaster />
-      </div>
-    );
-  }
-
-  return (
-    <SidebarProvider
-      style={{ "--sidebar-width-icon": SIDEBAR_WIDTH_ICON } as React.CSSProperties}
-    >
-      <AppSidebar />
-      <SidebarInset>
-        {children}
-        <Toaster />
-      </SidebarInset>
-    </SidebarProvider>
   );
 }

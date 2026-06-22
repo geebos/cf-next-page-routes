@@ -1,11 +1,11 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { AppShell } from "@/components/layout/app-shell";
+import { Layout } from "@/components/layout/layout";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <AppShell>
+    <Layout>
       <Component {...pageProps} />
-    </AppShell>
+    </Layout>
   );
 }
