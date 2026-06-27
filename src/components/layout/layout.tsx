@@ -10,7 +10,7 @@ import { Sidebar, Tabbar } from "./navigate";
 
 // Collapsed sidebar shows icon stacked over smaller label, so it needs more
 // width than shadcn's default 3rem (which only fits a square icon).
-const SIDEBAR_WIDTH_ICON = "4.5rem";
+const SIDEBAR_WIDTH_ICON = "4rem";
 const SIDEBAR_OPEN_KEY = "sidebar:open";
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -24,8 +24,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   if (isMobile) {
     return (
-      <div className="flex min-h-svh max-h-svh flex-col bg-background text-foreground">
-        <div className="flex flex-1 flex-col overflow-y-auto">{children}</div>
+      <div className="flex min-h-svh max-h-svh flex-col bg-secondary text-foreground">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</div>
         <Tabbar />
         {toaster}
       </div>

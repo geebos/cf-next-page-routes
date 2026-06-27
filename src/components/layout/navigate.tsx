@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import {
   Sidebar as SidebarPrimitive,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -46,14 +47,16 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
       data-collapsed={collapsed}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center rounded-md transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        "flex items-center rounded-md transition-colors",
         collapsed
           ? "flex-col gap-1 px-1 py-2 text-[10px] leading-none"
           : "gap-2 px-2 py-1.5 text-sm",
-        active ? "text-primary" : "text-sidebar-foreground",
+        active
+          ? "bg-primary text-primary-foreground"
+          : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
       )}
     >
-      <Icon className={cn("shrink-0", collapsed ? "size-5" : "size-4")} />
+      <Icon className={cn("shrink-0", collapsed ? "size-3.5" : "size-4")} />
       <span className={cn("truncate", collapsed && "max-w-full")}>{item.title}</span>
     </Link>
   );
@@ -61,18 +64,29 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
 
 export function Sidebar() {
   const { pathname } = useRouter();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
   return (
     <SidebarPrimitive collapsible="icon">
-      <SidebarHeader className="flex-row items-center justify-between px-2">
-        <span className="font-heading text-[17px] font-semibold tracking-tight">
+      <SidebarHeader
+        className={cn(
+          "border-b border-sidebar-border px-2 py-3",
+          collapsed ? "flex justify-center" : "flex-row items-center",
+        )}
+      >
+        <span
+          className={cn(
+            "font-heading font-semibold tracking-tight",
+            collapsed ? "text-sm" : "text-lg",
+          )}
+        >
           Apple
         </span>
-        <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <NavButton item={item} active={isActive(pathname, item.href)} />
@@ -82,17 +96,21 @@ export function Sidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
+        <SidebarTrigger className="w-full rounded-md py-2 hover:bg-sidebar-accent" />
+      </SidebarFooter>
     </SidebarPrimitive>
   );
 }
 
 export function Tabbar() {
-  const { pathname } = useRouter();
+  const router = useRouter();
+  const { pathname } = router;
 
   return (
     <nav
       aria-label="Primary"
-      className="inset-x-0 flex items-stretch border-t border-border bg-background/95 backdrop-blur md:hidden pb-[env(safe-area-inset-bottom)]"
+      className="relative z-50 flex shrink-0 select-none items-stretch border-t border-border bg-background/95 backdrop-blur [touch-action:manipulation] md:hidden pb-[env(safe-area-inset-bottom)]"
     >
       {navItems.map((item) => {
         const Icon = item.icon;
@@ -102,6 +120,12 @@ export function Tabbar() {
             key={item.href}
             href={item.href}
             aria-current={isActiveItem ? "page" : undefined}
+            onPointerDown={(event) => {
+              if (event.pointerType === "mouse" || isActiveItem) return;
+
+              event.preventDefault();
+              void router.push(item.href);
+            }}
             className={cn(
               "flex flex-1 flex-col items-center gap-1 py-2 transition-colors",
               isActiveItem
