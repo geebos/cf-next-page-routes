@@ -17,6 +17,7 @@ import {
   useComboboxAnchor,
 } from "@/components/ui/combobox"
 import { cn } from "@/lib/utils"
+import { PlusIcon } from "lucide-react"
 
 type SelectOption = {
   value: string
@@ -34,6 +35,8 @@ type SelectBaseProps = {
   contentClassName?: string
   disabled?: boolean
   filter?: boolean
+  creatable?: boolean
+  createLabel?: (query: string) => string
   "aria-label"?: string
   "aria-invalid"?: boolean
 }
@@ -95,10 +98,14 @@ function Select(props: SelectProps) {
     contentClassName,
     disabled,
     filter = false,
+    creatable = false,
+    createLabel = (query: string) => `Add "${query}"`,
     "aria-label": ariaLabel,
     "aria-invalid": ariaInvalid,
   } = props
-  const values = React.useMemo(
+  const [inputValue, setInputValue] = React.useState("")
+  const trimmedQuery = inputValue.trim()
+  const optionValues = React.useMemo(
     () => options.map((option) => option.value),
     [options]
   )
@@ -106,6 +113,23 @@ function Select(props: SelectProps) {
     () => new Map(options.map((option) => [option.value, option])),
     [options]
   )
+  const selectedValues = React.useMemo(
+    () =>
+      props.multiple
+        ? new Set(props.value ?? props.defaultValue ?? [])
+        : new Set([props.value ?? props.defaultValue ?? ""]),
+    [props.defaultValue, props.multiple, props.value]
+  )
+  const canCreate =
+    creatable &&
+    trimmedQuery.length > 0 &&
+    !optionMap.has(trimmedQuery) &&
+    !selectedValues.has(trimmedQuery)
+  const values = React.useMemo(
+    () => (canCreate ? [...optionValues, trimmedQuery] : optionValues),
+    [canCreate, optionValues, trimmedQuery]
+  )
+  const shouldFilter = filter || creatable
 
   if (props.multiple) {
     return (
@@ -118,7 +142,10 @@ function Select(props: SelectProps) {
         defaultValue={props.defaultValue}
         disabled={disabled}
         emptyText={emptyText}
-        filter={filter}
+        filter={shouldFilter}
+        createLabel={createLabel}
+        createValue={canCreate ? trimmedQuery : undefined}
+        onInputValueChange={setInputValue}
         onValueChange={props.onValueChange}
         optionMap={optionMap}
         placeholder={placeholder}
@@ -138,7 +165,10 @@ function Select(props: SelectProps) {
       defaultValue={props.defaultValue}
       disabled={disabled}
       emptyText={emptyText}
-      filter={filter}
+      filter={shouldFilter}
+      createLabel={createLabel}
+      createValue={canCreate ? trimmedQuery : undefined}
+      onInputValueChange={setInputValue}
       onValueChange={props.onValueChange}
       optionMap={optionMap}
       placeholder={placeholder}
@@ -160,6 +190,9 @@ function SingleSelect({
   contentClassName,
   disabled,
   filter,
+  createLabel,
+  createValue,
+  onInputValueChange,
   "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
 }: Omit<SelectSingleProps, "multiple" | "options"> & {
@@ -167,6 +200,8 @@ function SingleSelect({
   optionMap: Map<string, SelectOption>
   placeholder: string
   emptyText: string
+  createValue?: string
+  onInputValueChange: (value: string) => void
 }) {
   const [currentValue, setCurrentValue] = useControllableValue({
     value,
@@ -180,6 +215,7 @@ function SingleSelect({
       items={values}
       value={currentValue}
       onValueChange={(nextValue) => setCurrentValue(String(nextValue ?? ""))}
+      onInputValueChange={onInputValueChange}
       autoComplete={filter ? "list" : "none"}
       disabled={disabled}
       filter={filter ? undefined : null}
@@ -197,6 +233,8 @@ function SingleSelect({
       />
       <SelectContent
         className={contentClassName}
+        createLabel={createLabel}
+        createValue={createValue}
         emptyText={emptyText}
         optionMap={optionMap}
       />
@@ -217,6 +255,9 @@ function MultipleSelect({
   contentClassName,
   disabled,
   filter,
+  createLabel,
+  createValue,
+  onInputValueChange,
   clearButton,
   "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
@@ -225,6 +266,8 @@ function MultipleSelect({
   optionMap: Map<string, SelectOption>
   placeholder: string
   emptyText: string
+  createValue?: string
+  onInputValueChange: (value: string) => void
 }) {
   const anchorRef = useComboboxAnchor()
   const [currentValue, setCurrentValue] = useControllableValue({
@@ -242,6 +285,7 @@ function MultipleSelect({
       onValueChange={(nextValue) =>
         setCurrentValue(Array.isArray(nextValue) ? nextValue : [])
       }
+      onInputValueChange={onInputValueChange}
       autoComplete={filter ? "list" : "none"}
       disabled={disabled}
       filter={filter ? undefined : null}
@@ -277,6 +321,8 @@ function MultipleSelect({
       <SelectContent
         anchor={anchorRef}
         className={contentClassName}
+        createLabel={createLabel}
+        createValue={createValue}
         emptyText={emptyText}
         optionMap={optionMap}
       />
@@ -286,11 +332,15 @@ function MultipleSelect({
 
 function SelectContent({
   optionMap,
+  createLabel,
+  createValue,
   emptyText,
   className,
   anchor,
 }: {
   optionMap: Map<string, SelectOption>
+  createLabel?: (query: string) => string
+  createValue?: string
   emptyText: string
   className?: string
   anchor?: React.RefObject<HTMLDivElement | null>
@@ -303,6 +353,17 @@ function SelectContent({
           const option = optionMap.get(item)
 
           if (!option) {
+            if (item === createValue) {
+              return (
+                <ComboboxItem key={item} value={item}>
+                  <PlusIcon className="text-muted-foreground" />
+                  <span className="flex flex-1 shrink-0 whitespace-nowrap">
+                    {createLabel?.(item) ?? item}
+                  </span>
+                </ComboboxItem>
+              )
+            }
+
             return null
           }
 
