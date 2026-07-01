@@ -26,7 +26,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Spinner } from "@/components/ui/spinner";
-import { Select } from "@/components/select";
+import { Select } from "@/components/ui/select";
 import { useState } from "react";
 
 type FormValues = {

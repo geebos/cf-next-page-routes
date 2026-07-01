@@ -111,7 +111,7 @@ import {
   AvatarGroup,
   AvatarGroupCount,
 } from "@/components/ui/avatar";
-import { Select, type SelectOption } from "@/components/select";
+import { Select, type SelectOption } from "@/components/ui/select";
 import { Section, Row } from "@/components/showcase/section";
 import { Page } from "@/components/layout/page";
 
