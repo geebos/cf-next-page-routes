@@ -100,9 +100,8 @@ function Form<T extends Partial<FormValues>>({
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel htmlFor={field.name}>优先级</FieldLabel>
             <Select
+              {...field}
               options={PRIORITY_OPTIONS}
-              value={field.value}
-              onValueChange={field.onChange}
               aria-label="优先级"
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

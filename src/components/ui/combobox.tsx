@@ -15,6 +15,11 @@ import { ChevronDownIcon, XIcon, CheckIcon } from "lucide-react"
 
 const Combobox = ComboboxPrimitive.Root
 
+type ComboboxInputProps = ComboboxPrimitive.Input.Props & {
+  showTrigger?: boolean
+  showClear?: boolean
+}
+
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />
 }
@@ -59,10 +64,7 @@ function ComboboxInput({
   showTrigger = true,
   showClear = false,
   ...props
-}: ComboboxPrimitive.Input.Props & {
-  showTrigger?: boolean
-  showClear?: boolean
-}) {
+}: ComboboxInputProps) {
   return (
     <InputGroup className={cn("w-auto", className)}>
       <ComboboxPrimitive.Input
@@ -267,14 +269,33 @@ function ComboboxChip({
 
 function ComboboxChipsInput({
   className,
+  disabled = false,
+  showTrigger = true,
+  showClear = false,
   ...props
-}: ComboboxPrimitive.Input.Props) {
+}: ComboboxInputProps) {
   return (
-    <ComboboxPrimitive.Input
-      data-slot="combobox-chip-input"
-      className={cn("min-w-16 flex-1 outline-none", className)}
-      {...props}
-    />
+    <>
+      <ComboboxPrimitive.Input
+        data-slot="combobox-chip-input"
+        className={cn("min-w-16 flex-1 outline-none", className)}
+        disabled={disabled}
+        {...props}
+      />
+      {showTrigger && (
+        <InputGroupButton
+          size="icon-xs"
+          variant="ghost"
+          asChild
+          data-slot="input-group-button"
+          className="data-pressed:bg-transparent"
+          disabled={disabled}
+        >
+          <ComboboxTrigger />
+        </InputGroupButton>
+      )}
+      {showClear && <ComboboxClear disabled={disabled} />}
+    </>
   )
 }
 
@@ -301,3 +322,4 @@ export {
   ComboboxValue,
   useComboboxAnchor,
 }
+export type { ComboboxInputProps }

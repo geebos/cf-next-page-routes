@@ -1,13 +1,13 @@
 "use client"
 
 import * as React from "react"
+import type { Combobox as ComboboxPrimitive } from "@base-ui/react"
 
 import {
   Combobox,
   ComboboxChip,
   ComboboxChips,
   ComboboxChipsInput,
-  ComboboxClear,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
@@ -15,9 +15,8 @@ import {
   ComboboxList,
   ComboboxValue,
   useComboboxAnchor,
+  type ComboboxInputProps,
 } from "@/components/ui/combobox"
-import { cn } from "@/lib/utils"
-import { PlusIcon } from "lucide-react"
 
 type SelectOption = {
   value: string
@@ -26,344 +25,127 @@ type SelectOption = {
   disabled?: boolean
 }
 
-type SelectBaseProps = {
+type SelectCommonProps = Omit<
+  ComboboxInputProps,
+  "children" | "defaultValue" | "multiple" | "onChange" | "value"
+> & {
   options: SelectOption[]
-  placeholder?: string
-  searchPlaceholder?: string
-  emptyText?: string
-  className?: string
-  contentClassName?: string
-  disabled?: boolean
-  filter?: boolean
-  creatable?: boolean
-  createLabel?: (query: string) => string
-  "aria-label"?: string
-  "aria-invalid"?: boolean
+  emptyText?: React.ReactNode
+  autoHighlight?: ComboboxPrimitive.Root.Props<string>["autoHighlight"]
 }
 
-type SelectSingleProps = SelectBaseProps & {
+type SelectSingleProps = SelectCommonProps & {
   multiple?: false
-  value?: string
-  defaultValue?: string
-  onValueChange?: (value: string) => void
+  value?: ComboboxPrimitive.Root.Props<string, false>["value"]
+  onChange?: ComboboxPrimitive.Root.Props<string, false>["onValueChange"]
 }
 
-type SelectMultipleProps = SelectBaseProps & {
+type SelectMultipleProps = SelectCommonProps & {
   multiple: true
-  clearButton?: boolean
-  value?: string[]
-  defaultValue?: string[]
-  onValueChange?: (value: string[]) => void
+  value?: ComboboxPrimitive.Root.Props<string, true>["value"]
+  onChange?: ComboboxPrimitive.Root.Props<string, true>["onValueChange"]
 }
 
 type SelectProps = SelectSingleProps | SelectMultipleProps
 
-function useControllableValue<T>({
+function Select({
+  options,
+  emptyText,
   value,
-  defaultValue,
-  emptyValue,
-  onValueChange,
-}: {
-  value: T | undefined
-  defaultValue: T | undefined
-  emptyValue: T
-  onValueChange?: (value: T) => void
-}) {
-  const [internalValue, setInternalValue] = React.useState<T>(
-    defaultValue ?? emptyValue
-  )
-  const isControlled = value !== undefined
-  const currentValue = isControlled ? value : internalValue
-
-  const setValue = React.useCallback(
-    (nextValue: T) => {
-      if (!isControlled) {
-        setInternalValue(nextValue)
-      }
-
-      onValueChange?.(nextValue)
-    },
-    [isControlled, onValueChange]
-  )
-
-  return [currentValue, setValue] as const
-}
-
-function Select(props: SelectProps) {
-  const {
-    options,
-    placeholder = "Select an option",
-    emptyText = "No options found.",
-    className,
-    contentClassName,
-    disabled,
-    filter = false,
-    creatable = false,
-    createLabel = (query: string) => `Add "${query}"`,
-    "aria-label": ariaLabel,
-    "aria-invalid": ariaInvalid,
-  } = props
-  const [inputValue, setInputValue] = React.useState("")
-  const trimmedQuery = inputValue.trim()
-  const optionValues = React.useMemo(
+  onChange,
+  autoHighlight,
+  multiple,
+  ...props
+}: SelectProps) {
+  const values = React.useMemo(
     () => options.map((option) => option.value),
     [options]
   )
-  const optionMap = React.useMemo(
-    () => new Map(options.map((option) => [option.value, option])),
+  const getOption = React.useCallback(
+    (value: string) => options.find((option) => option.value === String(value)),
     [options]
   )
-  const selectedValues = React.useMemo(
-    () =>
-      props.multiple
-        ? new Set(props.value ?? props.defaultValue ?? [])
-        : new Set([props.value ?? props.defaultValue ?? ""]),
-    [props.defaultValue, props.multiple, props.value]
-  )
-  const canCreate =
-    creatable &&
-    trimmedQuery.length > 0 &&
-    !optionMap.has(trimmedQuery) &&
-    !selectedValues.has(trimmedQuery)
-  const values = React.useMemo(
-    () => (canCreate ? [...optionValues, trimmedQuery] : optionValues),
-    [canCreate, optionValues, trimmedQuery]
-  )
-  const shouldFilter = filter || creatable
+  const anchorRef = useComboboxAnchor()
 
-  if (props.multiple) {
+  if (multiple) {
     return (
-      <MultipleSelect
-        aria-invalid={ariaInvalid}
-        aria-label={ariaLabel}
-        className={className}
-        clearButton={props.clearButton}
-        contentClassName={contentClassName}
-        defaultValue={props.defaultValue}
-        disabled={disabled}
-        emptyText={emptyText}
-        filter={shouldFilter}
-        createLabel={createLabel}
-        createValue={canCreate ? trimmedQuery : undefined}
-        onInputValueChange={setInputValue}
-        onValueChange={props.onValueChange}
-        optionMap={optionMap}
-        placeholder={placeholder}
-        searchPlaceholder={props.searchPlaceholder}
-        value={props.value}
-        values={values}
-      />
+      <Combobox<string, true>
+        items={values}
+        multiple
+        autoHighlight={autoHighlight}
+        itemToStringLabel={(value) =>
+          getOption(String(value))?.label ?? String(value)
+        }
+        onValueChange={onChange as SelectMultipleProps["onChange"]}
+        value={value as SelectMultipleProps["value"]}
+      >
+        <ComboboxChips ref={anchorRef} className="w-full">
+          <ComboboxValue>
+            {(selectedValue) =>
+              (Array.isArray(selectedValue) ? selectedValue : []).map(
+                (value) => {
+                  const option = getOption(String(value))
+
+                  return (
+                    <ComboboxChip key={String(value)}>
+                      {option?.label ?? String(value)}
+                    </ComboboxChip>
+                  )
+                }
+              )
+            }
+          </ComboboxValue>
+          <ComboboxChipsInput {...props} />
+        </ComboboxChips>
+        <SelectContent
+          anchor={anchorRef}
+          emptyText={emptyText}
+          options={options}
+        />
+      </Combobox>
     )
   }
 
   return (
-    <SingleSelect
-      aria-invalid={ariaInvalid}
-      aria-label={ariaLabel}
-      className={className}
-      contentClassName={contentClassName}
-      defaultValue={props.defaultValue}
-      disabled={disabled}
-      emptyText={emptyText}
-      filter={shouldFilter}
-      createLabel={createLabel}
-      createValue={canCreate ? trimmedQuery : undefined}
-      onInputValueChange={setInputValue}
-      onValueChange={props.onValueChange}
-      optionMap={optionMap}
-      placeholder={placeholder}
-      value={props.value}
-      values={values}
-    />
-  )
-}
-
-function SingleSelect({
-  values,
-  optionMap,
-  value,
-  defaultValue,
-  onValueChange,
-  placeholder,
-  emptyText,
-  className,
-  contentClassName,
-  disabled,
-  filter,
-  createLabel,
-  createValue,
-  onInputValueChange,
-  "aria-label": ariaLabel,
-  "aria-invalid": ariaInvalid,
-}: Omit<SelectSingleProps, "multiple" | "options"> & {
-  values: string[]
-  optionMap: Map<string, SelectOption>
-  placeholder: string
-  emptyText: string
-  createValue?: string
-  onInputValueChange: (value: string) => void
-}) {
-  const [currentValue, setCurrentValue] = useControllableValue({
-    value,
-    defaultValue,
-    emptyValue: "",
-    onValueChange,
-  })
-
-  return (
-    <Combobox
+    <Combobox<string, false>
       items={values}
-      value={currentValue}
-      onValueChange={(nextValue) => setCurrentValue(String(nextValue ?? ""))}
-      onInputValueChange={onInputValueChange}
-      autoComplete={filter ? "list" : "none"}
-      disabled={disabled}
-      filter={filter ? undefined : null}
-      itemToStringLabel={(itemValue) =>
-        optionMap.get(String(itemValue))?.label ?? String(itemValue)
+      autoHighlight={autoHighlight}
+      itemToStringLabel={(value) =>
+        getOption(String(value))?.label ?? String(value)
       }
+      onValueChange={onChange as SelectSingleProps["onChange"]}
+      value={value as SelectSingleProps["value"]}
     >
-      <ComboboxInput
-        aria-invalid={ariaInvalid}
-        aria-label={ariaLabel ?? placeholder}
-        className={cn("w-full", className)}
-        disabled={disabled}
-        placeholder={placeholder}
-        readOnly={!filter}
-      />
-      <SelectContent
-        className={contentClassName}
-        createLabel={createLabel}
-        createValue={createValue}
-        emptyText={emptyText}
-        optionMap={optionMap}
-      />
-    </Combobox>
-  )
-}
-
-function MultipleSelect({
-  values,
-  optionMap,
-  value,
-  defaultValue,
-  onValueChange,
-  placeholder,
-  searchPlaceholder = "Search options",
-  emptyText,
-  className,
-  contentClassName,
-  disabled,
-  filter,
-  createLabel,
-  createValue,
-  onInputValueChange,
-  clearButton,
-  "aria-label": ariaLabel,
-  "aria-invalid": ariaInvalid,
-}: Omit<SelectMultipleProps, "multiple" | "options"> & {
-  values: string[]
-  optionMap: Map<string, SelectOption>
-  placeholder: string
-  emptyText: string
-  createValue?: string
-  onInputValueChange: (value: string) => void
-}) {
-  const anchorRef = useComboboxAnchor()
-  const [currentValue, setCurrentValue] = useControllableValue({
-    value,
-    defaultValue,
-    emptyValue: [],
-    onValueChange,
-  })
-
-  return (
-    <Combobox
-      items={values}
-      multiple
-      value={currentValue}
-      onValueChange={(nextValue) =>
-        setCurrentValue(Array.isArray(nextValue) ? nextValue : [])
-      }
-      onInputValueChange={onInputValueChange}
-      autoComplete={filter ? "list" : "none"}
-      disabled={disabled}
-      filter={filter ? undefined : null}
-    >
-      <ComboboxChips
-        ref={anchorRef}
-        aria-invalid={ariaInvalid}
-        className={cn("w-full", className)}
-      >
-        <ComboboxValue>
-          {currentValue.map((item) => {
-            const option = optionMap.get(item)
-
-            return (
-              <ComboboxChip key={item}>
-                {option?.label ?? item}
-              </ComboboxChip>
-            )
-          })}
-        </ComboboxValue>
-        <ComboboxChipsInput
-          aria-label={ariaLabel ?? placeholder}
-          disabled={disabled}
-          placeholder={
-            currentValue.length === 0 ? placeholder : searchPlaceholder
-          }
-          readOnly={!filter}
-        />
-        {clearButton && currentValue.length > 0 && (
-          <ComboboxClear aria-label="Clear selections" disabled={disabled} />
-        )}
-      </ComboboxChips>
-      <SelectContent
-        anchor={anchorRef}
-        className={contentClassName}
-        createLabel={createLabel}
-        createValue={createValue}
-        emptyText={emptyText}
-        optionMap={optionMap}
-      />
+      <ComboboxInput {...props} />
+      <SelectContent emptyText={emptyText} options={options} />
     </Combobox>
   )
 }
 
 function SelectContent({
-  optionMap,
-  createLabel,
-  createValue,
-  emptyText,
-  className,
   anchor,
+  emptyText,
+  options,
 }: {
-  optionMap: Map<string, SelectOption>
-  createLabel?: (query: string) => string
-  createValue?: string
-  emptyText: string
-  className?: string
-  anchor?: React.RefObject<HTMLDivElement | null>
+  anchor?: ComboboxPrimitive.Positioner.Props["anchor"]
+  emptyText: React.ReactNode
+  options: SelectOption[]
 }) {
+  const optionMap = React.useMemo(
+    () => new Map(options.map((option) => [option.value, option])),
+    [options]
+  )
+
   return (
-    <ComboboxContent anchor={anchor} className={className}>
-      <ComboboxEmpty>{emptyText}</ComboboxEmpty>
+    <ComboboxContent anchor={anchor}>
+      <ComboboxEmpty>
+        {emptyText ? emptyText : "No items found."}
+      </ComboboxEmpty>
       <ComboboxList>
-        {(item: string) => {
-          const option = optionMap.get(item)
+        {(value: string) => {
+          const option = optionMap.get(String(value))
 
           if (!option) {
-            if (item === createValue) {
-              return (
-                <ComboboxItem key={item} value={item}>
-                  <PlusIcon className="text-muted-foreground" />
-                  <span className="flex flex-1 shrink-0 whitespace-nowrap">
-                    {createLabel?.(item) ?? item}
-                  </span>
-                </ComboboxItem>
-              )
-            }
-
             return null
           }
 

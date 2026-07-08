@@ -129,6 +129,7 @@ const formSchema = z.object({
   plan: z.enum(["free", "pro", "ent"], {
     error: "Select a plan.",
   }),
+  finishes: z.array(z.string()).min(1, "Select at least one finish."),
   temperature: z.number().min(0).max(100),
   notifications: z.boolean(),
 });
@@ -176,8 +177,8 @@ const pricingRows = [
 // --- Component ---
 
 export default function Home() {
-  const [singleModel, setSingleModel] = useState("iphone-17-pro");
-  const [multiTones, setMultiTones] = useState<string[]>(["warm", "bright"]);
+  const [singleModel, setSingleModel] = useState<string | null>("iphone-17-pro");
+  const [multiTones, setMultiTones] = useState<string[]>(["blue", "white"]);
   const [sliderInDialog, setSliderInDialog] = useState<number[]>([25]);
 
   const form = useForm<FormValues>({
@@ -187,6 +188,7 @@ export default function Home() {
       prompt: "",
       terms: false,
       plan: "pro",
+      finishes: ["blue"],
       temperature: 40,
       notifications: true,
     },
@@ -352,7 +354,7 @@ export default function Home() {
     </Section>
       <Section
         title="Form controls"
-      description="A react-hook-form form with zod validation — input, textarea, checkbox, switch, radio group, and slider bound via Controller."
+      description="A react-hook-form form with zod validation — input, textarea, checkbox, switch, radio group, select, and slider bound via Controller."
     >
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <FieldGroup>
@@ -482,6 +484,30 @@ export default function Home() {
           />
 
           <Controller
+            name="finishes"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Finishes</FieldLabel>
+                <Select
+                  {...field}
+                  multiple
+                  id={field.name}
+                  options={toneOptions}
+                  showClear
+                  aria-invalid={fieldState.invalid}
+                  aria-label="Finishes"
+                  placeholder="Pick finishes"
+                  emptyText="No finishes found."
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          <Controller
             name="notifications"
             control={form.control}
             render={({ field }) => (
@@ -513,7 +539,7 @@ export default function Home() {
     </Section>
       <Section
         title="Select"
-      description="A custom Select built on Combobox. Supports single and multiple modes, search, descriptions, and disabled options."
+      description="A thin Select wrapper over Combobox. Common docs examples are available as props."
     >
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
         <div className="flex flex-col gap-2">
@@ -521,9 +547,9 @@ export default function Home() {
           <Select
             options={modelOptions}
             value={singleModel}
-            onValueChange={setSingleModel}
+            onChange={setSingleModel}
             placeholder="Pick a model"
-            searchPlaceholder="Search models"
+            emptyText="No models found."
             aria-label="Single select model"
           />
           <p className="text-xs text-muted-foreground">
@@ -535,12 +561,11 @@ export default function Home() {
           <Label htmlFor="multi-tone">Multi-select with chips</Label>
           <Select
             multiple
-            clearButton
             options={toneOptions}
             value={multiTones}
-            onValueChange={setMultiTones}
-            placeholder="Pick tones"
-            searchPlaceholder="Search tones"
+            onChange={setMultiTones}
+            placeholder="Add tones"
+            emptyText="No tones found."
             aria-label="Multi select tones"
           />
           <p className="text-xs text-muted-foreground">
@@ -551,7 +576,16 @@ export default function Home() {
         </div>
       </div>
 
-      <Row label="States">
+      <Row label="Props">
+        <div className="flex w-full max-w-xs flex-col gap-2">
+          <Label htmlFor="clearable-select">Clear button</Label>
+          <Select
+            options={modelOptions}
+            showClear
+            placeholder="Pick a model"
+            aria-label="Clearable select"
+          />
+        </div>
         <div className="flex w-full max-w-xs flex-col gap-2">
           <Label htmlFor="disabled-select">Disabled</Label>
           <Select
@@ -562,12 +596,12 @@ export default function Home() {
           />
         </div>
         <div className="flex w-full max-w-xs flex-col gap-2">
-          <Label htmlFor="default-select">Uncontrolled (default)</Label>
+          <Label htmlFor="auto-highlight-select">Auto highlight</Label>
           <Select
             options={modelOptions}
-            defaultValue="hailuo"
+            autoHighlight
             placeholder="Pick a model"
-            aria-label="Uncontrolled select"
+            aria-label="Auto highlight select"
           />
         </div>
       </Row>
