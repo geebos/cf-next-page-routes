@@ -3,6 +3,7 @@ import { asc, sql, eq } from "drizzle-orm";
 import type { AppEnv } from "@/worker/types";
 import { BusinessError } from "@/worker/lib/errors";
 import { jsonValidator } from "@/worker/lib/validator";
+import { affectedRows } from "@/worker/db/engine";
 import {
   todos,
   createTodoSchema,
@@ -74,8 +75,8 @@ todosRoute.patch("/todos/:id", jsonValidator(updateTodoSchema), async (c) => {
   if (input.completed !== undefined) patch.completed = input.completed ? 1 : 0;
 
   const result = await db.update(todos).set(patch).where(eq(todos.id, id));
-  // D1 returns { meta: { changes } }; drizzle surfaces it on the result.
-  const changes = (result as unknown as { meta?: { changes?: number } })?.meta?.changes ?? 0;
+  // D1 在 result.meta.changes；better-sqlite3 在 result.changes。affectedRows 统一处理。
+  const changes = affectedRows(result);
   if (changes === 0) {
     throw new BusinessError("任务不存在", 404);
   }
@@ -93,7 +94,7 @@ todosRoute.delete("/todos/:id", async (c) => {
   const id = c.req.param("id");
   const db = c.get("db");
   const result = await db.delete(todos).where(eq(todos.id, id));
-  const changes = (result as unknown as { meta?: { changes?: number } })?.meta?.changes ?? 0;
+  const changes = affectedRows(result);
   if (changes === 0) {
     throw new BusinessError("任务不存在", 404);
   }

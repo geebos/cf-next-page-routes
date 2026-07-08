@@ -6,6 +6,8 @@
     "dev": "concurrently -k -n web,worker \"pnpm dev:web\" \"pnpm dev:worker\"",
     "dev:web": "next dev",
     "dev:worker": "wrangler dev --local --port 8787",
+    "dev:sqlite": "concurrently -k -n web,worker \"pnpm dev:web\" \"pnpm dev:worker:sqlite\"",
+    "dev:worker:sqlite": "DB_ENGINE=sqlite DB_SQLITE_DIR=./.sqlite tsx src/worker/serve.ts",
     "lint": "eslint",
     "build": "next build",
     "start": "next start",
@@ -16,11 +18,13 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@hono/node-server": "^2.0.8",
     "@hono/zod-validator": "^0.8.0",
     "@hookform/resolvers": "^5.4.0",
     "@tauri-apps/api": "~2.6.0",
     "@tauri-apps/plugin-dialog": "~2.7.1",
     "@tauri-apps/plugin-http": "~2.5.9",
+    "better-sqlite3": "^12.11.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -50,6 +54,7 @@
     "@cloudflare/workers-types": "^4.20260619.1",
     "@tailwindcss/postcss": "^4",
     "@tauri-apps/cli": "~2.6.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -58,7 +63,11 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
+    "tsx": "^4.23.0",
     "typescript": "^5",
     "wrangler": "^4.103.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3"]
   }
 }
