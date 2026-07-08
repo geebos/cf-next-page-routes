@@ -112,7 +112,7 @@ import {
   AvatarGroupCount,
 } from "@/components/ui/avatar";
 import { Select, type SelectOption } from "@/components/ui/select";
-import { Section, Row } from "@/components/showcase/section";
+import { Section, Row } from "@/components/pages/index/section";
 import { Page } from "@/components/layout/page";
 
 // --- Module-level constants (from forms.tsx and nav-data.tsx) ---

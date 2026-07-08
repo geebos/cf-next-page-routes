@@ -8,11 +8,11 @@ import { Section } from "@/components/ui/section";
 import {
   RequestForm,
   type RequestPayload,
-} from "@/components/test/request-form";
+} from "@/components/pages/test/forms/request-form";
 import {
   ResponseViewer,
   type ResponseData,
-} from "@/components/test/response-viewer";
+} from "@/components/pages/test/response-viewer";
 import { request } from "@/lib/adapter/request";
 
 export default function TestPage() {

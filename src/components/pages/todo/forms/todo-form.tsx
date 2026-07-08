@@ -43,7 +43,7 @@ const PRIORITY_OPTIONS = [
 
 // Internal base form. `edit` controls: which zod schema, whether past dates
 // are disabled, whether the Cancel button shows, and the FieldDescription.
-// Not exported — CreateForm and UpdateForm are the public API.
+// Not exported — CreateTodoForm and UpdateTodoForm are the public API.
 // Constraint is Partial<FormValues> so both CreateTodoInput (required fields)
 // and UpdateTodoInput (optional fields + extra completed) satisfy T.
 function Form<T extends Partial<FormValues>>({
@@ -163,7 +163,7 @@ function Form<T extends Partial<FormValues>>({
   );
 }
 
-export function CreateForm({
+export function CreateTodoForm({
   onSubmit,
 }: {
   onSubmit: (input: CreateTodoInput) => Promise<void>;
@@ -177,7 +177,7 @@ export function CreateForm({
   );
 }
 
-export function UpdateForm({
+export function UpdateTodoForm({
   todo,
   onSubmit,
   onCancel,

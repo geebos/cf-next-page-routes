@@ -4,10 +4,10 @@ import * as React from "react";
 import { toast } from "sonner";
 
 import { Page } from "@/components/layout/page";
-import { CreateForm } from "@/components/todo/form";
-import { EditDialog } from "@/components/todo/edit-dialog";
-import { DeleteDialog } from "@/components/todo/delete-dialog";
-import { List } from "@/components/todo/list";
+import { CreateTodoForm } from "@/components/pages/todo/forms/todo-form";
+import { EditDialog } from "@/components/pages/todo/edit-dialog";
+import { DeleteDialog } from "@/components/pages/todo/delete-dialog";
+import { List } from "@/components/pages/todo/list";
 import {
   listTodos,
   createTodo,
@@ -100,7 +100,7 @@ export default function TodoPage() {
         </header>
 
         <section className="rounded-lg border border-border bg-card p-4">
-          <CreateForm onSubmit={handleCreate} />
+          <CreateTodoForm onSubmit={handleCreate} />
         </section>
 
         <section>

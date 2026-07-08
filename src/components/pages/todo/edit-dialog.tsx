@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { UpdateForm } from "@/components/todo/form";
+import { UpdateTodoForm } from "@/components/pages/todo/forms/todo-form";
 import type { Todo, UpdateTodoInput } from "@/shared/schemas";
 
 type EditDialogProps = {
@@ -24,7 +24,7 @@ export function EditDialog({ todo, onSubmit, onOpenChange }: EditDialogProps) {
           <DialogTitle>编辑任务</DialogTitle>
           <DialogDescription>修改任务、优先级或完成时间。</DialogDescription>
         </DialogHeader>
-        <UpdateForm
+        <UpdateTodoForm
           todo={todo}
           onSubmit={onSubmit}
           onCancel={() => onOpenChange(false)}
