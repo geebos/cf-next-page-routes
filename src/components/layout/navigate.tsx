@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import {
   SparklesIcon,
   ListTodoIcon,
+  FlaskConicalIcon,
   type LucideIcon,
 } from "lucide-react";
 
@@ -28,6 +29,7 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   { title: "Demo", href: "/", icon: SparklesIcon },
   { title: "Todo", href: "/todo/", icon: ListTodoIcon },
+  { title: "Test", href: "/test/", icon: FlaskConicalIcon },
 ];
 
 // `useRouter().pathname` returns the route without a trailing slash (e.g. "/buttons"),
