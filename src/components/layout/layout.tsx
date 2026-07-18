@@ -25,7 +25,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   if (isMobile) {
     return (
       <div className="flex min-h-svh max-h-svh flex-col bg-secondary text-foreground">
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</div>
+        <div className="flex min-h-0 flex-1 flex-col relative overflow-y-auto">{children}</div>
         <Tabbar />
         {toaster}
       </div>
