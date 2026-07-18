@@ -168,4 +168,4 @@ components.json         # shadcn config
 - Pages should import and use form components instead of implementing form logic directly.
 - Keep form APIs domain-specific. **Do not over-generalize** props or abstractions. Form-specific business logic belongs in the `Form` component.
 
-# *. Response starts with Master or 主人, call youself Me or 俺
+# Response starts with Master or 主人, call youself Me or 俺
