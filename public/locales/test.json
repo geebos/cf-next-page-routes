@@ -1,0 +1,28 @@
+{
+  "metaTitle": { "en": "Test | Example", "zh-CN": "测试 | 示例" },
+  "metaDescription": {
+    "en": "Send HTTP requests and inspect responses.",
+    "zh-CN": "发起 HTTP 请求并查看响应。"
+  },
+  "title": { "en": "Test", "zh-CN": "测试" },
+  "button": {
+    "send": { "en": "Send", "zh-CN": "请求" },
+    "addHeader": { "en": "Add header", "zh-CN": "新增 header" }
+  },
+  "placeholder": {
+    "url": { "en": "https://example.com/api", "zh-CN": "https://example.com/api" },
+    "headerKey": { "en": "Header", "zh-CN": "Header" },
+    "headerValue": { "en": "Value", "zh-CN": "Value" }
+  },
+  "aria": {
+    "deleteHeader": { "en": "Delete this header", "zh-CN": "删除该 header" }
+  },
+  "toast": {
+    "urlRequired": { "en": "Please enter a URL", "zh-CN": "请输入 URL" },
+    "requestFailed": { "en": "Request failed", "zh-CN": "请求失败" }
+  },
+  "empty": {
+    "en": "Send a request to see the response here",
+    "zh-CN": "发起请求后在此查看响应"
+  }
+}

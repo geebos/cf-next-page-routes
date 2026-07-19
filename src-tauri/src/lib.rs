@@ -29,10 +29,9 @@ struct ProxyResponse {
 /// Bypasses the http plugin's URL allow-list by issuing the request directly.
 #[tauri::command]
 async fn proxy(args: ProxyArgs) -> Result<ProxyResponse, String> {
-    let method = reqwest::Method::from_bytes(
-        args.method.unwrap_or_else(|| "GET".to_string()).as_bytes(),
-    )
-    .map_err(|e| e.to_string())?;
+    let method =
+        reqwest::Method::from_bytes(args.method.unwrap_or_else(|| "GET".to_string()).as_bytes())
+            .map_err(|e| e.to_string())?;
 
     let client = reqwest::Client::builder()
         .build()
@@ -42,10 +41,9 @@ async fn proxy(args: ProxyArgs) -> Result<ProxyResponse, String> {
     if let Some(headers) = args.headers {
         let mut map = reqwest::header::HeaderMap::new();
         for (k, v) in headers {
-            let name = reqwest::header::HeaderName::from_bytes(k.as_bytes())
-                .map_err(|e| e.to_string())?;
-            let value = reqwest::header::HeaderValue::from_str(&v)
-                .map_err(|e| e.to_string())?;
+            let name =
+                reqwest::header::HeaderName::from_bytes(k.as_bytes()).map_err(|e| e.to_string())?;
+            let value = reqwest::header::HeaderValue::from_str(&v).map_err(|e| e.to_string())?;
             map.append(name, value);
         }
         builder = builder.headers(map);
@@ -72,11 +70,7 @@ async fn proxy(args: ProxyArgs) -> Result<ProxyResponse, String> {
         }
     }
 
-    let body = resp
-        .bytes()
-        .await
-        .map_err(|e| e.to_string())?
-        .to_vec();
+    let body = resp.bytes().await.map_err(|e| e.to_string())?.to_vec();
 
     Ok(ProxyResponse {
         status,
@@ -88,6 +82,7 @@ async fn proxy(args: ProxyArgs) -> Result<ProxyResponse, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -17,12 +18,13 @@ type EditDialogProps = {
 };
 
 export function EditDialog({ todo, onSubmit, onOpenChange }: EditDialogProps) {
+  const { t } = useTranslation(["common", "todo"]);
   return (
     <Dialog open onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>编辑任务</DialogTitle>
-          <DialogDescription>修改任务、优先级或完成时间。</DialogDescription>
+          <DialogTitle>{t("todo:editDialog.title")}</DialogTitle>
+          <DialogDescription>{t("todo:editDialog.description")}</DialogDescription>
         </DialogHeader>
         <UpdateTodoForm
           todo={todo}

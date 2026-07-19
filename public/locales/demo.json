@@ -1,0 +1,382 @@
+{
+  "metaTitle": { "en": "Demo | Example", "zh-CN": "演示 | 示例" },
+  "metaDescription": {
+    "en": "Component showcase.",
+    "zh-CN": "组件展示。"
+  },
+  "buttons": {
+    "title": { "en": "Buttons", "zh-CN": "按钮" },
+    "description": {
+      "en": "Pill-shaped (`rounded-full`) primary CTA in Action Blue, plus secondary outline-pill and ghost variants.",
+      "zh-CN": "圆角胶囊形（`rounded-full`）的主操作按钮采用 Action Blue，另含 secondary outline-pill 与 ghost 变体。"
+    },
+    "row": {
+      "variants": { "en": "Variants", "zh-CN": "变体" },
+      "sizes": { "en": "Sizes", "zh-CN": "尺寸" },
+      "withIcons": { "en": "With icons", "zh-CN": "带图标" },
+      "states": { "en": "States", "zh-CN": "状态" }
+    },
+    "variant": {
+      "primary": { "en": "Primary", "zh-CN": "主要" },
+      "secondary": { "en": "Secondary", "zh-CN": "次要" },
+      "outline": { "en": "Outline", "zh-CN": "描边" },
+      "ghost": { "en": "Ghost", "zh-CN": "幽灵" },
+      "destructive": { "en": "Destructive", "zh-CN": "危险" },
+      "link": { "en": "Link", "zh-CN": "链接" }
+    },
+    "size": {
+      "extraSmall": { "en": "Extra small", "zh-CN": "超小" },
+      "small": { "en": "Small", "zh-CN": "小" },
+      "default": { "en": "Default", "zh-CN": "默认" },
+      "large": { "en": "Large", "zh-CN": "大" }
+    },
+    "label": {
+      "newProject": { "en": "New project", "zh-CN": "新建项目" },
+      "export": { "en": "Export", "zh-CN": "导出" },
+      "continue": { "en": "Continue", "zh-CN": "继续" },
+      "triggerToast": { "en": "Trigger toast", "zh-CN": "触发 toast" },
+      "disabled": { "en": "Disabled", "zh-CN": "禁用" },
+      "disabledOutline": { "en": "Disabled outline", "zh-CN": "禁用描边" }
+    },
+    "aria": {
+      "settings": { "en": "Settings", "zh-CN": "设置" },
+      "add": { "en": "Add", "zh-CN": "添加" }
+    },
+    "toast": {
+      "saved": { "en": "Saved to your library.", "zh-CN": "已保存到你的资料库。" }
+    }
+  },
+  "badges": {
+    "title": { "en": "Badges", "zh-CN": "徽章" },
+    "description": {
+      "en": "A single-accent system: Action Blue for NEW and emphasis, neutral surfaces for status and labels.",
+      "zh-CN": "单色强调系统：Action Blue 用于 NEW 与强调，中性面用于状态和标签。"
+    },
+    "row": {
+      "variants": { "en": "Variants", "zh-CN": "变体" },
+      "productIdentity": { "en": "Product identity", "zh-CN": "产品标识" },
+      "withIcons": { "en": "With icons", "zh-CN": "带图标" }
+    },
+    "label": {
+      "default": { "en": "Default", "zh-CN": "默认" },
+      "secondary": { "en": "Secondary", "zh-CN": "次要" },
+      "outline": { "en": "Outline", "zh-CN": "描边" },
+      "destructive": { "en": "Destructive", "zh-CN": "危险" },
+      "new": { "en": "NEW", "zh-CN": "NEW" },
+      "beta": { "en": "BETA", "zh-CN": "BETA" },
+      "available": { "en": "Available", "zh-CN": "可用" },
+      "live": { "en": "Live", "zh-CN": "运行中" },
+      "code": { "en": "CODE", "zh-CN": "CODE" },
+      "audio": { "en": "AUDIO", "zh-CN": "AUDIO" },
+      "watch": { "en": "WATCH", "zh-CN": "WATCH" },
+      "spatial": { "en": "SPATIAL", "zh-CN": "SPATIAL" },
+      "verified": { "en": "Verified", "zh-CN": "已认证" },
+      "featured": { "en": "Featured", "zh-CN": "推荐" }
+    }
+  },
+  "cards": {
+    "title": { "en": "Cards", "zh-CN": "卡片" },
+    "description": {
+      "en": "Alternating light and dark product tiles (edge-to-edge, no radius) plus a standard utility card at 18px radius.",
+      "zh-CN": "交替的明暗产品瓦片（边到边、无圆角），以及一张 18px 圆角的标准实用卡片。"
+    },
+    "row": {
+      "productTiles": { "en": "Product tiles", "zh-CN": "产品瓦片" },
+      "standardCard": { "en": "Standard card", "zh-CN": "标准卡片" }
+    },
+    "desc": {
+      "iphone17Pro": { "en": "Titanium flagship", "zh-CN": "钛金属旗舰款" },
+      "airpods4": { "en": "Active noise cancellation", "zh-CN": "主动降噪" },
+      "appleWatch": { "en": "Health & fitness", "zh-CN": "健康与健身" },
+      "visionPro": { "en": "Spatial computing", "zh-CN": "空间计算" }
+    },
+    "tokenPlan": {
+      "title": { "en": "Token plan", "zh-CN": "Token 套餐" },
+      "description": {
+        "en": "Pay-as-you-go pricing across every Apple product.",
+        "zh-CN": "适用于所有 Apple 产品的按量计费。"
+      },
+      "unit": { "en": "/ 1M input tokens", "zh-CN": "/ 1M 输入 tokens" },
+      "detail": {
+        "en": "Includes 1M context window, JSON mode, and tool use.",
+        "zh-CN": "包含 1M 上下文窗口、JSON 模式与工具调用。"
+      }
+    },
+    "button": {
+      "subscribe": { "en": "Subscribe", "zh-CN": "订阅" }
+    }
+  },
+  "forms": {
+    "title": { "en": "Form controls", "zh-CN": "表单控件" },
+    "description": {
+      "en": "A react-hook-form form with zod validation — input, textarea, checkbox, switch, radio group, select, and slider bound via Controller.",
+      "zh-CN": "一个用 react-hook-form 配合 zod 校验的表单 —— input、textarea、checkbox、switch、radio group、select 与 slider 均通过 Controller 绑定。"
+    },
+    "label": {
+      "email": { "en": "Email", "zh-CN": "邮箱" },
+      "prompt": { "en": "Prompt", "zh-CN": "提示词" },
+      "terms": { "en": "Accept terms of service", "zh-CN": "接受服务条款" },
+      "plan": { "en": "Plan", "zh-CN": "套餐" },
+      "temperature": { "en": "Temperature", "zh-CN": "温度" },
+      "finishes": { "en": "Finishes", "zh-CN": "颜色" },
+      "notifications": { "en": "Push notifications", "zh-CN": "推送通知" }
+    },
+    "placeholder": {
+      "email": { "en": "you@studio.com", "zh-CN": "you@studio.com" },
+      "prompt": {
+        "en": "Describe the shot: a lone astronaut walking across a salt flat at golden hour, wide lens, cinematic grade.",
+        "zh-CN": "描述镜头：一位宇航员在黄金时刻独自走过盐沼，广角镜头，电影级调色。"
+      }
+    },
+    "promptChars": { "en": "{{count}}/200 characters", "zh-CN": "{{count}}/200 字符" },
+    "plan": {
+      "free": { "en": "Free — 10k tokens / month", "zh-CN": "免费 — 每月 10k tokens" },
+      "pro": { "en": "Pro — 5M tokens / month", "zh-CN": "Pro — 每月 5M tokens" },
+      "ent": { "en": "Enterprise — custom", "zh-CN": "企业版 — 定制" }
+    },
+    "finishes": {
+      "placeholder": { "en": "Pick finishes", "zh-CN": "选择颜色" },
+      "emptyText": { "en": "No finishes found.", "zh-CN": "未找到颜色。" }
+    },
+    "button": {
+      "reset": { "en": "Reset", "zh-CN": "重置" },
+      "submit": { "en": "Submit", "zh-CN": "提交" }
+    },
+    "toast": {
+      "submitted": { "en": "Form submitted", "zh-CN": "表单已提交" }
+    },
+    "error": {
+      "email": { "en": "Enter a valid email address.", "zh-CN": "请输入有效的邮箱地址。" },
+      "promptMin": { "en": "Prompt must be at least 20 characters.", "zh-CN": "提示词至少 20 个字符。" },
+      "promptMax": { "en": "Prompt must be at most 200 characters.", "zh-CN": "提示词至多 200 个字符。" },
+      "terms": { "en": "You must accept the terms of service.", "zh-CN": "必须接受服务条款。" },
+      "plan": { "en": "Select a plan.", "zh-CN": "请选择套餐。" },
+      "finishes": { "en": "Select at least one finish.", "zh-CN": "至少选择一个颜色。" }
+    }
+  },
+  "select": {
+    "title": { "en": "Select", "zh-CN": "Select" },
+    "description": {
+      "en": "A thin Select wrapper over Combobox. Common docs examples are available as props.",
+      "zh-CN": "基于 Combobox 的轻量 Select 封装。常见文档示例以 props 形式提供。"
+    },
+    "label": {
+      "single": { "en": "Single select", "zh-CN": "单选" },
+      "multi": { "en": "Multi-select with chips", "zh-CN": "多选（带 chip）" },
+      "clearable": { "en": "Clear button", "zh-CN": "清除按钮" },
+      "disabled": { "en": "Disabled", "zh-CN": "禁用" },
+      "autoHighlight": { "en": "Auto highlight", "zh-CN": "自动高亮" }
+    },
+    "selected": { "en": "Selected:", "zh-CN": "已选：" },
+    "placeholder": {
+      "pickModel": { "en": "Pick a model", "zh-CN": "选择型号" },
+      "addTones": { "en": "Add tones", "zh-CN": "添加颜色" }
+    },
+    "emptyText": {
+      "noModels": { "en": "No models found.", "zh-CN": "未找到型号。" },
+      "noTones": { "en": "No tones found.", "zh-CN": "未找到颜色。" }
+    },
+    "aria": {
+      "single": { "en": "Single select model", "zh-CN": "单选型号" },
+      "multi": { "en": "Multi select tones", "zh-CN": "多选颜色" },
+      "clearable": { "en": "Clearable select", "zh-CN": "可清除 select" },
+      "disabled": { "en": "Disabled select", "zh-CN": "禁用 select" },
+      "autoHighlight": { "en": "Auto highlight select", "zh-CN": "自动高亮 select" }
+    },
+    "disabledPlaceholder": { "en": "Cannot pick", "zh-CN": "无法选择" },
+    "desc": {
+      "iphone17Pro": { "en": "Titanium flagship", "zh-CN": "钛金属旗舰款" },
+      "airpods4": { "en": "Active noise cancellation", "zh-CN": "主动降噪" },
+      "appleWatch": { "en": "Health & fitness", "zh-CN": "健康与健身" },
+      "visionPro": { "en": "Spatial computing", "zh-CN": "空间计算" }
+    }
+  },
+  "feedback": {
+    "title": { "en": "Feedback", "zh-CN": "反馈" },
+    "description": {
+      "en": "Alerts for inline messaging, Skeleton for loading, and toast for transient confirmations.",
+      "zh-CN": "Alert 用于行内消息，Skeleton 用于加载，toast 用于瞬时确认。"
+    },
+    "row": {
+      "alerts": { "en": "Alerts", "zh-CN": "Alerts" },
+      "skeleton": { "en": "Skeleton (loading)", "zh-CN": "Skeleton（加载中）" },
+      "toasts": { "en": "Toasts", "zh-CN": "Toasts" }
+    },
+    "alert": {
+      "headsUp": {
+        "title": { "en": "Heads up", "zh-CN": "提醒" },
+        "description": {
+          "en": "Your API key expires in 7 days. Rotate it from the settings page.",
+          "zh-CN": "你的 API 密钥将在 7 天后过期。请到设置页轮换。"
+        }
+      },
+      "rateLimit": {
+        "title": { "en": "Rate limit exceeded", "zh-CN": "超出速率限制" },
+        "description": {
+          "en": "You've sent 1,200 requests in the last minute. Slow down or upgrade your plan.",
+          "zh-CN": "你过去一分钟发送了 1,200 次请求。请减速或升级套餐。"
+        }
+      },
+      "deploymentLive": {
+        "title": { "en": "Deployment live", "zh-CN": "部署已上线" },
+        "description": {
+          "en": "Your product is now serving traffic from 14 regions.",
+          "zh-CN": "你的产品正在 14 个区域提供服务。"
+        }
+      }
+    },
+    "button": {
+      "upgrade": { "en": "Upgrade", "zh-CN": "升级" }
+    },
+    "toast": {
+      "success": {
+        "label": { "en": "Success toast", "zh-CN": "成功 toast" },
+        "message": { "en": "Saved to your library.", "zh-CN": "已保存到你的资料库。" }
+      },
+      "error": {
+        "label": { "en": "Error toast", "zh-CN": "错误 toast" },
+        "message": {
+          "en": "Couldn't reach the inference endpoint.",
+          "zh-CN": "无法访问推理端点。"
+        }
+      },
+      "info": {
+        "label": { "en": "Info toast", "zh-CN": "信息 toast" },
+        "message": {
+          "en": "iPhone 17 Pro is now available for pre-order.",
+          "zh-CN": "iPhone 17 Pro 现已开放预订。"
+        },
+        "description": {
+          "en": "Read the release notes for what changed.",
+          "zh-CN": "查看发行说明了解变更。"
+        }
+      }
+    }
+  },
+  "overlays": {
+    "title": { "en": "Overlays", "zh-CN": "浮层" },
+    "description": {
+      "en": "Dialog for modal flows, DropdownMenu for action menus, Tooltip for inline hints.",
+      "zh-CN": "Dialog 用于模态流程，DropdownMenu 用于操作菜单，Tooltip 用于行内提示。"
+    },
+    "row": {
+      "dialog": { "en": "Dialog", "zh-CN": "Dialog" },
+      "dropdownMenu": { "en": "Dropdown menu", "zh-CN": "下拉菜单" },
+      "tooltip": { "en": "Tooltip", "zh-CN": "Tooltip" }
+    },
+    "dialog": {
+      "trigger": { "en": "New deployment", "zh-CN": "新建部署" },
+      "title": { "en": "Pre-order iPhone 17 Pro", "zh-CN": "预订 iPhone 17 Pro" },
+      "description": {
+        "en": "Pick a name and an initial temperature for your deployment. You can change these later.",
+        "zh-CN": "为部署选一个名称和初始温度。之后可以修改。"
+      },
+      "label": {
+        "deployName": { "en": "Deployment name", "zh-CN": "部署名称" },
+        "temperature": { "en": "Temperature", "zh-CN": "温度" }
+      },
+      "button": {
+        "cancel": { "en": "Cancel", "zh-CN": "取消" },
+        "deploy": { "en": "Deploy", "zh-CN": "部署" }
+      },
+      "toast": {
+        "queued": { "en": "Deployment queued.", "zh-CN": "部署已排队。" }
+      }
+    },
+    "dropdown": {
+      "trigger": { "en": "Actions", "zh-CN": "操作" },
+      "label": { "en": "Model", "zh-CN": "模型" },
+      "item": {
+        "openProfile": { "en": "Open profile", "zh-CN": "打开资料" },
+        "copyApiKey": { "en": "Copy API key", "zh-CN": "复制 API 密钥" },
+        "exportLogs": { "en": "Export logs", "zh-CN": "导出日志" },
+        "deleteDeployment": { "en": "Delete deployment", "zh-CN": "删除部署" },
+        "filterRows": { "en": "Filter rows", "zh-CN": "筛选行" },
+        "pinToTop": { "en": "Pin to top", "zh-CN": "置顶" }
+      }
+    },
+    "aria": {
+      "more": { "en": "More", "zh-CN": "更多" }
+    },
+    "tooltip": {
+      "aria": {
+        "info": { "en": "Info", "zh-CN": "信息" },
+        "calendar": { "en": "Calendar", "zh-CN": "日历" }
+      },
+      "content": {
+        "tokenUsage": {
+          "en": "Token usage resets on the 1st of each month.",
+          "zh-CN": "Token 用量在每月 1 号重置。"
+        },
+        "billingCycle": {
+          "en": "View your billing cycle",
+          "zh-CN": "查看你的账单周期"
+        }
+      }
+    }
+  },
+  "navData": {
+    "title": { "en": "Navigation & data display", "zh-CN": "导航与数据展示" },
+    "description": {
+      "en": "Tabs, Accordion, Avatar, and Table for dense information surfaces like docs and pricing pages.",
+      "zh-CN": "Tabs、Accordion、Avatar 与 Table，适合文档与定价页这类密集信息场景。"
+    },
+    "row": {
+      "tabs": { "en": "Tabs", "zh-CN": "Tabs" },
+      "accordion": { "en": "Accordion", "zh-CN": "Accordion" },
+      "avatars": { "en": "Avatars", "zh-CN": "Avatars" },
+      "table": { "en": "Table", "zh-CN": "Table" }
+    },
+    "tab": {
+      "benchmark": { "en": "Benchmark", "zh-CN": "基准测试" },
+      "selfEvaluation": { "en": "Self-evaluation", "zh-CN": "自评" },
+      "multiAgent": { "en": "Multi-agent", "zh-CN": "多智能体" }
+    },
+    "tabContent": {
+      "benchmark": {
+        "en": "iPhone 17 Pro scores 3,546 on Geekbench 6 single-core, leading mobile silicon.",
+        "zh-CN": "iPhone 17 Pro 在 Geekbench 6 单核跑分 3,546，领先移动芯片。"
+      },
+      "selfEvaluation": {
+        "en": "Self-evaluated against 12 reasoning categories with calibrated confidence.",
+        "zh-CN": "在 12 个推理类别上自评，并附带校准过的置信度。"
+      },
+      "multiAgent": {
+        "en": "Orchestrates tool calls across 5 parallel agents without dropping state.",
+        "zh-CN": "在 5 个并行 agent 之间协调工具调用，不丢失状态。"
+      }
+    },
+    "accordion": {
+      "q1": {
+        "title": { "en": "How is pricing calculated?", "zh-CN": "定价如何计算？" },
+        "content": {
+          "en": "Tokens are metered per 1M input and 1M output separately. Cached input tokens are billed at a 90% discount.",
+          "zh-CN": "Tokens 按 1M 输入和 1M 输出分别计量。缓存的输入 tokens 享受 9 折优惠。"
+        }
+      },
+      "q2": {
+        "title": { "en": "Which regions are supported?", "zh-CN": "支持哪些区域？" },
+        "content": {
+          "en": "Inference runs in 14 regions across North America, Europe, and Asia. Routing is automatic and latency-aware.",
+          "zh-CN": "推理在北美、欧洲、亚洲的 14 个区域运行。路由自动进行且感知延迟。"
+        }
+      },
+      "q3": {
+        "title": { "en": "Can I fine-tune a model?", "zh-CN": "可以微调模型吗？" },
+        "content": {
+          "en": "Yes — engraving is available on iPhone 17 Pro and AirPods 4. Add your text at checkout and we handle the rest.",
+          "zh-CN": "可以 —— iPhone 17 Pro 与 AirPods 4 支持刻字。结账时填写文字，余下的事交给我们。"
+        }
+      }
+    },
+    "alt": {
+      "user": { "en": "User", "zh-CN": "用户" }
+    },
+    "table": {
+      "model": { "en": "Model", "zh-CN": "型号" },
+      "context": { "en": "Context", "zh-CN": "上下文" },
+      "input": { "en": "Input / 1M", "zh-CN": "输入 / 1M" },
+      "output": { "en": "Output / 1M", "zh-CN": "输出 / 1M" }
+    }
+  }
+}

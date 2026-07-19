@@ -2,8 +2,10 @@
 
 import * as React from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import { Page } from "@/components/layout/page";
+import { Seo } from "@/components/i18n/Seo";
 import { Section } from "@/components/ui/section";
 import {
   RequestForm,
@@ -14,14 +16,16 @@ import {
   type ResponseData,
 } from "@/components/pages/test/response-viewer";
 import { request } from "@/lib/adapter/request";
+import { getLocaleStaticPaths, makeStaticProps } from "@/lib/i18n-static";
 
 export default function TestPage() {
+  const { t } = useTranslation(["common", "test"]);
   const [loading, setLoading] = React.useState(false);
   const [response, setResponse] = React.useState<ResponseData | null>(null);
 
   async function handleSubmit({ method, url, headers }: RequestPayload) {
     if (!url) {
-      toast.error("请输入 URL");
+      toast.error(t("test:toast.urlRequired"));
       return;
     }
 
@@ -40,7 +44,8 @@ export default function TestPage() {
         body,
       });
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "请求失败";
+      const msg =
+        e instanceof Error && e.message ? e.message : t("test:toast.requestFailed");
       toast.error(msg);
       setResponse({
         status: 0,
@@ -55,10 +60,15 @@ export default function TestPage() {
 
   return (
     <Page>
+      <Seo
+        title={t("test:metaTitle")}
+        description={t("test:metaDescription")}
+        path="/test"
+      />
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 py-8">
         <header>
           <h1 className="font-heading text-[28px] font-semibold tracking-tight">
-            Test
+            {t("test:title")}
           </h1>
         </header>
 
@@ -71,7 +81,7 @@ export default function TestPage() {
             <ResponseViewer data={response} />
           ) : (
             <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
-              发起请求后在此查看响应
+              {t("test:empty")}
             </div>
           )}
         </Section>
@@ -79,3 +89,6 @@ export default function TestPage() {
     </Page>
   );
 }
+
+export const getStaticPaths = getLocaleStaticPaths;
+export const getStaticProps = makeStaticProps(["common", "test"]);

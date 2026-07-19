@@ -3,6 +3,7 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { PencilIcon, Trash2Icon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import type { Todo } from "@/shared/schemas";
 import { utcStartOfTodayMs } from "@/shared/schemas";
@@ -35,12 +36,6 @@ const PRIORITY_BADGE_CLASS: Record<Todo["priority"], string> = {
   low: "bg-secondary text-secondary-foreground",
 };
 
-const PRIORITY_LABEL: Record<Todo["priority"], string> = {
-  high: "高",
-  medium: "中",
-  low: "低",
-};
-
 export function List({
   todos,
   loading,
@@ -50,6 +45,8 @@ export function List({
   onDelete,
   onRetry,
 }: ListProps) {
+  const { t } = useTranslation(["common", "todo"]);
+
   if (loading) {
     return (
       <div className="flex flex-col gap-2">
@@ -64,11 +61,11 @@ export function List({
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>加载失败</EmptyTitle>
+          <EmptyTitle>{t("todo:loadFailed")}</EmptyTitle>
           <EmptyDescription>{error}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button onClick={onRetry}>重试</Button>
+          <Button onClick={onRetry}>{t("todo:retry")}</Button>
         </EmptyContent>
       </Empty>
     );
@@ -78,8 +75,8 @@ export function List({
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>还没有任务</EmptyTitle>
-          <EmptyDescription>在上方添加你的第一个任务。</EmptyDescription>
+          <EmptyTitle>{t("todo:empty.title")}</EmptyTitle>
+          <EmptyDescription>{t("todo:empty.description")}</EmptyDescription>
         </EmptyHeader>
       </Empty>
     );
@@ -87,28 +84,28 @@ export function List({
 
   return (
     <ul className="flex flex-col gap-2">
-      {todos.map((t) => {
-        const overdue = !t.completed && t.dueDate < utcStartOfTodayMs();
+      {todos.map((todo) => {
+        const overdue = !todo.completed && todo.dueDate < utcStartOfTodayMs();
         return (
           <li
-            key={t.id}
+            key={todo.id}
             className="flex items-center gap-3 rounded-md border border-border bg-card p-3"
           >
             <Checkbox
-              checked={t.completed}
-              onCheckedChange={() => onToggle(t)}
-              aria-label="标记完成"
+              checked={todo.completed}
+              onCheckedChange={() => onToggle(todo)}
+              aria-label={t("todo:aria.markComplete")}
             />
             <span
               className={cn(
                 "flex-1 truncate text-sm",
-                t.completed && "line-through text-muted-foreground",
+                todo.completed && "line-through text-muted-foreground",
               )}
             >
-              {t.task}
+              {todo.task}
             </span>
-            <Badge className={PRIORITY_BADGE_CLASS[t.priority]}>
-              {PRIORITY_LABEL[t.priority]}
+            <Badge className={PRIORITY_BADGE_CLASS[todo.priority]}>
+              {t(`todo:priority.${todo.priority}`)}
             </Badge>
             <span
               className={cn(
@@ -116,21 +113,21 @@ export function List({
                 overdue ? "text-destructive" : "text-muted-foreground",
               )}
             >
-              {format(new Date(t.dueDate), "yyyy-MM-dd")}
+              {format(new Date(todo.dueDate), "yyyy-MM-dd")}
             </span>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onEdit(t)}
-              aria-label="编辑"
+              onClick={() => onEdit(todo)}
+              aria-label={t("todo:aria.edit")}
             >
               <PencilIcon className="size-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onDelete(t)}
-              aria-label="删除"
+              onClick={() => onDelete(todo)}
+              aria-label={t("todo:aria.delete")}
             >
               <Trash2Icon className="size-4" />
             </Button>

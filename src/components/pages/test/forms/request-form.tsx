@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ChevronDownIcon, PlusIcon, Trash2Icon, SendIcon, CheckIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -47,6 +48,7 @@ export function RequestForm({
   loading: boolean;
   onSubmit: (payload: RequestPayload) => void;
 }) {
+  const { t } = useTranslation(["common", "test"]);
   const [method, setMethod] = React.useState("GET");
   const [url, setUrl] = React.useState("");
   const [headers, setHeaders] = React.useState<HeaderRow[]>([
@@ -81,7 +83,6 @@ export function RequestForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {/* Row 1: method + url + send, as one input group */}
       <InputGroup>
         <InputGroupAddon align="inline-start">
           <DropdownMenu>
@@ -104,7 +105,7 @@ export function RequestForm({
         <InputGroupInput
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://example.com/api"
+          placeholder={t("test:placeholder.url")}
           autoComplete="off"
         />
         <InputGroupAddon align="inline-end">
@@ -114,25 +115,24 @@ export function RequestForm({
             ) : (
               <SendIcon className="size-3.5" />
             )}
-            请求
+            {t("test:button.send")}
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
 
-      {/* Row 2: headers kv list, each row an input group */}
       <div className="flex flex-col gap-2">
         {headers.map((h) => (
           <InputGroup key={h.id}>
             <InputGroupInput
               value={h.key}
               onChange={(e) => updateHeader(h.id, "key", e.target.value)}
-              placeholder="Header"
+              placeholder={t("test:placeholder.headerKey")}
               autoComplete="off"
             />
             <InputGroupInput
               value={h.value}
               onChange={(e) => updateHeader(h.id, "value", e.target.value)}
-              placeholder="Value"
+              placeholder={t("test:placeholder.headerValue")}
               autoComplete="off"
             />
             <InputGroupAddon align="inline-end">
@@ -140,7 +140,7 @@ export function RequestForm({
                 size="icon-xs"
                 onClick={() => removeHeader(h.id)}
                 disabled={headers.length <= 1}
-                aria-label="删除该 header"
+                aria-label={t("test:aria.deleteHeader")}
               >
                 <Trash2Icon className="size-3.5" />
               </InputGroupButton>
@@ -155,7 +155,7 @@ export function RequestForm({
           className="w-fit"
         >
           <PlusIcon className="size-4" />
-          新增 header
+          {t("test:button.addHeader")}
         </Button>
       </div>
     </form>

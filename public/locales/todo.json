@@ -1,0 +1,68 @@
+{
+  "metaTitle": { "en": "Todo | Example", "zh-CN": "待办 | 示例" },
+  "metaDescription": { "en": "Manage your tasks.", "zh-CN": "管理你的任务。" },
+  "title": { "en": "Todo", "zh-CN": "待办" },
+  "task": {
+    "label": { "en": "Task", "zh-CN": "任务" },
+    "placeholder": { "en": "Write something…", "zh-CN": "写点什么…" }
+  },
+  "priority": {
+    "label": { "en": "Priority", "zh-CN": "优先级" },
+    "low": { "en": "Low", "zh-CN": "低" },
+    "medium": { "en": "Medium", "zh-CN": "中" },
+    "high": { "en": "High", "zh-CN": "高" }
+  },
+  "dueDate": {
+    "label": { "en": "Due date", "zh-CN": "完成时间" },
+    "placeholder": { "en": "Pick a date", "zh-CN": "选择日期" },
+    "description": {
+      "en": "Cannot pick a date before today",
+      "zh-CN": "不能选择今天之前的日期"
+    }
+  },
+  "button": {
+    "cancel": { "en": "Cancel", "zh-CN": "取消" },
+    "submit": { "en": "Submit", "zh-CN": "提交" },
+    "save": { "en": "Save", "zh-CN": "保存" }
+  },
+  "toast": {
+    "added": { "en": "Added", "zh-CN": "已添加" },
+    "addFailed": { "en": "Add failed", "zh-CN": "添加失败" },
+    "completed": { "en": "Completed", "zh-CN": "已完成" },
+    "uncompleted": { "en": "Marked incomplete", "zh-CN": "已取消完成" },
+    "saved": { "en": "Saved", "zh-CN": "已保存" },
+    "saveFailed": { "en": "Save failed", "zh-CN": "保存失败" },
+    "deleted": { "en": "Deleted", "zh-CN": "已删除" },
+    "deleteFailed": { "en": "Delete failed", "zh-CN": "删除失败" },
+    "operationFailed": { "en": "Operation failed", "zh-CN": "操作失败" }
+  },
+  "loadFailed": { "en": "Load failed", "zh-CN": "加载失败" },
+  "empty": {
+    "title": { "en": "No tasks yet", "zh-CN": "还没有任务" },
+    "description": {
+      "en": "Add your first task above.",
+      "zh-CN": "在上方添加你的第一个任务。"
+    }
+  },
+  "retry": { "en": "Retry", "zh-CN": "重试" },
+  "aria": {
+    "markComplete": { "en": "Mark complete", "zh-CN": "标记完成" },
+    "edit": { "en": "Edit", "zh-CN": "编辑" },
+    "delete": { "en": "Delete", "zh-CN": "删除" }
+  },
+  "editDialog": {
+    "title": { "en": "Edit task", "zh-CN": "编辑任务" },
+    "description": {
+      "en": "Modify the task, priority, or due date.",
+      "zh-CN": "修改任务、优先级或完成时间。"
+    }
+  },
+  "deleteDialog": {
+    "title": { "en": "Confirm delete?", "zh-CN": "确认删除？" },
+    "description": {
+      "en": "This cannot be undone.",
+      "zh-CN": "删除后无法恢复。"
+    },
+    "confirm": { "en": "Confirm delete", "zh-CN": "确认删除" }
+  }
+}

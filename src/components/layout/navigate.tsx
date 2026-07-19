@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 import {
   Sidebar as SidebarPrimitive,
   SidebarContent,
@@ -19,32 +19,53 @@ import {
   FlaskConicalIcon,
   type LucideIcon,
 } from "lucide-react";
+import {
+  DEFAULT_LOCALE,
+  isSupportedLocale,
+  type AppLocale,
+} from "@/i18n/settings";
+import {
+  LOCAL_URL_BASE,
+  localizePath,
+  stripLocalePrefix,
+} from "@/lib/i18n-utils";
+import { LocalizedLink } from "@/components/i18n/LocalizedLink";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 
 export type NavItem = {
-  title: string;
+  titleKey: string;
   href: string;
   icon: LucideIcon;
 };
 
 export const navItems: NavItem[] = [
-  { title: "Demo", href: "/", icon: SparklesIcon },
-  { title: "Todo", href: "/todo/", icon: ListTodoIcon },
-  { title: "Test", href: "/test/", icon: FlaskConicalIcon },
+  { titleKey: "common:navigation.demo", href: "/", icon: SparklesIcon },
+  { titleKey: "common:navigation.todo", href: "/todo/", icon: ListTodoIcon },
+  { titleKey: "common:navigation.test", href: "/test/", icon: FlaskConicalIcon },
 ];
 
-// `useRouter().pathname` returns the route without a trailing slash (e.g. "/buttons"),
-// while navItems hrefs are stored with one (e.g. "/buttons/") per trailingSlash: true.
-// Normalize both sides before comparing.
-function isActive(pathname: string, href: string) {
-  return pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
+function isActive(asPath: string, href: string) {
+  const path = new URL(asPath, LOCAL_URL_BASE).pathname;
+  return (
+    stripLocalePrefix(path).replace(/\/$/, "") === href.replace(/\/$/, "")
+  );
+}
+
+function useCurrentLocale(): AppLocale {
+  const router = useRouter();
+  return typeof router.query.locale === "string" &&
+    isSupportedLocale(router.query.locale)
+    ? router.query.locale
+    : DEFAULT_LOCALE;
 }
 
 function NavButton({ item, active }: { item: NavItem; active: boolean }) {
+  const { t } = useTranslation(["common"]);
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const Icon = item.icon;
   return (
-    <Link
+    <LocalizedLink
       href={item.href}
       data-collapsed={collapsed}
       aria-current={active ? "page" : undefined}
@@ -59,13 +80,15 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
       )}
     >
       <Icon className={cn("shrink-0", collapsed ? "size-3.5" : "size-4")} />
-      <span className={cn("truncate", collapsed && "max-w-full")}>{item.title}</span>
-    </Link>
+      <span className={cn("truncate", collapsed && "max-w-full")}>
+        {t(item.titleKey)}
+      </span>
+    </LocalizedLink>
   );
 }
 
 export function Sidebar() {
-  const { pathname } = useRouter();
+  const { asPath } = useRouter();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   return (
@@ -91,7 +114,7 @@ export function Sidebar() {
             <SidebarMenu className="gap-1">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <NavButton item={item} active={isActive(pathname, item.href)} />
+                  <NavButton item={item} active={isActive(asPath, item.href)} />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -99,6 +122,7 @@ export function Sidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
+        <LanguageSwitcher collapsed={collapsed} />
         <SidebarTrigger className="w-full rounded-md py-2 hover:bg-sidebar-accent" />
       </SidebarFooter>
     </SidebarPrimitive>
@@ -107,7 +131,9 @@ export function Sidebar() {
 
 export function Tabbar() {
   const router = useRouter();
-  const { pathname } = router;
+  const { asPath } = router;
+  const currentLocale = useCurrentLocale();
+  const { t } = useTranslation(["common"]);
 
   return (
     <nav
@@ -116,17 +142,16 @@ export function Tabbar() {
     >
       {navItems.map((item) => {
         const Icon = item.icon;
-        const isActiveItem = isActive(pathname, item.href);
+        const isActiveItem = isActive(asPath, item.href);
         return (
-          <Link
+          <LocalizedLink
             key={item.href}
             href={item.href}
             aria-current={isActiveItem ? "page" : undefined}
             onPointerDown={(event) => {
               if (event.pointerType === "mouse" || isActiveItem) return;
-
               event.preventDefault();
-              void router.push(item.href);
+              void router.push(localizePath(item.href, currentLocale));
             }}
             className={cn(
               "flex flex-1 flex-col items-center gap-1 py-2 transition-colors",
@@ -136,8 +161,10 @@ export function Tabbar() {
             )}
           >
             <Icon className="size-5" />
-            <span className="text-[10px] leading-none">{item.title}</span>
-          </Link>
+            <span className="text-[10px] leading-none">
+              {t(item.titleKey)}
+            </span>
+          </LocalizedLink>
         );
       })}
     </nav>

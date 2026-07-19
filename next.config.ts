@@ -5,6 +5,7 @@ const distDir = process.env.NEXT_DIST_DIR || '.next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "export",
+  trailingSlash: true,
   images: {
     unoptimized: true,
   },

@@ -4,6 +4,8 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useMemo, useState } from "react";
 
 import {
   createTodoSchema,
@@ -27,7 +29,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Spinner } from "@/components/ui/spinner";
 import { Select } from "@/components/ui/select";
-import { useState } from "react";
 
 type FormValues = {
   task: string;
@@ -35,17 +36,8 @@ type FormValues = {
   dueDate: number;
 };
 
-const PRIORITY_OPTIONS = [
-  { value: "low", label: "低" },
-  { value: "medium", label: "中" },
-  { value: "high", label: "高" },
-];
+const PRIORITY_VALUES = ["low", "medium", "high"] as const;
 
-// Internal base form. `edit` controls: which zod schema, whether past dates
-// are disabled, whether the Cancel button shows, and the FieldDescription.
-// Not exported — CreateTodoForm and UpdateTodoForm are the public API.
-// Constraint is Partial<FormValues> so both CreateTodoInput (required fields)
-// and UpdateTodoInput (optional fields + extra completed) satisfy T.
 function Form<T extends Partial<FormValues>>({
   edit,
   defaultValues,
@@ -57,8 +49,18 @@ function Form<T extends Partial<FormValues>>({
   onSubmit: (input: T) => Promise<void>;
   onCancel?: () => void;
 }) {
+  const { t } = useTranslation(["common", "todo"]);
   const [submitting, setSubmitting] = useState(false);
   const resolver = zodResolver(edit ? updateTodoSchema : createTodoSchema);
+
+  const priorityOptions = useMemo(
+    () =>
+      PRIORITY_VALUES.map((value) => ({
+        value,
+        label: t(`todo:priority.${value}`),
+      })),
+    [t],
+  );
 
   const form = useForm<FormValues>({
     resolver: resolver as never,
@@ -81,11 +83,11 @@ function Form<T extends Partial<FormValues>>({
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={field.name}>任务</FieldLabel>
+            <FieldLabel htmlFor={field.name}>{t("todo:task.label")}</FieldLabel>
             <Input
               {...field}
               id={field.name}
-              placeholder="写点什么…"
+              placeholder={t("todo:task.placeholder")}
               aria-invalid={fieldState.invalid}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -98,11 +100,11 @@ function Form<T extends Partial<FormValues>>({
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={field.name}>优先级</FieldLabel>
+            <FieldLabel htmlFor={field.name}>{t("todo:priority.label")}</FieldLabel>
             <Select
               {...field}
-              options={PRIORITY_OPTIONS}
-              aria-label="优先级"
+              options={priorityOptions}
+              aria-label={t("todo:priority.label")}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -114,7 +116,7 @@ function Form<T extends Partial<FormValues>>({
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={field.name}>完成时间</FieldLabel>
+            <FieldLabel htmlFor={field.name}>{t("todo:dueDate.label")}</FieldLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -124,7 +126,7 @@ function Form<T extends Partial<FormValues>>({
                   aria-invalid={fieldState.invalid}
                 >
                   <CalendarIcon className="size-4 opacity-50" />
-                  {field.value ? format(new Date(field.value), "yyyy-MM-dd") : "选择日期"}
+                  {field.value ? format(new Date(field.value), "yyyy-MM-dd") : t("todo:dueDate.placeholder")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -141,7 +143,7 @@ function Form<T extends Partial<FormValues>>({
               </PopoverContent>
             </Popover>
             {!edit && (
-              <FieldDescription>不能选择今天之前的日期</FieldDescription>
+              <FieldDescription>{t("todo:dueDate.description")}</FieldDescription>
             )}
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -151,12 +153,12 @@ function Form<T extends Partial<FormValues>>({
       <div className="flex justify-end gap-2">
         {edit && onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel} disabled={submitting}>
-            取消
+            {t("todo:button.cancel")}
           </Button>
         )}
         <Button type="submit" disabled={submitting}>
           {submitting && <Spinner className="size-4" />}
-          {edit ? "保存" : "提交"}
+          {edit ? t("todo:button.save") : t("todo:button.submit")}
         </Button>
       </div>
     </form>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -19,6 +20,7 @@ type DeleteDialogProps = {
 };
 
 export function DeleteDialog({ onConfirm, onOpenChange }: DeleteDialogProps) {
+  const { t } = useTranslation(["common", "todo"]);
   const [pending, setPending] = React.useState(false);
 
   async function handleConfirm() {
@@ -34,16 +36,18 @@ export function DeleteDialog({ onConfirm, onOpenChange }: DeleteDialogProps) {
     <AlertDialog open onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>确认删除？</AlertDialogTitle>
+          <AlertDialogTitle>{t("todo:deleteDialog.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            删除后无法恢复。
+            {t("todo:deleteDialog.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>取消</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>
+            {t("todo:button.cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm} disabled={pending}>
             {pending && <Spinner className="size-4" />}
-            确认删除
+            {t("todo:deleteDialog.confirm")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

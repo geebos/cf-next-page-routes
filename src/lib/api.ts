@@ -1,5 +1,6 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { fetch as adapterFetch } from "@/lib/adapter/fetch";
+import { getBaseUrl } from "@/lib/i18n-utils";
 
 import type {
   Todo,
@@ -7,7 +8,6 @@ import type {
   UpdateTodoInput,
 } from "@/shared/schemas";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 const DEFAULT_TAURI_BASE_URL = "https://template.geebosblog.com";
 
 function isAbsoluteUrl(input: string): boolean {
@@ -23,11 +23,12 @@ function joinUrl(base: string, path: string): string {
 function resolveApiUrl(input: string): string {
   if (isAbsoluteUrl(input)) return input;
 
+  const base = getBaseUrl();
   if (isTauri()) {
-    return joinUrl(BASE_URL || DEFAULT_TAURI_BASE_URL, input);
+    return joinUrl(base || DEFAULT_TAURI_BASE_URL, input);
   }
 
-  return BASE_URL ? joinUrl(BASE_URL, input) : input;
+  return base ? joinUrl(base, input) : input;
 }
 
 export function apiFetch(input: string, init?: RequestInit): Promise<Response> {
@@ -61,9 +62,9 @@ async function parseError(res: Response): Promise<ApiError> {
       message?: string;
       data?: unknown;
     };
-    return new ApiError(body.message ?? "请求失败", body.code ?? res.status);
+    return new ApiError(body.message ?? "", body.code ?? res.status);
   } catch {
-    return new ApiError("请求失败", res.status);
+    return new ApiError("", res.status);
   }
 }
 
