@@ -1,12 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { format } from "date-fns";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { Todo } from "@/shared/schemas";
-import { utcStartOfTodayMs } from "@/shared/schemas";
+import { formatDueDateMs, localStartOfTodayMs } from "@/shared/schemas";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -85,7 +84,7 @@ export function List({
   return (
     <ul className="flex flex-col gap-2">
       {todos.map((todo) => {
-        const overdue = !todo.completed && todo.dueDate < utcStartOfTodayMs();
+        const overdue = !todo.completed && todo.dueDate < localStartOfTodayMs();
         return (
           <li
             key={todo.id}
@@ -113,7 +112,7 @@ export function List({
                 overdue ? "text-destructive" : "text-muted-foreground",
               )}
             >
-              {format(new Date(todo.dueDate), "yyyy-MM-dd")}
+              {formatDueDateMs(todo.dueDate)}
             </span>
             <Button
               variant="ghost"

@@ -2,7 +2,6 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
@@ -10,7 +9,11 @@ import { useMemo, useState } from "react";
 import {
   createTodoSchema,
   updateTodoSchema,
-  utcStartOfTodayMs,
+  localStartOfTodayMs,
+  localStartOfTodayDate,
+  formatDueDateMs,
+  msToPickerDate,
+  pickerDateToMs,
   type CreateTodoInput,
   type UpdateTodoInput,
   type Priority,
@@ -38,6 +41,12 @@ type FormValues = {
 
 const PRIORITY_VALUES = ["low", "medium", "high"] as const;
 
+// Browser-only: block local-past days (shared create schema is midnight + loose only).
+const clientCreateTodoSchema = createTodoSchema.refine(
+  (data) => data.dueDate >= localStartOfTodayMs(),
+  { message: "不能选过去日期", path: ["dueDate"] },
+);
+
 function Form<T extends Partial<FormValues>>({
   edit,
   defaultValues,
@@ -51,7 +60,7 @@ function Form<T extends Partial<FormValues>>({
 }) {
   const { t } = useTranslation(["common", "todo"]);
   const [submitting, setSubmitting] = useState(false);
-  const resolver = zodResolver(edit ? updateTodoSchema : createTodoSchema);
+  const resolver = zodResolver(edit ? updateTodoSchema : clientCreateTodoSchema);
 
   const priorityOptions = useMemo(
     () =>
@@ -126,19 +135,18 @@ function Form<T extends Partial<FormValues>>({
                   aria-invalid={fieldState.invalid}
                 >
                   <CalendarIcon className="size-4 opacity-50" />
-                  {field.value ? format(new Date(field.value), "yyyy-MM-dd") : t("todo:dueDate.placeholder")}
+                  {field.value ? formatDueDateMs(field.value) : t("todo:dueDate.placeholder")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={field.value ? new Date(field.value) : undefined}
+                  selected={field.value ? msToPickerDate(field.value) : undefined}
                   onSelect={(d) => {
                     if (!d) return;
-                    const ts = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
-                    field.onChange(ts);
+                    field.onChange(pickerDateToMs(d));
                   }}
-                  disabled={edit ? undefined : { before: new Date() }}
+                  disabled={{ before: localStartOfTodayDate() }}
                 />
               </PopoverContent>
             </Popover>
@@ -173,7 +181,7 @@ export function CreateTodoForm({
   return (
     <Form<CreateTodoInput>
       edit={false}
-      defaultValues={{ task: "", priority: "medium", dueDate: utcStartOfTodayMs() }}
+      defaultValues={{ task: "", priority: "medium", dueDate: localStartOfTodayMs() }}
       onSubmit={onSubmit}
     />
   );

@@ -8,6 +8,8 @@ import {
   todos,
   createTodoSchema,
   updateTodoSchema,
+  isCalendarMidnightMs,
+  isDueDateInLooseRange,
   type Todo,
   type CreateTodoInput,
   type UpdateTodoInput,
@@ -63,10 +65,23 @@ todosRoute.post("/todos", jsonValidator(createTodoSchema), async (c) => {
 );
 
 // PATCH /api/todos/:id — partial update; updatedAt always refreshed.
+// keep-unchanged: resubmitting an existing past dueDate is allowed; changing
+// dueDate requires calendar-midnight + loose absolute bound.
 todosRoute.patch("/todos/:id", jsonValidator(updateTodoSchema), async (c) => {
   const id = c.req.param("id");
   const input = c.req.valid("json") as UpdateTodoInput;
   const db = c.get("db");
+
+  const existing = await db.select().from(todos).where(eq(todos.id, id)).get();
+  if (!existing) {
+    throw new BusinessError("任务不存在", 404);
+  }
+
+  if (input.dueDate !== undefined && input.dueDate !== existing.dueDate) {
+    if (!isCalendarMidnightMs(input.dueDate) || !isDueDateInLooseRange(input.dueDate)) {
+      throw new BusinessError("不能选过去日期", 400);
+    }
+  }
 
   const patch: Partial<typeof todos.$inferInsert> = { updatedAt: Date.now() };
   if (input.task !== undefined) patch.task = input.task;
@@ -74,12 +89,7 @@ todosRoute.patch("/todos/:id", jsonValidator(updateTodoSchema), async (c) => {
   if (input.dueDate !== undefined) patch.dueDate = input.dueDate;
   if (input.completed !== undefined) patch.completed = input.completed ? 1 : 0;
 
-  const result = await db.update(todos).set(patch).where(eq(todos.id, id));
-  // D1 在 result.meta.changes；better-sqlite3 在 result.changes。affectedRows 统一处理。
-  const changes = affectedRows(result);
-  if (changes === 0) {
-    throw new BusinessError("任务不存在", 404);
-  }
+  await db.update(todos).set(patch).where(eq(todos.id, id));
 
   const updated = await db.select().from(todos).where(eq(todos.id, id)).get();
   if (!updated) {
