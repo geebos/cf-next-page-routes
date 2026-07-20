@@ -27,13 +27,22 @@ export function DeleteDialog({ onConfirm, onOpenChange }: DeleteDialogProps) {
     setPending(true);
     try {
       await onConfirm();
+      onOpenChange(false); // success only (ownership B)
+    } catch {
+      // leave open; parent already toasts
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <AlertDialog open onOpenChange={onOpenChange}>
+    <AlertDialog
+      open
+      onOpenChange={(next) => {
+        if (!next && pending) return; // ignore dismiss while pending
+        onOpenChange(next);
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{t("todo:deleteDialog.title")}</AlertDialogTitle>
@@ -45,7 +54,15 @@ export function DeleteDialog({ onConfirm, onOpenChange }: DeleteDialogProps) {
           <AlertDialogCancel disabled={pending}>
             {t("todo:button.cancel")}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm} disabled={pending}>
+          <AlertDialogAction
+            onClick={(e) => {
+              // Radix Close: composeEventHandlers honors defaultPrevented
+              e.preventDefault();
+              void handleConfirm();
+            }}
+            disabled={pending}
+            aria-busy={pending}
+          >
             {pending && <Spinner className="size-4" />}
             {t("todo:deleteDialog.confirm")}
           </AlertDialogAction>

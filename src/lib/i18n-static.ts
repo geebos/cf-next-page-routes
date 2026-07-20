@@ -49,10 +49,22 @@ export function pickLocale(node: unknown, locale: AppLocale): Messages {
         typeof v === "string",
     );
 
-  if (isLeaf) return (node as Record<string, string>)[locale] as unknown as Messages;
+  if (isLeaf) {
+    const map = node as Record<string, string>;
+    if (typeof map[locale] === "string") return map[locale] as unknown as Messages;
+    if (typeof map[DEFAULT_LOCALE] === "string")
+      return map[DEFAULT_LOCALE] as unknown as Messages;
+    for (const l of SUPPORTED_LOCALES) {
+      if (typeof map[l] === "string") return map[l] as unknown as Messages;
+    }
+    return undefined as unknown as Messages; // caller omits
+  }
 
   const result: Messages = {};
-  for (const [k, v] of entries) result[k] = pickLocale(v, locale);
+  for (const [k, v] of entries) {
+    const picked = pickLocale(v, locale);
+    if (picked !== undefined) result[k] = picked;
+  }
   return result;
 }
 

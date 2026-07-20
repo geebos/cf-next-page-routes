@@ -101,7 +101,7 @@ export default function TodoPage() {
     if (!deletingTodo) return;
     try {
       await deleteTodo(deletingTodo.id);
-      setDeletingTodo(null);
+      // B: do NOT setDeletingTodo(null) here — dialog closes via onOpenChange
       await refresh();
       toast.success(t("todo:toast.deleted"));
     } catch (e) {
@@ -110,6 +110,7 @@ export default function TodoPage() {
           ? e.message
           : t("todo:toast.deleteFailed"),
       );
+      throw e; // rethrow so dialog stays open on failure
     }
   }
 

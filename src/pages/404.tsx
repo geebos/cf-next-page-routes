@@ -32,7 +32,7 @@ export default function NotFoundPage() {
 
   const m = messages[locale];
   return (
-    <main>
+    <main className="pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <h1>{m.title}</h1>
       <p>{m.description}</p>
       <Link href={`/${locale}/`}>{m.home}</Link>
