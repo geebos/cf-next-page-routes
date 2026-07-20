@@ -140,9 +140,9 @@ src/
 ├── components/
 │   ├── ui/             # shadcn/ui component library, do not edit directly
 │   ├── layout/         # Layout / Page / Navigate
-│   └── pages/          # Page-specific components, grouped by route
-│       └── <page>/     # One folder per route (e.g. index/, todo/, test/)
-│           ├── *.tsx   # Page-specific non-form components
+│   └── pages/          # Optional extracted components used by a specific page 
+│       └── <page>/     # Create only when the page has components worth extracting 
+│           ├── *.tsx   # Complex or independently meaningful page-specific components 
 │           └── forms/  # Form components for the page
 │               └── <name>-form.tsx
 ├── hooks/              # React hooks
@@ -175,6 +175,9 @@ components.json         # shadcn config
 - Reuse existing components whenever possible.
 - Create new components **only if no suitable implementation exists**.
 - **Do not** use native HTML elements when an equivalent component exists in `components/ui/`.
+- Do not place complete page-level JSX under `src/components/`. Keep the overall page structure and page-level composition in `src/pages/`.
+- Use `src/components/pages/<page>/` only for complex, shared, or clearly scoped page-specific components, as well as form components.
+
 
 ## Schemas
 
@@ -191,57 +194,5 @@ components.json         # shadcn config
 - A form file may export action-specific components using the `<Action><Name>Form` naming convention, such as `CreateUserForm` and `EditUserForm`.
 - Pages should import and use form components instead of implementing form logic directly.
 - Keep form APIs domain-specific. **Do not over-generalize** props or abstractions. Form-specific business logic belongs in the `Form` component.
-
-# 8. Docker Usage
-
-All Docker assets live under `docker/`. Development intentionally does not
-bind-mount the repository, so the host `node_modules` is never read or changed.
-The container stores dependencies in the named volume
-`nginx-panel-development_node_modules` and reconciles that volume against the
-lockfile each time it starts.
-
-## Development
-
-Build or refresh the development container after changing source or
-dependencies:
-
-```sh
-cd docker
-docker compose up -d --build
-```
-
-Open `http://localhost:3000`. The published port enters Nginx first; Nginx
-proxies the UI to the internal Next.js development server on port 3001 and API
-requests to Hono on port 8787. This keeps `nginx -t`, proxy behavior, and the
-development request path inside the same image. Use
-`docker compose logs -f manager` to follow all three processes. Because source
-is copied into the image, changes only take effect after another
-`docker compose up -d --build`; no host project directory is mounted into the
-container.
-
-Stop the stack with `docker compose down`. Do not add `-v` unless the named
-dependency and development SQLite volumes should also be deleted.
-
-## Production
-
-1. Copy `docker/.env.production.example` to `docker/.env.production` and set
-   the real HTTPS manager hostname and URL.
-2. Place the manager certificate chain, matching private key, and a stable
-   32-byte random master key at the paths documented in
-   `docker/secrets/README.md`. Apply the documented UID/GID `10001` ownership
-   on native Linux so the non-root process can read file-backed Compose
-   secrets. Never commit those files.
-3. Build and start the production stack:
-
-```sh
-cd docker
-docker compose --env-file .env.production -f compose.production.yml up -d --build
-```
-
-Production publishes host ports 80/443 to the container's non-root
-8080/8443 listeners. SQLite, generated Nginx state, certificates, ACME state,
-and Nginx logs use separate named volumes. The API port 8787 stays internal,
-the root filesystem is read-only, and the container drops all Linux
-capabilities.
 
 # Response starts with Master or 主人, call youself Me or 俺
