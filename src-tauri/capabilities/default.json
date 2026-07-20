@@ -9,6 +9,8 @@
     "core:default",
     "dialog:default",
     "opener:default",
+    "os:default",
+    "allow-proxy",
     {
       "identifier": "http:default",
       "allow": [
@@ -16,7 +18,6 @@
           "url": "https://template.geebosblog.com/*"
         }
       ]
-    },
-    "os:default"
+    }
   ]
 }
