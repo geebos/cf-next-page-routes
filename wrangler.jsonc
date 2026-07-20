@@ -38,5 +38,8 @@
       "database_id": "4c9a210c-da15-4720-8cf6-6df135944924",
       "migrations_dir": "drizzle"
     }
-  ]
+  ],
+  "vars": {
+    "NEXT_PUBLIC_BASE_URL": "https://template.geebosblog.com"
+  }
 }
