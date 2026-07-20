@@ -8,13 +8,9 @@ export interface RequestOptions {
 
 type ProxyResponse = {
   status: number;
-  /** Ordered header pairs; multi-value headers (e.g. Set-Cookie) are separate entries. */
-  headers: [string, string][];
+  headers: Record<string, string>;
   body: number[];
 };
-
-// Required null-body statuses per WHATWG / Fetch; 101/103 optional and safe to include.
-const NULL_BODY = new Set([101, 103, 204, 205, 304]);
 
 function toBytes(body: string | ArrayBuffer | Uint8Array): Uint8Array {
   if (typeof body === "string") return new TextEncoder().encode(body);
@@ -25,8 +21,6 @@ function toBytes(body: string | ArrayBuffer | Uint8Array): Uint8Array {
 /**
  * Transparent HTTP request routed through the Rust `proxy` command.
  * Only available in the Tauri environment; throws otherwise.
- *
- * Proxy failures reject via invoke — never encoded as HTTP status 0.
  */
 export async function request(
   url: string,
@@ -45,16 +39,10 @@ export async function request(
     },
   });
 
-  // 204/205/304 (and 101/103) forbid a body; pass null even if upstream sent one.
-  const body = NULL_BODY.has(res.status) ? null : new Uint8Array(res.body);
-
-  const headers = new Headers();
-  for (const [k, v] of res.headers) {
-    headers.append(k, v);
-  }
-
-  return new Response(body, {
+  // 204/304 forbid a body; passing one to the Response constructor throws.
+  const hasNoBodyStatus = res.status === 204 || res.status === 304;
+  return new Response(hasNoBodyStatus ? null : new Uint8Array(res.body), {
     status: res.status,
-    headers,
+    headers: res.headers,
   });
 }
