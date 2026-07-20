@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { Page } from "@/components/layout/page";
 import { Seo } from "@/components/i18n/Seo";
+import { Section } from "@/components/ui/section";
 import { CreateTodoForm } from "@/components/pages/todo/forms/todo-form";
 import { EditDialog } from "@/components/pages/todo/edit-dialog";
 import { DeleteDialog } from "@/components/pages/todo/delete-dialog";
@@ -126,11 +127,11 @@ export default function TodoPage() {
           </h1>
         </header>
 
-        <section className="rounded-lg border border-border bg-card p-4">
+        <Section className="rounded-lg border border-border bg-card p-4">
           <CreateTodoForm onSubmit={handleCreate} />
-        </section>
+        </Section>
 
-        <section>
+        <Section>
           <List
             todos={todos}
             loading={loading}
@@ -140,7 +141,7 @@ export default function TodoPage() {
             onDelete={setDeletingTodo}
             onRetry={refresh}
           />
-        </section>
+        </Section>
       </div>
 
       {editingTodo && (
