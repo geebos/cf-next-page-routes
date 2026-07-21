@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

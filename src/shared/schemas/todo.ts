@@ -50,7 +50,8 @@ export function pickerDateToMs(d: Date): number {
   return calendarDayToMs(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-export const priorityEnum = z.enum(["low", "medium", "high"]);
+export const PRIORITY_VALUES = ["low", "medium", "high"] as const;
+export const priorityEnum = z.enum(PRIORITY_VALUES);
 
 // Create: shared path (client resolver + Worker) only checks calendar-midnight shape
 // + absolute loose bound. User-local "today" is enforced in the browser form only.

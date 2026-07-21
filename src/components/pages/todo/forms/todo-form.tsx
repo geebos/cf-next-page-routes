@@ -14,6 +14,7 @@ import {
   formatDueDateMs,
   msToPickerDate,
   pickerDateToMs,
+  PRIORITY_VALUES,
   type CreateTodoInput,
   type UpdateTodoInput,
   type Priority,
@@ -38,8 +39,6 @@ type FormValues = {
   priority: Priority;
   dueDate: number;
 };
-
-const PRIORITY_VALUES = ["low", "medium", "high"] as const;
 
 // Browser-only: block local-past days (shared create schema is midnight + loose only).
 const clientCreateTodoSchema = createTodoSchema.refine(

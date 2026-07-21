@@ -19,11 +19,7 @@ import {
   FlaskConicalIcon,
   type LucideIcon,
 } from "lucide-react";
-import {
-  DEFAULT_LOCALE,
-  isSupportedLocale,
-  type AppLocale,
-} from "@/i18n/settings";
+import { resolveAppLocale, type AppLocale } from "@/i18n/settings";
 import {
   LOCAL_URL_BASE,
   localizePath,
@@ -44,7 +40,7 @@ export const navItems: NavItem[] = [
   { titleKey: "common:navigation.test", href: "/test/", icon: FlaskConicalIcon },
 ];
 
-function isActive(asPath: string, href: string) {
+export function isActive(asPath: string, href: string) {
   const path = new URL(asPath, LOCAL_URL_BASE).pathname;
   return (
     stripLocalePrefix(path).replace(/\/$/, "") === href.replace(/\/$/, "")
@@ -53,10 +49,7 @@ function isActive(asPath: string, href: string) {
 
 function useCurrentLocale(): AppLocale {
   const router = useRouter();
-  return typeof router.query.locale === "string" &&
-    isSupportedLocale(router.query.locale)
-    ? router.query.locale
-    : DEFAULT_LOCALE;
+  return resolveAppLocale(router.query.locale);
 }
 
 function NavButton({ item, active }: { item: NavItem; active: boolean }) {

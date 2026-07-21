@@ -22,6 +22,11 @@ export function isSupportedLocale(value: unknown): value is AppLocale {
   return typeof value === "string" && (LOCALES as readonly string[]).includes(value);
 }
 
+/** Strict route/query locale: only exact supported values; no language-prefix fuzzy map. */
+export function resolveAppLocale(queryLocale: unknown): AppLocale {
+  return isSupportedLocale(queryLocale) ? queryLocale : DEFAULT_LOCALE;
+}
+
 export function normalizeLocale(value: string | undefined | null): AppLocale {
   if (!value) return DEFAULT_LOCALE;
   if (isSupportedLocale(value)) return value;

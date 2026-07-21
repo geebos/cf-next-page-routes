@@ -21,6 +21,10 @@ import {
 import type { Todo, CreateTodoInput, UpdateTodoInput } from "@/shared/schemas";
 import { getLocaleStaticPaths, makeStaticProps } from "@/lib/i18n-static";
 
+function apiErrorMessage(e: unknown, fallback: string): string {
+  return e instanceof ApiError && e.message ? e.message : fallback;
+}
+
 export default function TodoPage() {
   const { t } = useTranslation(["common", "todo"]);
   const [todos, setTodos] = React.useState<Todo[]>([]);
@@ -34,11 +38,7 @@ export default function TodoPage() {
     try {
       setTodos(await listTodos());
     } catch (e) {
-      const msg =
-        e instanceof ApiError && e.message
-          ? e.message
-          : t("todo:loadFailed");
-      setError(msg);
+      setError(apiErrorMessage(e, t("todo:loadFailed")));
     } finally {
       setLoading(false);
     }
@@ -57,11 +57,7 @@ export default function TodoPage() {
       await refresh();
       toast.success(t("todo:toast.added"));
     } catch (e) {
-      toast.error(
-        e instanceof ApiError && e.message
-          ? e.message
-          : t("todo:toast.addFailed"),
-      );
+      toast.error(apiErrorMessage(e, t("todo:toast.addFailed")));
     }
   }
 
@@ -73,11 +69,7 @@ export default function TodoPage() {
         todo.completed ? t("todo:toast.uncompleted") : t("todo:toast.completed"),
       );
     } catch (e) {
-      toast.error(
-        e instanceof ApiError && e.message
-          ? e.message
-          : t("todo:toast.operationFailed"),
-      );
+      toast.error(apiErrorMessage(e, t("todo:toast.operationFailed")));
     }
   }
 
@@ -89,11 +81,7 @@ export default function TodoPage() {
       await refresh();
       toast.success(t("todo:toast.saved"));
     } catch (e) {
-      toast.error(
-        e instanceof ApiError && e.message
-          ? e.message
-          : t("todo:toast.saveFailed"),
-      );
+      toast.error(apiErrorMessage(e, t("todo:toast.saveFailed")));
     }
   }
 
@@ -105,11 +93,7 @@ export default function TodoPage() {
       await refresh();
       toast.success(t("todo:toast.deleted"));
     } catch (e) {
-      toast.error(
-        e instanceof ApiError && e.message
-          ? e.message
-          : t("todo:toast.deleteFailed"),
-      );
+      toast.error(apiErrorMessage(e, t("todo:toast.deleteFailed")));
       throw e; // rethrow so dialog stays open on failure
     }
   }

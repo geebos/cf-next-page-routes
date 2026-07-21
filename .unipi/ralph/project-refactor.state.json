@@ -1,0 +1,14 @@
+{
+  "name": "project-refactor",
+  "taskFile": ".unipi/ralph/project-refactor.md",
+  "iteration": 21,
+  "maxIterations": 50,
+  "itemsPerIteration": 1,
+  "reflectEvery": 10,
+  "reflectInstructions": "REFLECTION CHECKPOINT\n\nPause and reflect on your progress:\n1. What has been accomplished so far?\n2. What's working well?\n3. What's not working or blocking progress?\n4. Should the approach be adjusted?\n5. What are the next priorities?\n\nUpdate the task file with your reflection, then continue working.",
+  "active": false,
+  "status": "completed",
+  "startedAt": "2026-07-21T00:00:00.000Z",
+  "lastReflectionAt": 20,
+  "completedAt": "2026-07-21T18:34:37.916324+00:00"
+}

@@ -12,8 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  DEFAULT_LOCALE,
   isSupportedLocale,
+  resolveAppLocale,
   SUPPORTED_LOCALES,
   PREFERRED_LOCALE_KEY,
 } from "@/i18n/settings";
@@ -26,11 +26,7 @@ type Props = {
 export function LanguageSwitcher({ collapsed = false }: Props) {
   const router = useRouter();
   const { t } = useTranslation(["common"]);
-  const currentLocale =
-    typeof router.query.locale === "string" &&
-    isSupportedLocale(router.query.locale)
-      ? router.query.locale
-      : DEFAULT_LOCALE;
+  const currentLocale = resolveAppLocale(router.query.locale);
 
   async function changeLocale(nextLocale: string) {
     if (!isSupportedLocale(nextLocale)) return;
