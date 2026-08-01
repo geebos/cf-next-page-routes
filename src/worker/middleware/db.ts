@@ -2,7 +2,12 @@ import { createMiddleware } from "hono/factory";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { Context } from "hono";
 import type { AppEnv } from "../types";
-import { getEngine, getSqliteDb, createD1Db } from "../db/engine";
+import {
+  getEngine,
+  getSqliteDb,
+  getPostgresDb,
+  createD1Db,
+} from "../db/engine";
 
 // D1 session bookmark cookie 名。
 // 用 withSession(bookmark) 让同一 bookmark 窗口内的写操作对后续读可见，
@@ -24,9 +29,18 @@ function cookieOptions(c: Context) {
 
 export function createDbMiddleware() {
   return createMiddleware<AppEnv>(async (c, next) => {
+    const engine = getEngine();
+
     // sqlite 引擎：单写者文件库天然 read-your-writes，复用进程级连接，无需 bookmark。
-    if (getEngine() === "sqlite") {
+    if (engine === "sqlite") {
       c.set("db", await getSqliteDb());
+      await next();
+      return;
+    }
+
+    // postgres 引擎：Node 进程复用 pg Pool，不使用 D1 bookmark。
+    if (engine === "postgres") {
+      c.set("db", await getPostgresDb());
       await next();
       return;
     }

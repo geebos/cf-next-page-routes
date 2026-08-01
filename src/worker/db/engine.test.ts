@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it, beforeEach, afterEach } from "node:test";
 
-import { affectedRows, getEngine } from "./engine";
+import { affectedRows, getEngine, getPostgresDb } from "./engine";
 
 describe("affectedRows", () => {
   it("reads D1 meta.changes", () => {
@@ -48,12 +48,38 @@ describe("getEngine", () => {
     assert.equal(getEngine(), "sqlite");
   });
 
-  it("returns d1 for any other value", () => {
+  it("returns postgres when DB_ENGINE=postgres", () => {
+    process.env.DB_ENGINE = "postgres";
+    assert.equal(getEngine(), "postgres");
+  });
+
+  it("returns d1 for unknown values", () => {
     process.env.DB_ENGINE = "d1";
     assert.equal(getEngine(), "d1");
     process.env.DB_ENGINE = "SQLITE";
     assert.equal(getEngine(), "d1");
     process.env.DB_ENGINE = "foo";
     assert.equal(getEngine(), "d1");
+  });
+});
+
+describe("getPostgresDb", () => {
+  let prevUrl: string | undefined;
+
+  beforeEach(() => {
+    prevUrl = process.env.POSTGRES_URL;
+    delete process.env.POSTGRES_URL;
+  });
+
+  afterEach(() => {
+    if (prevUrl === undefined) delete process.env.POSTGRES_URL;
+    else process.env.POSTGRES_URL = prevUrl;
+  });
+
+  it("fails before loading the driver when POSTGRES_URL is missing", async () => {
+    await assert.rejects(
+      () => getPostgresDb(),
+      /POSTGRES_URL 未设置/,
+    );
   });
 });

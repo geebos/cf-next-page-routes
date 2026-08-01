@@ -98,12 +98,33 @@ pnpm deploy:worker  # wrangler deploy
 
 ## 数据库（Database）
 
-Worker 通过环境变量在两套 SQLite 引擎间切换，路由代码不变，共享同一套 Drizzle schema（`src/shared/schemas/`）。
+Worker 通过环境变量在 D1、SQLite 和 PostgreSQL 引擎间切换，路由代码不变，共享同一套 API schema（`src/shared/schemas/`）。
 
 | 引擎 | 运行时 | 实现 | 切换条件 | 适用场景 |
 |------|--------|------|---------|---------|
-| `d1`（默认） | Cloudflare Workers（Wrangler） | `drizzle-orm/d1` + wrangler 的 D1 binding | `DB_ENGINE` 非 `sqlite` 时生效 | 线上生产；Serverless、自动弹性、托管备份 |
+| `d1`（默认） | Cloudflare Workers（Wrangler） | `drizzle-orm/d1` + wrangler 的 D1 binding | `DB_ENGINE` 未设或为其他未知值时生效 | 线上生产；Serverless、自动弹性、托管备份 |
 | `sqlite` | Node（`@hono/node-server` + `tsx`） | `better-sqlite3` 本地文件库 | `DB_ENGINE=sqlite` + `DB_SQLITE_DIR=<dir>` | 本地开发 / Tauri 桌面后端 / 自托管，无需 Cloudflare 账号 |
+| `postgres` | Node（`@hono/node-server` + `tsx`） | `pg` + `drizzle-orm/node-postgres` | `DB_ENGINE=postgres` + `POSTGRES_URL=<url>` | PostgreSQL 自托管 / 云数据库 |
+
+### PostgreSQL（Drizzle，Node-only）
+
+PostgreSQL 模式使用原生 `pg` Pool 和 Drizzle PostgreSQL dialect，不尝试兼容
+Wrangler/Cloudflare Worker。启动 Node Worker：
+
+```bash
+POSTGRES_URL=postgres://user:password@localhost:5432/database pnpm dev:postgres
+```
+
+`POSTGRES_URL` 只在 Worker 进程端读取，不会进入浏览器 bundle。PostgreSQL
+table 定义位于 `src/shared/schemas/todo-postgres.ts`，SQLite/D1 继续使用
+`src/shared/schemas/todo.ts`；repository 对外保持相同的 Todo API。
+
+PostgreSQL 迁移使用独立配置和目录：
+
+```bash
+pnpm db:generate:postgres
+POSTGRES_URL=postgres://user:password@localhost:5432/database pnpm migrate:postgres
+```
 
 **关键差异**
 

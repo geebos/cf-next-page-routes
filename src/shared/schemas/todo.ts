@@ -99,6 +99,10 @@ export const todos = sqliteTable("todos", {
   updatedAt: integer("updated_at").notNull(),
 });
 
+export const sqliteSchema = {
+  todos,
+};
+
 export type Priority = z.infer<typeof priorityEnum>;
 export type Todo = z.infer<typeof todoSchema>;
 export type CreateTodoInput = z.infer<typeof createTodoSchema>;
