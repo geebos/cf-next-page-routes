@@ -1,0 +1,12 @@
+default:
+  en: Default
+  zh-CN: 默认
+extraSmall:
+  en: Extra small
+  zh-CN: 超小
+large:
+  en: Large
+  zh-CN: 大
+small:
+  en: Small
+  zh-CN: 小

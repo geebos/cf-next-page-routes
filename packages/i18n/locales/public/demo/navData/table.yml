@@ -1,0 +1,12 @@
+context:
+  en: Context
+  zh-CN: 上下文
+input:
+  en: Input / 1M
+  zh-CN: 输入 / 1M
+model:
+  en: Model
+  zh-CN: 型号
+output:
+  en: Output / 1M
+  zh-CN: 输出 / 1M

@@ -7,6 +7,7 @@ import type {
   CreateTodoInput,
   UpdateTodoInput,
 } from "@repo/schemas";
+import type { AppLocale, Messages } from "@repo/i18n";
 
 const DEFAULT_TAURI_BASE_URL = "https://template.geebosblog.com";
 
@@ -101,4 +102,19 @@ export async function deleteTodo(id: string): Promise<void> {
   const res = await apiFetch(`/api/todos/${id}`, { method: "DELETE" });
   if (!res.ok) throw await parseError(res);
   // 204 no body
+}
+
+export async function fetchPrivateLocale(
+  apiBaseUrl: string,
+  locale: AppLocale,
+  namespace: string,
+  signal?: AbortSignal,
+): Promise<Messages> {
+  const base = apiBaseUrl.replace(/\/+$/, "");
+  const res = await apiFetch(
+    `${base}/${encodeURIComponent(locale)}/${encodeURIComponent(namespace)}`,
+    { signal },
+  );
+  if (!res.ok) throw await parseError(res);
+  return (await res.json()) as Messages;
 }

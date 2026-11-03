@@ -1,0 +1,12 @@
+description:
+  en: A thin Select wrapper over Combobox. Common docs examples are available as props.
+  zh-CN: 基于 Combobox 的轻量 Select 封装。常见文档示例以 props 形式提供。
+disabledPlaceholder:
+  en: Cannot pick
+  zh-CN: 无法选择
+selected:
+  en: "Selected:"
+  zh-CN: 已选：
+title:
+  en: Select
+  zh-CN: Select

@@ -1,0 +1,18 @@
+email:
+  en: Enter a valid email address.
+  zh-CN: 请输入有效的邮箱地址。
+finishes:
+  en: Select at least one finish.
+  zh-CN: 至少选择一个颜色。
+plan:
+  en: Select a plan.
+  zh-CN: 请选择套餐。
+promptMax:
+  en: Prompt must be at most 200 characters.
+  zh-CN: 提示词至多 200 个字符。
+promptMin:
+  en: Prompt must be at least 20 characters.
+  zh-CN: 提示词至少 20 个字符。
+terms:
+  en: You must accept the terms of service.
+  zh-CN: 必须接受服务条款。

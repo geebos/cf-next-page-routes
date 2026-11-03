@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 import {
   Sidebar as SidebarPrimitive,
   SidebarContent,
@@ -19,7 +19,7 @@ import {
   FlaskConicalIcon,
   type LucideIcon,
 } from "lucide-react";
-import { resolveAppLocale, type AppLocale } from "@/i18n/settings";
+import { resolveAppLocale, type AppLocale } from "@repo/i18n";
 import {
   LOCAL_URL_BASE,
   localizePath,

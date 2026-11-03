@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { useRouter } from "next/router";
-import { resolveAppLocale, type AppLocale } from "@/i18n/settings";
+import { resolveAppLocale, type AppLocale } from "@repo/i18n";
 import { localizePath } from "@/lib/i18n-utils";
 
 type Props = Omit<ComponentProps<typeof Link>, "href"> & {

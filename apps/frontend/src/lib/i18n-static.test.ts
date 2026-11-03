@@ -1,55 +1,69 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { pickLocale } from "./i18n-static";
+import { getI18nProps, getLocaleStaticPaths } from "./i18n-static";
+import type { Messages } from "@repo/i18n";
 
-describe("pickLocale", () => {
-  it("picks string leaf for locale", () => {
-    const node = { en: "Hello", "zh-CN": "你好" };
-    assert.equal(pickLocale(node, "zh-CN"), "你好");
-    assert.equal(pickLocale(node, "en"), "Hello");
+function namespaceMessages(messages: Messages, namespace: string): Messages {
+  return messages[namespace] as Messages;
+}
+
+function context(locale: string) {
+  return { params: { locale } };
+}
+
+describe("getI18nProps", () => {
+  it("returns current and fallback resources for public namespaces", async () => {
+    const props = await getI18nProps(context("zh-CN"), ["common", "todo"]);
+
+    assert.ok(props);
+    assert.equal(props.locale, "zh-CN");
+    assert.equal(namespaceMessages(props.messages, "common").siteName, "示例");
+    assert.equal(
+      namespaceMessages(props.fallbackMessages, "common").siteName,
+      "Example",
+    );
+    assert.equal(
+      typeof props.fallbackMessages.todo,
+      "object",
+    );
   });
 
-  it("falls back to DEFAULT_LOCALE then first supported", () => {
-    assert.equal(pickLocale({ en: "Only EN" }, "zh-CN"), "Only EN");
-    assert.equal(pickLocale({ "zh-CN": "仅中文" }, "en"), "仅中文");
+  it("falls back to default locale resources", async () => {
+    const props = await getI18nProps(context("en"), ["common"]);
+
+    assert.ok(props);
+    assert.deepEqual(props.messages.common, props.fallbackMessages.common);
+    assert.equal(namespaceMessages(props.messages, "common").siteName, "Example");
   });
 
-  it("recurses nested objects", () => {
-    const node = {
-      section: {
-        label: { en: "L", "zh-CN": "标" },
-      },
-    };
-    assert.deepEqual(pickLocale(node, "zh-CN"), {
-      section: { label: "标" },
+  it("skips private namespaces instead of injecting them", async () => {
+    const props = await getI18nProps(context("en"), ["common", "admin"]);
+
+    assert.ok(props);
+    assert.deepEqual(Object.keys(props.messages), ["common"]);
+    assert.deepEqual(Object.keys(props.fallbackMessages), ["common"]);
+  });
+
+  it("throws for unknown namespaces", async () => {
+    await assert.rejects(
+      () => getI18nProps(context("en"), ["common", "unknown"]),
+      /Unknown namespace "unknown"/,
+    );
+  });
+
+  it("returns null for an unsupported locale", async () => {
+    assert.equal(await getI18nProps(context("zh"), ["common"]), null);
+  });
+});
+
+describe("getLocaleStaticPaths", () => {
+  it("returns paths for each supported locale", async () => {
+    const result = await getLocaleStaticPaths({} as never);
+
+    assert.deepEqual(result, {
+      paths: [{ params: { locale: "en" } }, { params: { locale: "zh-CN" } }],
+      fallback: false,
     });
-  });
-
-  it("maps arrays element-wise", () => {
-    const node = [
-      { en: "a", "zh-CN": "甲" },
-      { en: "b", "zh-CN": "乙" },
-    ];
-    assert.deepEqual(pickLocale(node, "zh-CN"), ["甲", "乙"]);
-  });
-
-  it("does not treat mixed keys as leaf map", () => {
-    const node = {
-      en: "not-leaf",
-      nested: { en: "inner" },
-    };
-    const picked = pickLocale(node, "en") as Record<string, unknown>;
-    assert.equal(picked.en, "not-leaf");
-    assert.equal(picked.nested, "inner");
-  });
-
-  it("passes through primitives", () => {
-    assert.equal(pickLocale("raw", "en"), "raw");
-    assert.equal(pickLocale(null, "en"), null);
-  });
-
-  it("keeps empty object nodes as empty objects", () => {
-    assert.deepEqual(pickLocale({ empty: {} }, "en"), { empty: {} });
   });
 });

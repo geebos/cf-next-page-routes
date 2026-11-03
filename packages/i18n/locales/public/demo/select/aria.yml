@@ -1,0 +1,15 @@
+autoHighlight:
+  en: Auto highlight select
+  zh-CN: 自动高亮 select
+clearable:
+  en: Clearable select
+  zh-CN: 可清除 select
+disabled:
+  en: Disabled select
+  zh-CN: 禁用 select
+multi:
+  en: Multi select tones
+  zh-CN: 多选颜色
+single:
+  en: Single select model
+  zh-CN: 单选型号

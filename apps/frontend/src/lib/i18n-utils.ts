@@ -6,7 +6,7 @@ import {
   normalizeLocale,
   PREFERRED_LOCALE_KEY,
   type AppLocale,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 
 export const LOCAL_URL_BASE = "https://local.invalid";
 

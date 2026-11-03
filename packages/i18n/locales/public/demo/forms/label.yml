@@ -1,0 +1,21 @@
+email:
+  en: Email
+  zh-CN: 邮箱
+finishes:
+  en: Finishes
+  zh-CN: 颜色
+notifications:
+  en: Push notifications
+  zh-CN: 推送通知
+plan:
+  en: Plan
+  zh-CN: 套餐
+prompt:
+  en: Prompt
+  zh-CN: 提示词
+temperature:
+  en: Temperature
+  zh-CN: 温度
+terms:
+  en: Accept terms of service
+  zh-CN: 接受服务条款

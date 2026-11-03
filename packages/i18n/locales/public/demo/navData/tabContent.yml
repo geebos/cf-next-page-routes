@@ -1,0 +1,9 @@
+benchmark:
+  en: iPhone 17 Pro scores 3,546 on Geekbench 6 single-core, leading mobile silicon.
+  zh-CN: iPhone 17 Pro 在 Geekbench 6 单核跑分 3,546，领先移动芯片。
+multiAgent:
+  en: Orchestrates tool calls across 5 parallel agents without dropping state.
+  zh-CN: 在 5 个并行 agent 之间协调工具调用，不丢失状态。
+selfEvaluation:
+  en: Self-evaluated against 12 reasoning categories with calibrated confidence.
+  zh-CN: 在 12 个推理类别上自评，并附带校准过的置信度。

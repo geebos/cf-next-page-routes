@@ -1,0 +1,6 @@
+label:
+  en: Error toast
+  zh-CN: 错误 toast
+message:
+  en: Couldn't reach the inference endpoint.
+  zh-CN: 无法访问推理端点。

@@ -1,0 +1,6 @@
+description:
+  en: Dialog for modal flows, DropdownMenu for action menus, Tooltip for inline hints.
+  zh-CN: Dialog 用于模态流程，DropdownMenu 用于操作菜单，Tooltip 用于行内提示。
+title:
+  en: Overlays
+  zh-CN: 浮层

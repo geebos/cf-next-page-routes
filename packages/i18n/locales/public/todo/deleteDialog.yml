@@ -1,0 +1,9 @@
+confirm:
+  en: Confirm delete
+  zh-CN: 确认删除
+description:
+  en: This cannot be undone.
+  zh-CN: 删除后无法恢复。
+title:
+  en: Confirm delete?
+  zh-CN: 确认删除？

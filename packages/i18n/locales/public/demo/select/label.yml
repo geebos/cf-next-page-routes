@@ -1,0 +1,15 @@
+autoHighlight:
+  en: Auto highlight
+  zh-CN: 自动高亮
+clearable:
+  en: Clear button
+  zh-CN: 清除按钮
+disabled:
+  en: Disabled
+  zh-CN: 禁用
+multi:
+  en: Multi-select with chips
+  zh-CN: 多选（带 chip）
+single:
+  en: Single select
+  zh-CN: 单选

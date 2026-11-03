@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently -k -n i18n,next \"pnpm --filter @repo/i18n dev\" \"next dev\"",
     "build": "next build",
     "start": "next start",
     "preview": "node -e \"require('fs').copyFileSync('serve.json','out/serve.json')\" && serve --listen 3001 out",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.4.0",
+    "@repo/i18n": "workspace:*",
     "@repo/lib": "workspace:*",
     "@repo/schemas": "workspace:*",
     "@tauri-apps/api": "~2.6.0",
@@ -47,6 +48,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^10.0.3",
     "serve": "^14.2.6",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",

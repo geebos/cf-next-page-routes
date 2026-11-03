@@ -1,0 +1,27 @@
+addFailed:
+  en: Add failed
+  zh-CN: 添加失败
+added:
+  en: Added
+  zh-CN: 已添加
+completed:
+  en: Completed
+  zh-CN: 已完成
+deleteFailed:
+  en: Delete failed
+  zh-CN: 删除失败
+deleted:
+  en: Deleted
+  zh-CN: 已删除
+operationFailed:
+  en: Operation failed
+  zh-CN: 操作失败
+saveFailed:
+  en: Save failed
+  zh-CN: 保存失败
+saved:
+  en: Saved
+  zh-CN: 已保存
+uncompleted:
+  en: Marked incomplete
+  zh-CN: 已取消完成

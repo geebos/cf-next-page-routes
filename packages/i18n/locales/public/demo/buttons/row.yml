@@ -1,0 +1,12 @@
+sizes:
+  en: Sizes
+  zh-CN: 尺寸
+states:
+  en: States
+  zh-CN: 状态
+variants:
+  en: Variants
+  zh-CN: 变体
+withIcons:
+  en: With icons
+  zh-CN: 带图标

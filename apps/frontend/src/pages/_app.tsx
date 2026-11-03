@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import i18next from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import { Layout } from "@/components/layout/layout";
+import { I18nErrorBoundary } from "@/components/i18n/I18nErrorBoundary";
 import { warmupNetworkPermission } from "@/lib/api";
 import {
   DEFAULT_LOCALE,
@@ -13,7 +14,7 @@ import {
   isSupportedLocale,
   type AppLocale,
   type Messages,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 
 type PageProps = {
   locale?: AppLocale;
@@ -77,7 +78,9 @@ function App({ Component, pageProps }: AppProps<PageProps>) {
 
   const tree = (
     <I18nextProvider i18n={i18n}>
-      <Component {...pageProps} />
+      <I18nErrorBoundary resetKey={router.asPath}>
+        <Component {...pageProps} />
+      </I18nErrorBoundary>
     </I18nextProvider>
   );
 

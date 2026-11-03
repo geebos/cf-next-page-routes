@@ -1,0 +1,9 @@
+description:
+  en: Pick a name and an initial temperature for your deployment. You can change these later.
+  zh-CN: 为部署选一个名称和初始温度。之后可以修改。
+title:
+  en: Pre-order iPhone 17 Pro
+  zh-CN: 预订 iPhone 17 Pro
+trigger:
+  en: New deployment
+  zh-CN: 新建部署

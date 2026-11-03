@@ -1,0 +1,9 @@
+accessDenied:
+  en: Access denied
+  zh-CN: 无权访问
+loadFailed:
+  en: Failed to load content
+  zh-CN: 内容加载失败
+requestFailed:
+  en: Request failed
+  zh-CN: 请求失败

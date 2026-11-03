@@ -10,7 +10,7 @@ import {
   DEFAULT_LOCALE,
   isSupportedLocale,
   type AppLocale,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 
 type AppDocumentProps = DocumentInitialProps & { locale: AppLocale };
 

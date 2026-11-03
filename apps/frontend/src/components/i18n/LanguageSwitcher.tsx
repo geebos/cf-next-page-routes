@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 import { LanguagesIcon, CheckIcon } from "lucide-react";
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import {
   resolveAppLocale,
   SUPPORTED_LOCALES,
   PREFERRED_LOCALE_KEY,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 import { replacePathLocale } from "@/lib/i18n-utils";
 
 type Props = {

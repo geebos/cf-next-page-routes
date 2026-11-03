@@ -1,0 +1,6 @@
+content:
+  en: Tokens are metered per 1M input and 1M output separately. Cached input tokens are billed at a 90% discount.
+  zh-CN: Tokens 按 1M 输入和 1M 输出分别计量。缓存的输入 tokens 享受 9 折优惠。
+title:
+  en: How is pricing calculated?
+  zh-CN: 定价如何计算？

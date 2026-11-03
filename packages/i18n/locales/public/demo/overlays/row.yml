@@ -1,0 +1,9 @@
+dialog:
+  en: Dialog
+  zh-CN: Dialog
+dropdownMenu:
+  en: Dropdown menu
+  zh-CN: 下拉菜单
+tooltip:
+  en: Tooltip
+  zh-CN: Tooltip

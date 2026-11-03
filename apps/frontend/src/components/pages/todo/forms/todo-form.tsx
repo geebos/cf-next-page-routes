@@ -3,7 +3,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 import { useMemo, useState } from "react";
 
 import {

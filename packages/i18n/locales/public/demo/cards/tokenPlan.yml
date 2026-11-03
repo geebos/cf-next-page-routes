@@ -1,0 +1,12 @@
+description:
+  en: Pay-as-you-go pricing across every Apple product.
+  zh-CN: 适用于所有 Apple 产品的按量计费。
+detail:
+  en: Includes 1M context window, JSON mode, and tool use.
+  zh-CN: 包含 1M 上下文窗口、JSON 模式与工具调用。
+title:
+  en: Token plan
+  zh-CN: Token 套餐
+unit:
+  en: / 1M input tokens
+  zh-CN: / 1M 输入 tokens

@@ -1,0 +1,18 @@
+destructive:
+  en: Destructive
+  zh-CN: 危险
+ghost:
+  en: Ghost
+  zh-CN: 幽灵
+link:
+  en: Link
+  zh-CN: 链接
+outline:
+  en: Outline
+  zh-CN: 描边
+primary:
+  en: Primary
+  zh-CN: 主要
+secondary:
+  en: Secondary
+  zh-CN: 次要

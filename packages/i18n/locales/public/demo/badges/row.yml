@@ -1,0 +1,9 @@
+productIdentity:
+  en: Product identity
+  zh-CN: 产品标识
+variants:
+  en: Variants
+  zh-CN: 变体
+withIcons:
+  en: With icons
+  zh-CN: 带图标

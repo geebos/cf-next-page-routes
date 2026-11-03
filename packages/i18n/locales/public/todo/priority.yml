@@ -1,0 +1,12 @@
+high:
+  en: High
+  zh-CN: 高
+label:
+  en: Priority
+  zh-CN: 优先级
+low:
+  en: Low
+  zh-CN: 低
+medium:
+  en: Medium
+  zh-CN: 中

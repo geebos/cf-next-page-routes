@@ -1,0 +1,42 @@
+audio:
+  en: AUDIO
+  zh-CN: AUDIO
+available:
+  en: Available
+  zh-CN: 可用
+beta:
+  en: BETA
+  zh-CN: BETA
+code:
+  en: CODE
+  zh-CN: CODE
+default:
+  en: Default
+  zh-CN: 默认
+destructive:
+  en: Destructive
+  zh-CN: 危险
+featured:
+  en: Featured
+  zh-CN: 推荐
+live:
+  en: Live
+  zh-CN: 运行中
+new:
+  en: NEW
+  zh-CN: NEW
+outline:
+  en: Outline
+  zh-CN: 描边
+secondary:
+  en: Secondary
+  zh-CN: 次要
+spatial:
+  en: SPATIAL
+  zh-CN: SPATIAL
+verified:
+  en: Verified
+  zh-CN: 已认证
+watch:
+  en: WATCH
+  zh-CN: WATCH

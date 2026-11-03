@@ -1,0 +1,12 @@
+empty:
+  en: Send a request to see the response here
+  zh-CN: 发起请求后在此查看响应
+metaDescription:
+  en: Send HTTP requests and inspect responses.
+  zh-CN: 发起 HTTP 请求并查看响应。
+metaTitle:
+  en: Test | Example
+  zh-CN: 测试 | 示例
+title:
+  en: Test
+  zh-CN: 测试

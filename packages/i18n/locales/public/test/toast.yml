@@ -1,0 +1,6 @@
+requestFailed:
+  en: Request failed
+  zh-CN: 请求失败
+urlRequired:
+  en: Please enter a URL
+  zh-CN: 请输入 URL

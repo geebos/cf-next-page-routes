@@ -1,0 +1,9 @@
+description:
+  en: Cannot pick a date before today
+  zh-CN: 不能选择今天之前的日期
+label:
+  en: Due date
+  zh-CN: 完成时间
+placeholder:
+  en: Pick a date
+  zh-CN: 选择日期

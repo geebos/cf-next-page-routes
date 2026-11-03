@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 
 import { Page } from "@/components/layout/page";
 import { Seo } from "@/components/i18n/Seo";

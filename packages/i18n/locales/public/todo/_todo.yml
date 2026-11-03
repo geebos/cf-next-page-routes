@@ -1,0 +1,15 @@
+loadFailed:
+  en: Load failed
+  zh-CN: 加载失败
+metaDescription:
+  en: Manage your tasks.
+  zh-CN: 管理你的任务。
+metaTitle:
+  en: Todo | Example
+  zh-CN: 待办 | 示例
+retry:
+  en: Retry
+  zh-CN: 重试
+title:
+  en: Todo
+  zh-CN: 待办

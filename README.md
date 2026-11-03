@@ -41,6 +41,10 @@ packages/
 │   ├── src/todos.ts # 表定义（按业务域命名）
 │   ├── migrations/  # 生成的迁移
 │   └── drizzle.config.ts
+├── i18n/            # @repo/i18n：locale 配置、文案源文件与编译器
+│   ├── locales/     # public/ 与 private/，按 key 拆分的文案源
+│   ├── src/         # settings、compiler、CLI
+│   └── generated/   # gitignored，codegen 生成（manifest / public / private）
 └── lib/             # @repo/lib：跨端复用的公共工具函数（cn 等）
 ```
 
@@ -82,6 +86,7 @@ pnpm build          # 静态导出到 apps/frontend/out/
 pnpm typecheck      # 各 workspace 包 tsc --noEmit
 pnpm lint           # eslint（frontend）
 pnpm test           # 各 workspace 包 node:test
+pnpm i18n:build     # 编译 packages/i18n/locales → generated/
 pnpm db:generate    # drizzle-kit generate → packages/db/migrations
 pnpm db:migrate     # drizzle-kit migrate（需 POSTGRES_URL）
 ```
@@ -107,6 +112,27 @@ pnpm db:migrate     # drizzle-kit migrate（需 POSTGRES_URL）
 | `adapter/request` | Rust `proxy` 命令（`tauri_plugin_http::reqwest`） | 抛错（仅 Tauri 可用） | 透明 HTTP 请求，返回标准 `Response`；用于绕过 `adapter/fetch` 的限制、读取任意状态码/响应体 |
 
 > `adapter/request` 仅在 Tauri 环境可用，依赖 Rust 侧的 `proxy` 命令（见 `apps/tauri/src/lib.rs`），已启用 gzip/brotli/deflate/zstd 自动解压。
+
+## 国际化（i18n）
+
+文案源文件、locale 配置和编译器集中在 `@repo/i18n`（`packages/i18n`）。详细规则见 `packages/i18n/README.md`。
+
+```text
+packages/i18n/
+├── locales/public/<namespace>/...    # 公共文案，编译后由 SSG 注入页面 props
+├── locales/private/<namespace>/...   # 私有文案，只进入后端 bundle
+└── src/config.ts                     # 配置函数：defaultLocale + locales
+```
+
+- 文案按 JSON Path 拆分为多级 YAML 文件（`home.hero.title` → `home/hero.yml` 的 `title`），namespace 级区分 `public` / `private`。
+- locale 配置是代码（`src/config.ts` 的 `getI18nConfig()`），不是 JSON 文件；编译器、前端和后端读同一个类型化值。
+- codegen 生成 `generated/manifest.ts`（仅 namespace 名称）、`generated/public` 和 `generated/private`；`generated/` 不提交 git。
+- `next dev` / `next build` 由 `next.config.ts` 自动执行 codegen；`apps/frontend` 的 `dev` 同时启动 `@repo/i18n` watcher。
+- backend、根 `typecheck`、根 `test` 不加载 Next 配置，根脚本会先执行 `pnpm i18n:build`。
+- 公共 namespace 由 `getStaticProps` 注入，无额外请求；私有 namespace 由前端统一 `useTranslation`（`@/lib/i18n`）按 manifest 自动请求 `GET /api/i18n/:locale/:namespace`。
+- 私有路由经过 `createAuthMiddleware`，默认 resolver 拒绝（401）；响应带 `Cache-Control: private, no-store`。登出时调用 `clearPrivateI18n(i18n)` 清理客户端 bundle。
+
+修改 `locales/**` 后运行 `pnpm i18n:build`（或直接 `pnpm dev`）。新增 locale 时在 `packages/i18n/src/config.ts` 的 `LOCALES` 中加一项即可，`AppLocale` 类型与编译器校验自动跟随。
 
 ## 数据库（Database）
 

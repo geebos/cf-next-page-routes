@@ -1,0 +1,18 @@
+continue:
+  en: Continue
+  zh-CN: 继续
+disabled:
+  en: Disabled
+  zh-CN: 禁用
+disabledOutline:
+  en: Disabled outline
+  zh-CN: 禁用描边
+export:
+  en: Export
+  zh-CN: 导出
+newProject:
+  en: New project
+  zh-CN: 新建项目
+triggerToast:
+  en: Trigger toast
+  zh-CN: 触发 toast

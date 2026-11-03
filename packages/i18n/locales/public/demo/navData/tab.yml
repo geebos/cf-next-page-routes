@@ -1,0 +1,9 @@
+benchmark:
+  en: Benchmark
+  zh-CN: 基准测试
+multiAgent:
+  en: Multi-agent
+  zh-CN: 多智能体
+selfEvaluation:
+  en: Self-evaluation
+  zh-CN: 自评

@@ -30,4 +30,10 @@ describe("createApp assembly (postgres smoke)", { skip: !pgUrl }, () => {
     assert.equal(res.status, 200);
     assert.deepEqual(await res.json(), []);
   });
+
+  it("GET /api/i18n/en/admin returns 401 without an auth resolver", async () => {
+    const app = createApp();
+    const res = await app.request("http://localhost/api/i18n/en/admin");
+    assert.equal(res.status, 401);
+  });
 });

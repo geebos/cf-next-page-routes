@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   DEFAULT_LOCALE,
   isSupportedLocale,
   type AppLocale,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 
 const messages: Record<
   AppLocale,
@@ -22,13 +22,23 @@ const messages: Record<
   },
 };
 
-export default function NotFoundPage() {
-  const [locale, setLocale] = useState<AppLocale>(DEFAULT_LOCALE);
+const subscribeToNothing = () => () => {};
 
-  useEffect(() => {
-    const first = window.location.pathname.split("/").filter(Boolean)[0];
-    if (isSupportedLocale(first)) setLocale(first);
-  }, []);
+function getLocaleFromPath(): AppLocale {
+  const first = window.location.pathname.split("/").filter(Boolean)[0];
+  return isSupportedLocale(first) ? first : DEFAULT_LOCALE;
+}
+
+function getServerLocale(): AppLocale {
+  return DEFAULT_LOCALE;
+}
+
+export default function NotFoundPage() {
+  const locale = useSyncExternalStore(
+    subscribeToNothing,
+    getLocaleFromPath,
+    getServerLocale,
+  );
 
   const m = messages[locale];
   return (

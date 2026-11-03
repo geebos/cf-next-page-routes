@@ -5,7 +5,7 @@ import {
   isSupportedLocale,
   SUPPORTED_LOCALES,
   type AppLocale,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 import { getSiteUrl, LOCAL_URL_BASE, stripLocalePrefix } from "@/lib/i18n-utils";
 
 type SeoProps = {

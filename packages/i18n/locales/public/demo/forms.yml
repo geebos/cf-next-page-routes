@@ -1,0 +1,9 @@
+description:
+  en: A react-hook-form form with zod validation — input, textarea, checkbox, switch, radio group, select, and slider bound via Controller.
+  zh-CN: 一个用 react-hook-form 配合 zod 校验的表单 —— input、textarea、checkbox、switch、radio group、select 与 slider 均通过 Controller 绑定。
+promptChars:
+  en: "{{count}}/200 characters"
+  zh-CN: "{{count}}/200 字符"
+title:
+  en: Form controls
+  zh-CN: 表单控件

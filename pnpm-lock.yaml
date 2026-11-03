@@ -32,6 +32,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@repo/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@repo/schemas':
         specifier: workspace:*
         version: link:../../packages/schemas
@@ -75,6 +78,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.80.0(react@19.2.4))
+      '@repo/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@repo/lib':
         specifier: workspace:*
         version: link:../../packages/lib
@@ -172,6 +178,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.17)
+      concurrently:
+        specifier: ^10.0.3
+        version: 10.0.3
       serve:
         specifier: ^14.2.6
         version: 14.2.6
@@ -203,6 +212,22 @@ importers:
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/i18n:
+    dependencies:
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.43
+      tsx:
+        specifier: ^4.23.0
+        version: 4.23.0
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -5196,6 +5221,11 @@ packages:
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+
+  yaml@2.9.1:
+    resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
 
   yargs-parser@22.0.0:
     resolution: {integrity: sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw==}
@@ -10337,6 +10367,8 @@ snapshots:
   y18n@5.0.8: {}
 
   yallist@3.1.1: {}
+
+  yaml@2.9.1: {}
 
   yargs-parser@22.0.0: {}
 

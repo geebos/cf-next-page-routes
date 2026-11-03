@@ -1,0 +1,6 @@
+description:
+  en: You've sent 1,200 requests in the last minute. Slow down or upgrade your plan.
+  zh-CN: 你过去一分钟发送了 1,200 次请求。请减速或升级套餐。
+title:
+  en: Rate limit exceeded
+  zh-CN: 超出速率限制

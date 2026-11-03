@@ -3,7 +3,7 @@ import type { AppEnv } from "../types";
 
 // 鉴权 resolver：根据 db 和原始请求解析当前用户，返回 null 表示未登录。
 // user 的具体类型由调用方在拿到 c.get("user") 后自行收窄。
-type AuthResolver = (
+export type AuthResolver = (
   db: AppEnv["Variables"]["db"],
   request: Request,
 ) => Promise<NonNullable<AppEnv["Variables"]["user"]> | null>;

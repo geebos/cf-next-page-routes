@@ -1,7 +1,7 @@
 "use client";
 
 import { PencilIcon, Trash2Icon } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 
 import type { Todo } from "@repo/schemas";
 import { formatDueDateMs, localStartOfTodayMs } from "@repo/schemas";

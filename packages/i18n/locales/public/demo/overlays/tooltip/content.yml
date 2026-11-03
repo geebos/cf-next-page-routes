@@ -1,0 +1,6 @@
+billingCycle:
+  en: View your billing cycle
+  zh-CN: 查看你的账单周期
+tokenUsage:
+  en: Token usage resets on the 1st of each month.
+  zh-CN: Token 用量在每月 1 号重置。

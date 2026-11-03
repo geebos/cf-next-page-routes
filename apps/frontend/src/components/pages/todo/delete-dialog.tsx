@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 import {
   AlertDialog,
   AlertDialogContent,

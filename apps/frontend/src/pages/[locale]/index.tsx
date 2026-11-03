@@ -5,7 +5,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import type { TFunction } from "i18next";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 import {
   PlusIcon,
   DownloadIcon,

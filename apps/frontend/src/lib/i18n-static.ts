@@ -9,19 +9,12 @@ import {
   SUPPORTED_LOCALES,
   type AppLocale,
   type Messages,
-} from "@/i18n/settings";
-import common from "../../public/locales/common.json";
-import demo from "../../public/locales/demo.json";
-import todo from "../../public/locales/todo.json";
-import test from "../../public/locales/test.json";
-
-type MergedMessages = Record<string, unknown>;
-const MESSAGES: Record<string, MergedMessages> = {
-  common,
-  demo,
-  todo,
-  test,
-};
+} from "@repo/i18n";
+import {
+  PRIVATE_NAMESPACES,
+  PUBLIC_NAMESPACES,
+} from "@repo/i18n/generated/manifest";
+import { PUBLIC_RESOURCES } from "@repo/i18n/generated/public";
 
 export type StaticPageContext = GetStaticPropsContext<{
   locale?: string;
@@ -33,40 +26,6 @@ export type I18nProps = {
   messages: Messages;
   fallbackMessages: Messages;
 };
-
-export function pickLocale(node: unknown, locale: AppLocale): Messages {
-  if (node === null || typeof node !== "object")
-    return node as unknown as Messages;
-  if (Array.isArray(node))
-    return node.map((item) => pickLocale(item, locale)) as unknown as Messages;
-
-  const entries = Object.entries(node as Record<string, unknown>);
-  const isLeaf =
-    entries.length > 0 &&
-    entries.every(
-      ([k, v]) =>
-        (SUPPORTED_LOCALES as readonly string[]).includes(k) &&
-        typeof v === "string",
-    );
-
-  if (isLeaf) {
-    const map = node as Record<string, string>;
-    if (typeof map[locale] === "string") return map[locale] as unknown as Messages;
-    if (typeof map[DEFAULT_LOCALE] === "string")
-      return map[DEFAULT_LOCALE] as unknown as Messages;
-    for (const l of SUPPORTED_LOCALES) {
-      if (typeof map[l] === "string") return map[l] as unknown as Messages;
-    }
-    return undefined as unknown as Messages; // caller omits
-  }
-
-  const result: Messages = {};
-  for (const [k, v] of entries) {
-    const picked = pickLocale(v, locale);
-    if (picked !== undefined) result[k] = picked;
-  }
-  return result;
-}
 
 export function getLocaleFromContext(
   ctx: StaticPageContext,
@@ -89,15 +48,17 @@ export async function getI18nProps(
 
   const messages: Messages = {};
   const fallbackMessages: Messages = {};
+
   for (const ns of namespaces) {
-    const merged = MESSAGES[ns];
-    if (!merged) continue;
-    const picked = pickLocale(merged, locale);
-    messages[ns] = picked;
-    fallbackMessages[ns] =
-      locale === DEFAULT_LOCALE
-        ? picked
-        : pickLocale(merged, DEFAULT_LOCALE);
+    // Private namespaces are loaded at runtime by the unified useTranslation hook.
+    if ((PRIVATE_NAMESPACES as readonly string[]).includes(ns)) continue;
+
+    if (!(PUBLIC_NAMESPACES as readonly string[]).includes(ns)) {
+      throw new Error(`[i18n] Unknown namespace "${ns}"`);
+    }
+
+    messages[ns] = PUBLIC_RESOURCES[locale]?.[ns] ?? {};
+    fallbackMessages[ns] = PUBLIC_RESOURCES[DEFAULT_LOCALE]?.[ns] ?? {};
   }
 
   return { locale, messages, fallbackMessages };

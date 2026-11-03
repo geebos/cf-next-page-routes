@@ -6,7 +6,7 @@ import {
   DEFAULT_LOCALE,
   SUPPORTED_LOCALES,
   type AppLocale,
-} from "@/i18n/settings";
+} from "@repo/i18n";
 import { detectInitialLocale, getSiteUrl } from "@/lib/i18n-utils";
 
 const labels: Record<AppLocale, string> = {

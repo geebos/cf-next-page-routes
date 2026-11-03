@@ -1,0 +1,18 @@
+copyApiKey:
+  en: Copy API key
+  zh-CN: 复制 API 密钥
+deleteDeployment:
+  en: Delete deployment
+  zh-CN: 删除部署
+exportLogs:
+  en: Export logs
+  zh-CN: 导出日志
+filterRows:
+  en: Filter rows
+  zh-CN: 筛选行
+openProfile:
+  en: Open profile
+  zh-CN: 打开资料
+pinToTop:
+  en: Pin to top
+  zh-CN: 置顶

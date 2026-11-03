@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ChevronDownIcon, PlusIcon, Trash2Icon, SendIcon, CheckIcon } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/lib/i18n";
 
 import { Button } from "@/components/ui/button";
 import {
