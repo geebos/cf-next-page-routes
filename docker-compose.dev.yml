@@ -1,0 +1,25 @@
+# 本地开发用的 PostgreSQL。
+# 启动：docker compose -f docker-compose.dev.yml up -d
+# 只监听 127.0.0.1:5433，避开本机其它 5432/55432 的 Postgres。
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: cf-next-page-routes-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cf_next_page_routes
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      # postgres 18+ 镜像要求挂载父目录，数据落在 /var/lib/postgresql/18/docker。
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cf_next_page_routes"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
