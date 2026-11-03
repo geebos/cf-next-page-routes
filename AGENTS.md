@@ -148,11 +148,10 @@ apps/
 │   │   │           └── forms/ # Form components for the page
 │   │   │               └── <name>-form.tsx
 │   │   ├── hooks/      # React hooks
-│   │   ├── i18n/       # Locale settings
-│   │   ├── lib/        # Frontend-only utilities; api.ts is the only API entry
+│   │   ├── lib/        # Frontend-only utilities; api.ts is the only API entry; i18n/ is the unified translate hook
 │   │   └── styles/     # Global styles / Tailwind theme
-│   ├── public/         # Static assets + locales
-│   ├── next.config.ts  # Static export + dev rewrites proxy
+│   ├── public/         # Static assets (locale copy lives in @repo/i18n)
+│   ├── next.config.ts  # Static export + dev rewrites proxy + i18n codegen
 │   └── components.json # shadcn config
 ├── backend/            # Hono Worker API
 │   ├── src/
@@ -172,6 +171,12 @@ packages/
 │   ├── src/<domain>.ts # Table file, named by domain (not by dialect)
 │   ├── migrations/     # Generated migrations
 │   └── drizzle.config.ts
+├── i18n/               # @repo/i18n: YAML locale sources, config function, codegen
+│   ├── locales/public/<namespace>/**/*.yml  # SSG-injected copy
+│   ├── locales/private/<namespace>/**/*.yml # backend-only copy
+│   ├── src/config.ts   # getI18nConfig(): defaultLocale + locales
+│   ├── src/compile.ts  # compiler core (Node only)
+│   └── generated/      # gitignored codegen output (manifest/public/private)
 └── lib/                # Shared framework-agnostic utilities (@repo/lib)
 ```
 
@@ -206,5 +211,15 @@ packages/
 - A form file may export action-specific components using the `<Action><Name>Form` naming convention, such as `CreateUserForm` and `EditUserForm`.
 - Pages should import and use form components instead of implementing form logic directly.
 - Keep form APIs domain-specific. **Do not over-generalize** props or abstractions. Form-specific business logic belongs in the `Form` component.
+
+## i18n
+
+- Locale copy lives in `packages/i18n/locales/{public,private}/<namespace>/`, split by key path into `.yml` files. Never put locale JSON/YAML under `apps/frontend/public/`.
+- Visibility is namespace-level: a namespace cannot exist in both `public` and `private`. Private namespaces are served at runtime by `GET /api/i18n/:locale/:namespace` through `createAuthMiddleware` (default deny).
+- Locale configuration is code: edit `getI18nConfig()` in `packages/i18n/src/config.ts` (`defaultLocale` + `locales`), not a JSON file. `AppLocale` derives from it.
+- Each `.yml` file is a flat mapping of `key: { <locale>: string }`; default locale is required, other locales fall back at runtime. Do not nest deeper — the file path already defines the container.
+- Run `pnpm i18n:build` after editing `locales/**`. `next dev` / `next build` run codegen automatically; root `typecheck` / `test` run it first.
+- Import rules: use `useTranslation` from `@/lib/i18n` (never `react-i18next` directly in pages or components); config/types from `@repo/i18n`; namespace names from `@repo/i18n/generated/manifest`; `@repo/i18n/generated/public` only in the `getStaticProps` chain; `@repo/i18n/generated/private` only in `apps/backend`.
+- Do not edit or commit `packages/i18n/generated/` — it is codegen output and gitignored.
 
 # Response starts with Master or 主人, call youself Me or 俺
