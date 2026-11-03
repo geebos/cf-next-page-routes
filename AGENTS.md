@@ -131,45 +131,55 @@ Delete the remote development branch only if it was previously pushed.
 # 6. Project Structure
 
 ```txt
-src/
-├── pages/              # Page routes, organized by route
-│   ├── _app.tsx        # Injects global Layout and globals.css
-│   ├── _document.tsx   # HTML skeleton
-│   ├── index.tsx       # Home / Demo page
-│   └── todo.tsx        # Example: /todo/
-├── components/
-│   ├── ui/             # shadcn/ui component library, do not edit directly
-│   ├── layout/         # Layout / Page / Navigate
-│   └── pages/          # Optional extracted components used by a specific page 
-│       └── <page>/     # Create only when the page has components worth extracting 
-│           ├── *.tsx   # Complex or independently meaningful page-specific components 
-│           └── forms/  # Form components for the page
-│               └── <name>-form.tsx
-├── hooks/              # React hooks
-├── lib/                # Frontend utilities; api.ts is the only API entry
-├── shared/
-│   └── schemas/        # Shared frontend/backend schemas
-│       ├── index.ts    # Unified exports
-│       └── <domain>.ts # One file per domain
-├── styles/             # Global styles
-└── worker/
-    ├── index.ts        # Worker entry; imports routes centrally
-    ├── types.ts        # Worker types
-    ├── routes/         # Routes split by domain, as files or directories
-    ├── middleware/     # Worker middleware
-    └── lib/            # Worker utilities
-
-drizzle/                # Database migrations
-drizzle.config.ts       # Drizzle config
-next.config.ts          # Next.js config
-components.json         # shadcn config
+apps/
+├── frontend/           # Next.js static export (Pages Router)
+│   ├── src/
+│   │   ├── pages/      # Page routes, organized by route
+│   │   │   ├── _app.tsx        # Injects global Layout and globals.css
+│   │   │   ├── _document.tsx   # HTML skeleton
+│   │   │   ├── index.tsx       # Language landing page
+│   │   │   └── [locale]/       # Localized route tree
+│   │   ├── components/
+│   │   │   ├── ui/     # shadcn/ui component library, do not edit directly
+│   │   │   ├── layout/ # Layout / Page / Navigate
+│   │   │   └── pages/  # Page-specific components
+│   │   │       └── <page>/    # Create only when the page has components worth extracting
+│   │   │           ├── *.tsx  # Complex or independently meaningful page-specific components
+│   │   │           └── forms/ # Form components for the page
+│   │   │               └── <name>-form.tsx
+│   │   ├── hooks/      # React hooks
+│   │   ├── i18n/       # Locale settings
+│   │   ├── lib/        # Frontend-only utilities; api.ts is the only API entry
+│   │   └── styles/     # Global styles / Tailwind theme
+│   ├── public/         # Static assets + locales
+│   ├── next.config.ts  # Static export + dev rewrites proxy
+│   └── components.json # shadcn config
+├── backend/            # Hono Worker API
+│   ├── src/
+│   │   ├── index.ts    # Worker entry; imports routes centrally
+│   │   ├── serve.ts    # Node entry (@hono/node-server) + PostgreSQL
+│   │   ├── routes/     # Routes split by domain, as files or directories
+│   │   ├── middleware/ # Worker middleware
+│   │   ├── db/         # pg connection + repository (schema from @repo/db)
+│   │   └── lib/        # Worker utilities
+│   └── wrangler.jsonc  # Optional Worker deployment config
+└── tauri/              # Tauri v2 shell (Rust)
+packages/
+├── schemas/            # Shared Zod schemas, API types and domain helpers (@repo/schemas)
+│   ├── src/index.ts    # Unified exports
+│   └── src/<domain>.ts # One file per domain
+├── db/                 # Drizzle table definitions + generated migrations (@repo/db)
+│   ├── src/<domain>.ts # Table file, named by domain (not by dialect)
+│   ├── migrations/     # Generated migrations
+│   └── drizzle.config.ts
+└── lib/                # Shared framework-agnostic utilities (@repo/lib)
 ```
 
 # 7. Project Rules
 
 ## Pages & Components
 
-- Place pages under `src/pages/` following the route structure.
+- Place pages under `apps/frontend/src/pages/` following the route structure.
 - Every page **must** be wrapped with `Page` from `components/layout/page`.
 - Before building UI, **always** check `components/ui/` for an existing component.
 - Reuse existing components whenever possible.
@@ -181,16 +191,18 @@ components.json         # shadcn config
 
 ## Schemas
 
-- Place schemas under `src/shared/schemas/`, **one file per domain**.
-- Each schema file is the **single source of truth**. Define Zod schemas, Drizzle table definitions, and inferred types there, and **always** reuse them throughout the project.
+- Place Zod schemas, API types and domain helpers under `packages/schemas/src/`, **one file per domain**; import them from `@repo/schemas`.
+- Place Drizzle table definitions, migrations and `drizzle.config.ts` under `packages/db/`, **one file per domain**, named by domain (`src/todos.ts`) rather than by dialect; import them from `@repo/db`.
+- Keep validation/types and table definitions separate: `@repo/schemas` is the API-level source of truth, `@repo/db` is the persistence-level source of truth.
+- PostgreSQL is the only database backend. Do not add parallel dialect directories or engine switches; to change databases, replace `packages/db` and `apps/backend/src/db` wholesale.
 
 ## Worker
 
-- Organize routes by domain and mount them centrally in `worker/index.ts`.
+- Organize routes by domain under `apps/backend/src/routes/` and mount them centrally in `apps/backend/src/index.ts`.
 
 ## Forms
 
-- Define forms in `src/components/pages/<page>/forms/` using the `<name>-form.tsx` naming convention.
+- Define forms in `apps/frontend/src/components/pages/<page>/forms/` using the `<name>-form.tsx` naming convention.
 - A form file may export action-specific components using the `<Action><Name>Form` naming convention, such as `CreateUserForm` and `EditUserForm`.
 - Pages should import and use form components instead of implementing form logic directly.
 - Keep form APIs domain-specific. **Do not over-generalize** props or abstractions. Form-specific business logic belongs in the `Form` component.

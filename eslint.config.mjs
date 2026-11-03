@@ -11,8 +11,11 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
-    "src-tauri/**",
     "next-env.d.ts",
+    // Workspace build output and Rust shell:
+    "apps/frontend/.next/**",
+    "apps/frontend/out/**",
+    "apps/tauri/**",
   ]),
 ]);
 

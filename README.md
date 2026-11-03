@@ -1,6 +1,6 @@
 # cf-next-pages-routes
 
-一个基于 **Next.js 静态导出 + Hono Cloudflare Worker** 的模板仓库。前端构建为纯静态文件部署到 Cloudflare Pages，API 以独立 Worker 运行，开发与生产均通过同域 `/api/*` 访问后端。
+一个基于 **Next.js 静态导出 + Hono** 的模板仓库。前端构建为纯静态文件部署到 Cloudflare Pages，API 以独立 Node 服务运行（PostgreSQL），开发与生产均通过同域 `/api/*` 访问后端。
 
 ## 技术栈
 
@@ -12,10 +12,10 @@
 - [Recharts](https://recharts.org)、[Embla Carousel](https://www.embla-carousel.com)、[cmdk](https://cmdk.paco.me)、[Sonner](https://sonner.emilkowal.ski)、[Vaul](https://github.com/emilkowalski/vaul) 等扩展组件
 
 **后端**
-- [Hono](https://hono.dev) — Cloudflare Worker 上的 Web 框架
-- [Wrangler](https://developers.cloudflare.com/workers/wrangler/) — Worker 本地开发与部署
-- [Cloudflare D1](https://developers.cloudflare.com/d1/) — SQLite 数据库（已配置占位，按需启用）
-- [`@cloudflare/workers-types`](https://www.npmjs.com/package/@cloudflare/workers-types) — Worker 类型定义
+- [Hono](https://hono.dev) — Web 框架（Node 运行时为 `@hono/node-server`）
+- [PostgreSQL](https://www.postgresql.org/) + [`pg`](https://node-postgres.com/) — 唯一 DB 后端
+- [Drizzle ORM](https://orm.drizzle.team/) / Drizzle Kit — 表定义与迁移
+- [Wrangler](https://developers.cloudflare.com/workers/wrangler/) — 可选的 Cloudflare 部署入口
 
 **工具链**
 - [pnpm](https://pnpm.io) 包管理
@@ -25,28 +25,37 @@
 
 ## 目录结构
 
+本仓库是 pnpm workspace monorepo：`apps/` 下是三个可运行应用，`packages/` 下是共享库。
+
 ```
-src/
-├── components/      # shadcn/ui 组件 + 业务组件
-├── hooks/           # React hooks
-├── lib/             # 浏览器端工具函数
-│   ├── adapter/     # Tauri/浏览器能力适配层（fetch、dialog、request）
-│   └── api.ts       # 唯一 API 入口
-├── pages/           # Next.js Pages Router 页面（静态导出）
-├── shared/          # 前后端共享的类型与工具
-├── styles/          # 全局样式 / Tailwind 主题
-└── worker/          # Cloudflare Worker + Hono API
-    ├── routes/      # 路由模块（health、hello）
-    └── index.ts     # Worker 入口
-wrangler.jsonc       # Worker 配置（D1 占位、无 routes）
-next.config.ts       # 静态导出 + dev rewrites 代理
-components.json      # shadcn 配置
+apps/
+├── frontend/        # Next.js 前端（静态导出，含 components / hooks / i18n / styles）
+│   └── src/lib/     # 前端专用工具（adapter/、api.ts、i18n-*）
+├── backend/         # Hono API（Node 入口 serve.ts）
+│   ├── src/         # index.ts 入口、routes/、middleware/、db/、lib/
+│   └── wrangler.jsonc      # 可选的 Worker 部署配置（静态资源）
+└── tauri/           # Tauri v2 壳工程（Rust + iOS gen/target）
+packages/
+├── schemas/         # @repo/schemas：前后端共享的 Zod schema 与类型
+├── db/              # @repo/db：Drizzle 表定义 + 迁移（单一 DB 后端）
+│   ├── src/todos.ts # 表定义（按业务域命名）
+│   ├── migrations/  # 生成的迁移
+│   └── drizzle.config.ts
+└── lib/             # @repo/lib：跨端复用的公共工具函数（cn 等）
 ```
+
+DB 后端固定为 PostgreSQL，迁移、表定义、drizzle 配置都集中在 `@repo/db`；需要变更数据库时**整体替换** `packages/db` 与 `apps/backend/src/db`，不并行维护多套目录。
+
+前端 `src/lib/utils.ts` 只是 `@repo/lib` 的再导出，用于保持 shadcn 的 `@/lib/utils` 别名不变。
 
 ## 快速开始
 
+需要先准备一个 PostgreSQL，并把连接串写入 `apps/backend/.env`（参考 `apps/backend/.env.example`），后端 `dev` 会自动加载该文件。
+
 ```bash
 pnpm install
+cp apps/backend/.env.example apps/backend/.env   # 填入 POSTGRES_URL
+pnpm db:migrate                                  # 应用 packages/db/migrations
 pnpm dev
 ```
 
@@ -55,7 +64,7 @@ pnpm dev
 | 服务 | 地址 |
 |------|------|
 | Next.js（前端） | http://localhost:3000 |
-| Wrangler（Worker API） | http://localhost:8787 |
+| Hono + PostgreSQL（API） | http://localhost:8787 |
 
 前端通过 `next.config.ts` 的 `rewrites` 将 `/api/*` 代理到 `:8787`，开发时浏览器直接请求同域 `/api/*` 即可，无需关心端口或 CORS。
 
@@ -69,24 +78,27 @@ curl http://localhost:3000/api/hello    # {"name":"John Doe"}
 其他脚本：
 
 ```bash
-pnpm build          # 静态导出到 out/
-pnpm typecheck      # tsc --noEmit
-pnpm lint           # eslint
-pnpm deploy:web     # 构建前端静态文件
-pnpm deploy:worker  # wrangler deploy
+pnpm build          # 静态导出到 apps/frontend/out/
+pnpm typecheck      # 各 workspace 包 tsc --noEmit
+pnpm lint           # eslint（frontend）
+pnpm test           # 各 workspace 包 node:test
+pnpm db:generate    # drizzle-kit generate → packages/db/migrations
+pnpm db:migrate     # drizzle-kit migrate（需 POSTGRES_URL）
 ```
+
+环境变量：前端读取 `apps/frontend/.env`（模板见 `apps/frontend/.env.example`）；后端变量见 `apps/backend/.env.example`，由各 dev 脚本内联传入。
 
 ## 架构
 
-**开发环境**：`next dev` 与 `wrangler dev` 同时运行，Next.js 通过 `rewrites` 把 `/api/*` 转发到 Worker（`:8787`）。前后端同域（`localhost:3000`），前端代码统一使用相对路径 `/api/*`。
+**开发环境**：`next dev` 与后端 `tsx src/serve.ts`（PostgreSQL）同时运行，Next.js 通过 `rewrites` 把 `/api/*` 转发到 `:8787`。前后端同域（`localhost:3000`），前端代码统一使用相对路径 `/api/*`。
 
-**生产环境**：Next.js 静态导出到 `out/`，部署到 Cloudflare Pages；Hono Worker 独立部署，并通过同域 route 绑定 `/api/*`，使生产环境同样以相对路径访问 API。
+**生产环境**：Next.js 静态导出到 `apps/frontend/out/`，部署到 Cloudflare Pages；Hono API 作为独立 Node 服务部署并注入 `POSTGRES_URL`，通过同域 `/api/*` 反向代理访问。
 
-> 注意：`output: "export"` 模式下 `rewrites` 仅在 `next dev` 生效，生产环境依赖 Cloudflare 的同域 route，而非 Next 的 rewrites。
+> 注意：`output: "export"` 模式下 `rewrites` 仅在 `next dev` 生效，生产环境需要自行配置同域反向代理。
 
 ## 适配层（Adapters）
 
-`src/lib/adapter/` 统一封装 Tauri 原生能力与浏览器降级实现，上层代码无需关心运行环境。所有 API 请求统一走 `src/lib/api.ts`（内部使用 `adapter/fetch`），不要直接使用原生 `fetch` 或 Tauri 插件。
+`apps/frontend/src/lib/adapter/` 统一封装 Tauri 原生能力与浏览器降级实现，上层代码无需关心运行环境。所有 API 请求统一走 `apps/frontend/src/lib/api.ts`（内部使用 `adapter/fetch`），不要直接使用原生 `fetch` 或 Tauri 插件。
 
 | 模块 | Tauri | 浏览器降级 | 说明 |
 |------|-------|-----------|------|
@@ -94,102 +106,47 @@ pnpm deploy:worker  # wrangler deploy
 | `adapter/dialog` | `@tauri-apps/plugin-dialog`（`confirm`/`message`） | `window.confirm`/`window.alert` | 统一的确认框/消息框 |
 | `adapter/request` | Rust `proxy` 命令（`tauri_plugin_http::reqwest`） | 抛错（仅 Tauri 可用） | 透明 HTTP 请求，返回标准 `Response`；用于绕过 `adapter/fetch` 的限制、读取任意状态码/响应体 |
 
-> `adapter/request` 仅在 Tauri 环境可用，依赖 Rust 侧的 `proxy` 命令（见 `src-tauri/src/lib.rs`），已启用 gzip/brotli/deflate/zstd 自动解压。
+> `adapter/request` 仅在 Tauri 环境可用，依赖 Rust 侧的 `proxy` 命令（见 `apps/tauri/src/lib.rs`），已启用 gzip/brotli/deflate/zstd 自动解压。
 
 ## 数据库（Database）
 
-Worker 通过环境变量在 D1、SQLite 和 PostgreSQL 引擎间切换，路由代码不变，共享同一套 API schema（`src/shared/schemas/`）。
+本项目只有一个 DB 后端：**PostgreSQL**（`pg` + `drizzle-orm/node-postgres`）。
 
-| 引擎 | 运行时 | 实现 | 切换条件 | 适用场景 |
-|------|--------|------|---------|---------|
-| `d1`（默认） | Cloudflare Workers（Wrangler） | `drizzle-orm/d1` + wrangler 的 D1 binding | `DB_ENGINE` 未设或为其他未知值时生效 | 线上生产；Serverless、自动弹性、托管备份 |
-| `sqlite` | Node（`@hono/node-server` + `tsx`） | `better-sqlite3` 本地文件库 | `DB_ENGINE=sqlite` + `DB_SQLITE_DIR=<dir>` | 本地开发 / Tauri 桌面后端 / 自托管，无需 Cloudflare 账号 |
-| `postgres` | Node（`@hono/node-server` + `tsx`） | `pg` + `drizzle-orm/node-postgres` | `DB_ENGINE=postgres` + `POSTGRES_URL=<url>` | PostgreSQL 自托管 / 云数据库 |
+| 关注点 | 位置 |
+|--------|------|
+| API 校验 / 类型 / 领域辅助函数 | `@repo/schemas`（`packages/schemas`） |
+| 表定义（按业务域命名）、迁移、drizzle 配置 | `@repo/db`（`packages/db`） |
+| 连接（pg Pool + drizzle）、repository | `apps/backend/src/db/` |
 
-### PostgreSQL（Drizzle，Node-only）
+连接串来自 `POSTGRES_URL`，只在后端进程读取，不会进入浏览器 bundle。`apps/backend` 的 `dev` 脚本会自动加载 `apps/backend/.env`（若存在，模板见 `apps/backend/.env.example`）。
 
-PostgreSQL 模式使用原生 `pg` Pool 和 Drizzle PostgreSQL dialect，不尝试兼容
-Wrangler/Cloudflare Worker。启动 Node Worker：
-
-```bash
-POSTGRES_URL=postgres://user:password@localhost:5432/database pnpm dev:postgres
-```
-
-`POSTGRES_URL` 只在 Worker 进程端读取，不会进入浏览器 bundle。PostgreSQL
-table 定义位于 `src/shared/schemas/todo-postgres.ts`，SQLite/D1 继续使用
-`src/shared/schemas/todo.ts`；repository 对外保持相同的 Todo API。
-
-PostgreSQL 迁移使用独立配置和目录：
-
-```bash
-pnpm db:generate:postgres
-POSTGRES_URL=postgres://user:password@localhost:5432/database pnpm migrate:postgres
-```
-
-**关键差异**
-
-- **会话级 read-your-writes**：D1 由 `db.ts` 中间件用 bookmark cookie（`d1_bm`）实现（同请求窗口内写后立即可读）；本地 SQLite 是单写者文件库，天然 read-your-writes，不需要 bookmark。
-- **受影响行数**：D1 在 `result.meta.changes`，better-sqlite3 在 `result.changes`，统一用 `src/worker/db/engine.ts` 的 `affectedRows()` 读取。
-- **打包隔离**：`better-sqlite3`、`node:fs`、`node:path` 均动态 import，确保 `d1` 路径的 CF Workers 打包不会引入原生模块或 Node 文件系统 API。
-
-**Tauri / 桌面与 D1 bookmark**
-
-| 路径 | 策略 | RYW 保证 |
-|------|------|---------|
-| 浏览器同源（`pnpm dev` 经 Next rewrite，或生产同域 `/api/*`） | `d1_bm` cookie，`SameSite=Lax`，`Secure` 仅在 HTTPS URL | 有（middleware 维护 bookmark） |
-| **发版 Tauri 远程 D1**（默认 `DEFAULT_TAURI_BASE_URL`） | **C：不保证 RYW** | 无 — WebView 与远程 API 跨源，`SameSite=Lax` 不能可靠回传 cookie；create-then-list 在 multi-primary D1 上可能短暂不可见 |
-| **本地桌面 sqlite**（推荐） | **A：`pnpm dev:sqlite` / `DB_ENGINE=sqlite`** | 有 — 单写者文件库，不依赖 cookie |
-
-跨源 cookie jar（`SameSite=None; Secure` + plugin-http credentials）为未来项，本模板默认不走。
-
-**切换方式**
-
-- 生产 / 默认（D1）：直接 `pnpm dev` 或 `pnpm deploy:worker`，无需设置环境变量。
-- 本地 SQLite（含推荐的桌面本地 RYW）：
-  ```bash
-  pnpm dev:sqlite   # 内部: DB_ENGINE=sqlite DB_SQLITE_DIR=./.sqlite pnpm dev:worker:sqlite
-  ```
-  数据文件落在 `./.sqlite/app.db`（已加入 `.gitignore`）；`DB_SQLITE_DIR` 可指向任意目录，`PORT` 可覆盖默认 8787 端口。
+需要更换数据库时**整体替换**上面三处（表定义 + 迁移 + 连接层），而不是并行维护多套目录或引擎分支。
 
 **迁移（Migrations）**
 
-Drizzle schema 改动后先 `drizzle-kit generate` 生成 SQL 到 `./drizzle`，再按引擎应用：
-
 ```bash
-pnpm db:generate            # 生成迁移文件（drizzle-kit generate）
-# D1：本地 / 远端分别应用
-pnpm migrate:local          # wrangler d1 migrations apply todos --local
-pnpm migrate:remote         # wrangler d1 migrations apply todos --remote
+pnpm db:generate   # 修改 packages/db/src/todos.ts 后生成 SQL 到 packages/db/migrations
+pnpm db:migrate    # 应用迁移（读取 POSTGRES_URL）
 ```
 
-> D1 用 `wrangler d1 migrations apply`（记录在 `d1_migrations` 表），不要用 `drizzle-kit migrate`。本地 SQLite 引擎在进程启动时自动从 `./drizzle` 应用迁移，无需手动执行。
-
-## 部署到 Cloudflare
+## 部署
 
 1. **前端（Pages）**
    - 构建命令：`pnpm build`
-   - 输出目录：`out`
+   - 输出目录：`apps/frontend/out`
 
-2. **后端（Worker）**
-   ```bash
-   pnpm deploy:worker
-   ```
+2. **后端（Node + PostgreSQL）**
+   - 启动入口：`apps/backend/src/serve.ts`（`@hono/node-server`，默认端口 8787，`PORT` 可覆盖）
+   - 必需配置：`POSTGRES_URL`
+   - 可选：`apps/backend/wrangler.jsonc` 保留了 `main`/assets 配置，如需部署到 Cloudflare Workers，自行注入 `POSTGRES_URL`（secret）并验证 PostgreSQL 连通性
 
-3. **同域 route 绑定**：在 `wrangler.jsonc` 中为 Worker 绑定 `/api/*` 路由（替换为你的域名）：
-   ```jsonc
-   "routes": [
-     { "pattern": "your-domain.com/api/*", "zone_name": "your-domain.com" }
-   ]
-   ```
-   只绑定 `/api/*`，避免 Worker 接管整站覆盖 Pages 静态页面。
+3. **同域**：生产环境把 `/api/*` 与静态站点配置为同域（反向代理或 Worker route），前端代码只使用相对路径 `/api/*`
 
-4. **D1（可选）**：默认引擎为 D1。`wrangler.jsonc` 中已保留 D1 占位配置，启用时替换 `database_id`、运行 `pnpm migrate:remote` 应用迁移；切换本地 SQLite 引擎与迁移细节见上方[数据库](#数据库database)章节。
-
-5. **敏感配置**：使用 `wrangler secret put <NAME>` 设置，不要放入前端环境变量。
+4. **敏感配置**：一律通过环境变量 / secret 管理，不要放入前端环境变量。
 
 ## Tauri iOS
 
-仓库已包含 `src-tauri/`（Tauri v2），可将同一套静态导出的 Next.js 前端打包成 iOS App。首次使用按以下步骤配置：
+仓库已包含 `apps/tauri/`（Tauri v2），可将同一套静态导出的 Next.js 前端打包成 iOS App。首次使用按以下步骤配置：
 
 1. **安装 Rust**：参考 [rustup 官网](https://rustup.rs) 安装 Rust 工具链。
 
@@ -202,9 +159,9 @@ pnpm migrate:remote         # wrangler d1 migrations apply todos --remote
    ```bash
    pnpm tauri ios init
    ```
-   生成 `src-tauri/gen/apple/` 下的 Xcode 工程。
+   生成 `apps/tauri/gen/apple/` 下的 Xcode 工程。
 
-4. **配置签名**：用 Xcode 打开 `src-tauri/gen/apple/native.xcodeproj`，在 Signing & Capabilities 中选择开发 Team（`tauri.conf.json` 里已预填 `developmentTeam: 9CXCT8UD3F`，按需替换为你自己的 Team ID）。
+4. **配置签名**：用 Xcode 打开 `apps/tauri/gen/apple/native.xcodeproj`，在 Signing & Capabilities 中选择开发 Team（`apps/tauri/tauri.conf.json` 里已预填 `developmentTeam: 9CXCT8UD3F`，按需替换为你自己的 Team ID）。
 
 5. **开发运行**：
    ```bash
