@@ -10,16 +10,20 @@ import {
 } from "./i18n-utils";
 
 describe("localizePath", () => {
-  it("prefixes empty path with locale trailing slash", () => {
-    assert.equal(localizePath("", "en"), "/en/");
+  it("keeps the default locale unprefixed", () => {
+    assert.equal(localizePath("", "en"), "/");
+    assert.equal(localizePath("/", "en"), "/");
+    assert.equal(localizePath("/todo", "en"), "/todo/");
   });
 
-  it("prefixes path without locale", () => {
+  it("prefixes non-default locales", () => {
     assert.equal(localizePath("/todo", "zh-CN"), "/zh-CN/todo/");
+    assert.equal(localizePath("/", "zh-CN"), "/zh-CN/");
   });
 
   it("replaces existing locale segment", () => {
     assert.equal(localizePath("/en/todo", "zh-CN"), "/zh-CN/todo/");
+    assert.equal(localizePath("/zh-CN/todo", "en"), "/todo/");
   });
 
   it("leaves external hrefs unchanged", () => {

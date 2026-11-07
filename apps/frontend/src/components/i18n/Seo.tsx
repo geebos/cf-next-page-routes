@@ -21,7 +21,8 @@ function createLocalizedUrl(locale: AppLocale, path: string) {
   const url = new URL(stripped, LOCAL_URL_BASE);
   const segments = url.pathname.split("/").filter(Boolean);
   const pathname = segments.length === 0 ? "" : `/${segments.join("/")}`;
-  return `${SITE_URL}/${locale}${pathname}/`;
+  const prefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
+  return `${SITE_URL}${prefix}${pathname}/`;
 }
 
 export function Seo({ title, description, path }: SeoProps) {

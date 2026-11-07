@@ -130,6 +130,7 @@ packages/i18n/
 - `next dev` / `next build` 由 `next.config.ts` 自动执行 codegen；`apps/frontend` 的 `dev` 同时启动 `@repo/i18n` watcher。
 - backend、根 `typecheck`、根 `test` 不加载 Next 配置，根脚本会先执行 `pnpm i18n:build`。
 - 公共 namespace 由 `getStaticProps` 注入，无额外请求；私有 namespace 由前端统一 `useTranslation`（`@/lib/i18n`）按 manifest 自动请求 `GET /api/i18n/:locale/:namespace`。
+- 路由：默认语言 `en` 使用无前缀 URL（`/`、`/todo/`、`/test/`），其余语言加前缀（`/zh-CN/`、`/zh-CN/todo/`）；`pages/<route>.tsx` 复用 `pages/[locale]/<route>.tsx` 并强制 `DEFAULT_LOCALE`，`getStaticPaths` 只为非默认语言生成页面。站内链接统一走 `localizePath()`。
 - 私有路由经过 `createAuthMiddleware`，默认 resolver 拒绝（401）；响应带 `Cache-Control: private, no-store`。登出时调用 `clearPrivateI18n(i18n)` 清理客户端 bundle。
 
 修改 `locales/**` 后运行 `pnpm i18n:build`（或直接 `pnpm dev`）。新增 locale 时在 `packages/i18n/src/config.ts` 的 `LOCALES` 中加一项即可，`AppLocale` 类型与编译器校验自动跟随。

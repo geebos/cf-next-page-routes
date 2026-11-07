@@ -4,6 +4,10 @@ const { defaultLocale, locales } = getI18nConfig();
 
 export const DEFAULT_LOCALE: AppLocale = defaultLocale;
 export const SUPPORTED_LOCALES = locales;
+// 默认语言使用无前缀 URL，只有其余语言才生成 /[locale]/ 路由。
+export const PREFIXED_LOCALES = SUPPORTED_LOCALES.filter(
+  (locale) => locale !== DEFAULT_LOCALE,
+);
 
 export const PREFERRED_LOCALE_KEY = "preferred-locale";
 

@@ -13,7 +13,7 @@ packages/i18n/
 │   └── private/<namespace>/...   # 仅后端可读取，前端运行时按需请求
 ├── src/
 │   ├── config.ts                 # 配置函数：defaultLocale + locales
-│   ├── settings.ts               # DEFAULT_LOCALE / SUPPORTED_LOCALES / 校验
+│   ├── settings.ts               # DEFAULT_LOCALE / SUPPORTED_LOCALES / PREFIXED_LOCALES / 校验
 │   ├── types.ts                  # Messages / LocaleResources
 │   ├── paths.ts                  # 文件路径 → namespace/container 解析
 │   ├── compile.ts                # 编译器核心（Node only）

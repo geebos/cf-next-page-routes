@@ -6,6 +6,7 @@ export {
 export {
   DEFAULT_LOCALE,
   PREFERRED_LOCALE_KEY,
+  PREFIXED_LOCALES,
   SUPPORTED_LOCALES,
   isSupportedLocale,
   normalizeLocale,

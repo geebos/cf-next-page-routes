@@ -6,6 +6,7 @@ import type {
 import {
   DEFAULT_LOCALE,
   isSupportedLocale,
+  PREFIXED_LOCALES,
   SUPPORTED_LOCALES,
   type AppLocale,
   type Messages,
@@ -34,18 +35,16 @@ export function getLocaleFromContext(
   return isSupportedLocale(locale) ? locale : null;
 }
 
+// 默认语言走无前缀路由，只有其余语言生成 /[locale]/* 页面。
 export const getLocaleStaticPaths: GetStaticPaths = async () => ({
-  paths: SUPPORTED_LOCALES.map((locale) => ({ params: { locale } })),
+  paths: PREFIXED_LOCALES.map((locale) => ({ params: { locale } })),
   fallback: false,
 });
 
-export async function getI18nProps(
-  ctx: StaticPageContext,
+export async function getI18nPropsForLocale(
+  locale: AppLocale,
   namespaces: string[],
-): Promise<I18nProps | null> {
-  const locale = getLocaleFromContext(ctx);
-  if (!locale) return null;
-
+): Promise<I18nProps> {
   const messages: Messages = {};
   const fallbackMessages: Messages = {};
 
@@ -64,13 +63,25 @@ export async function getI18nProps(
   return { locale, messages, fallbackMessages };
 }
 
-export function makeStaticProps(namespaces: string[]) {
+export async function getI18nProps(
+  ctx: StaticPageContext,
+  namespaces: string[],
+): Promise<I18nProps | null> {
+  const locale = getLocaleFromContext(ctx);
+  return locale ? getI18nPropsForLocale(locale, namespaces) : null;
+}
+
+export function makeStaticProps(
+  namespaces: string[],
+  forcedLocale?: AppLocale,
+) {
   return async (
     ctx: StaticPageContext,
   ): Promise<GetStaticPropsResult<I18nProps>> => {
-    const props = await getI18nProps(ctx, namespaces);
-    if (!props) return { notFound: true as const };
-    return { props };
+    // 根页面没有 params.locale，由调用方强制默认语言。
+    const locale = forcedLocale ?? getLocaleFromContext(ctx);
+    if (!locale) return { notFound: true as const };
+    return { props: await getI18nPropsForLocale(locale, namespaces) };
   };
 }
 

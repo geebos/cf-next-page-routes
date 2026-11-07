@@ -5,6 +5,7 @@ import { isActive } from "./navigate";
 
 describe("isActive", () => {
   it("matches root with optional trailing slash and locale", () => {
+    assert.equal(isActive("/", "/"), true);
     assert.equal(isActive("/en/", "/"), true);
     assert.equal(isActive("/zh-CN/", "/"), true);
   });

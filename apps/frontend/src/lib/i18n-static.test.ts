@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { getI18nProps, getLocaleStaticPaths } from "./i18n-static";
-import type { Messages } from "@repo/i18n";
+import { getI18nProps, getLocaleStaticPaths, makeStaticProps } from "./i18n-static";
+import { DEFAULT_LOCALE, type Messages } from "@repo/i18n";
 
 function namespaceMessages(messages: Messages, namespace: string): Messages {
   return messages[namespace] as Messages;
@@ -58,12 +58,38 @@ describe("getI18nProps", () => {
 });
 
 describe("getLocaleStaticPaths", () => {
-  it("returns paths for each supported locale", async () => {
+  it("only generates paths for prefixed locales", async () => {
     const result = await getLocaleStaticPaths({} as never);
 
     assert.deepEqual(result, {
-      paths: [{ params: { locale: "en" } }, { params: { locale: "zh-CN" } }],
+      paths: [{ params: { locale: "zh-CN" } }],
       fallback: false,
+    });
+  });
+});
+
+describe("makeStaticProps", () => {
+  it("resolves the locale from params for [locale] routes", async () => {
+    const props = await makeStaticProps(["common"])(context("zh-CN"));
+
+    assert.ok("props" in props);
+    assert.equal(props.props.locale, "zh-CN");
+  });
+
+  it("forces the default locale for unprefixed routes", async () => {
+    const props = await makeStaticProps(["common"], DEFAULT_LOCALE)({});
+
+    assert.ok("props" in props);
+    assert.equal(props.props.locale, "en");
+    assert.equal(
+      namespaceMessages(props.props.messages, "common").siteName,
+      "Example",
+    );
+  });
+
+  it("returns notFound for an unsupported locale", async () => {
+    assert.deepEqual(await makeStaticProps(["common"])(context("fr")), {
+      notFound: true,
     });
   });
 });

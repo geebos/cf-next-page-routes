@@ -5,6 +5,7 @@ import {
   DEFAULT_LOCALE,
   isSupportedLocale,
   normalizeLocale,
+  PREFIXED_LOCALES,
   resolveAppLocale,
   SUPPORTED_LOCALES,
 } from "./settings";
@@ -41,6 +42,10 @@ describe("normalizeLocale", () => {
 
   it("SUPPORTED_LOCALES matches en then zh-CN", () => {
     assert.deepEqual([...SUPPORTED_LOCALES], ["en", "zh-CN"]);
+  });
+
+  it("PREFIXED_LOCALES excludes the default locale", () => {
+    assert.deepEqual([...PREFIXED_LOCALES], ["zh-CN"]);
   });
 });
 

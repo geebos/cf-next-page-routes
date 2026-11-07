@@ -5,6 +5,7 @@ import {
   isSupportedLocale,
   type AppLocale,
 } from "@repo/i18n";
+import { localizePath } from "@/lib/i18n-utils";
 
 const messages: Record<
   AppLocale,
@@ -45,7 +46,7 @@ export default function NotFoundPage() {
     <main className="pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <h1>{m.title}</h1>
       <p>{m.description}</p>
-      <Link href={`/${locale}/`}>{m.home}</Link>
+      <Link href={localizePath("/", locale)}>{m.home}</Link>
     </main>
   );
 }

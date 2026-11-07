@@ -26,7 +26,7 @@ const EMPTY_MESSAGES: Messages = {};
 
 function App({ Component, pageProps }: AppProps<PageProps>) {
   const router = useRouter();
-  const skipLayout = router.pathname === "/" || router.pathname === "/404";
+  const skipLayout = router.pathname === "/404";
 
   useEffect(() => {
     void warmupNetworkPermission();

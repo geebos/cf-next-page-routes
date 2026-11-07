@@ -1,10 +1,6 @@
-import { isTauri } from "@tauri-apps/api/core";
-import { locale as getTauriLocale } from "@tauri-apps/plugin-os";
 import {
   DEFAULT_LOCALE,
   isSupportedLocale,
-  normalizeLocale,
-  PREFERRED_LOCALE_KEY,
   type AppLocale,
 } from "@repo/i18n";
 
@@ -14,8 +10,8 @@ function isExternalHref(href: string): boolean {
   return /^(https?:|mailto:|tel:|#|\/\/)/.test(href);
 }
 
+// 给站内路径加上/替换 locale 前缀（默认语言无前缀），并保留查询串与 hash。
 export function localizePath(href: string, locale: AppLocale): string {
-  if (!href) return `/${locale}/`;
   if (isExternalHref(href)) return href;
 
   const url = new URL(
@@ -25,12 +21,13 @@ export function localizePath(href: string, locale: AppLocale): string {
   const segments = url.pathname.split("/").filter(Boolean);
 
   if (segments.length > 0 && isSupportedLocale(segments[0])) {
-    segments[0] = locale;
-  } else {
-    segments.unshift(locale);
+    segments.shift();
   }
 
-  return `/${segments.join("/")}/${url.search}${url.hash}`;
+  const pathname = segments.length === 0 ? "" : `/${segments.join("/")}`;
+  const prefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
+
+  return `${prefix}${pathname}/${url.search}${url.hash}`;
 }
 
 export function stripLocalePrefix(path: string): string {
@@ -82,31 +79,4 @@ export function getBaseUrl(): string {
  */
 export function getSiteUrl(): string {
   return getBaseUrl() || "https://example.com";
-}
-
-/**
- * Detect the initial locale for the user. Priority:
- *   1. localStorage[PREFERRED_LOCALE_KEY] — explicit choice via LanguageSwitcher
- *   2. Tauri system locale (read-only, does NOT write to storage)
- *   3. DEFAULT_LOCALE
- *
- * Whether the app runs in Tauri affects detection but not setting — the
- * LanguageSwitcher always writes to storage regardless of environment.
- */
-export async function detectInitialLocale(): Promise<AppLocale> {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem(PREFERRED_LOCALE_KEY);
-    if (stored && isSupportedLocale(stored)) return stored;
-  }
-
-  if (isTauri()) {
-    try {
-      const systemLocale = await getTauriLocale();
-      if (systemLocale) return normalizeLocale(systemLocale);
-    } catch {
-      // ignore — fall through to default
-    }
-  }
-
-  return DEFAULT_LOCALE;
 }
