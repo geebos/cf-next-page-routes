@@ -13,8 +13,8 @@ export type CreateAppOptions = {
   getAuthFromRequest?: AuthResolver;
 };
 
-// 构建 Hono app。Node 入口（serve.ts）与 Worker 部署入口（默认导出）共用此构造，
-// 保证两条运行时路径挂载的中间件/路由完全一致。
+// 构建 Hono app。Node 入口（serve.ts）与测试共用此构造，
+// 保证静态站点挂载前后的中间件/路由顺序一致。
 export function createApp(options: CreateAppOptions = {}) {
   // 默认拒绝：未配置真实 auth resolver 时，私有 locale 一律 401。
   const getAuthFromRequest: AuthResolver =
@@ -33,6 +33,3 @@ export function createApp(options: CreateAppOptions = {}) {
 
   return app;
 }
-
-// Worker 部署入口（wrangler）；DB 通过 POSTGRES_URL 连接 PostgreSQL。
-export default createApp();

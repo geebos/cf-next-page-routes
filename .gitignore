@@ -20,6 +20,7 @@ out/
 
 # production
 build/
+dist/
 
 # misc
 .DS_Store
@@ -45,9 +46,6 @@ packages/i18n/.test-tmp*/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# wrangler state
-.wrangler
 
 # sqlite data dir (DB_ENGINE=sqlite local backend)
 .sqlite

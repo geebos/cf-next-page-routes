@@ -1,0 +1,44 @@
+# 资源部署编排（DEPLOY_MODE=assets）：一个只提供公共媒体的容器。
+#
+# 静态根里只有 MEDIA_STATIC_ENTRIES 登记过的路径；没有页面、没有 JS/CSS、
+# 不挂 /api/*，因此也不需要数据库与任何密钥。
+#
+# 使用：
+#   docker compose -f docker-compose.assets.yml up -d --build
+#
+# 媒体清单为空时（默认），这个容器的静态根为空，所有路径都返回 404 JSON；
+# 加入媒体后在 packages/schemas/src/static-assets.ts 登记同一批路径。
+#
+# 端口只发布到宿主机回环；对外的资源域名由 Nginx / CDN 回源 http://127.0.0.1:8081。
+# 站点侧的 NEXT_PUBLIC_ASSETS_BASE_URL 必须指向这个对外域名。
+
+services:
+  assets:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
+        # 只打包媒体：构建脚本清空导出目录后从 public/ 复制清单内的路径
+        DEPLOY_MODE: assets
+        # assets 产物不含页面，这里只是让 next build 能跑完。
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-https://example.com}
+    image: cf-next-page-routes-assets:local
+    environment:
+      PORT: "8787"
+      HOST: 0.0.0.0
+      STATIC_ROOT: /app/static
+      DEPLOY_MODE: assets
+    ports:
+      - "127.0.0.1:8081:8787"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped

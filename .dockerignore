@@ -1,0 +1,23 @@
+# 构建上下文 = 仓库根；只把运行期与构建期真正需要的内容送进 Docker。
+# 任何 .env 都不允许进入镜像层。
+.git
+**/node_modules
+**/.next
+**/out
+**/dist
+**/*.log
+**/.DS_Store
+
+.env
+.env.*
+!.env.example
+apps/frontend/.env
+apps/frontend/.env.*
+apps/backend/.env
+apps/backend/.env.*
+
+docs/
+deploy/
+docker-compose*.yml
+apps/tauri/target
+apps/tauri/gen

@@ -6,7 +6,7 @@ import { schema } from "@repo/db";
 // 迁移、drizzle 配置），而不是并行维护多套实现。
 //
 // POSTGRES_URL 是唯一配置来源；pg / drizzle 用动态 import，避免把原生驱动
-// 与 Node 网络模块静态带进 Worker 打包路径。
+// 与 Node 网络模块静态带进打包产物。
 export type AppDB = NodePgDatabase<typeof schema>;
 
 let db: AppDB | null = null;

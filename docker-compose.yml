@@ -1,0 +1,71 @@
+# 站点部署编排（DEPLOY_MODE=site）：单容器，Hono 同时提供页面静态文件与 /api/*。
+#
+# 媒体不在站点容器里：由 NEXT_PUBLIC_ASSETS_BASE_URL 指向的 assets 容器 / CDN 提供。
+# 媒体清单为空时（packages/schemas/src/static-assets.ts）不会要求该域名。
+#
+# 使用：
+#   1. cp .env.example .env，至少填 NEXT_PUBLIC_BASE_URL
+#   2. docker compose up -d --build
+#   3. 首次部署前在宿主机应用迁移（PostgreSQL 发布在 127.0.0.1:5433）：
+#      POSTGRES_URL=postgres://postgres:postgres@127.0.0.1:5433/cf_next_page_routes pnpm db:migrate
+#
+# 端口：只发布到宿主机回环 127.0.0.1:8787，容器不处理 TLS；
+# 入口是宿主机 Nginx（样例见 deploy/nginx.conf），它反代这个地址并负责 TLS。
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cf_next_page_routes
+    ports:
+      # 仅回环，供宿主机运行 drizzle 迁移；生产请改掉默认口令。
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cf_next_page_routes"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
+        # NEXT_PUBLIC_* 在构建期内联进浏览器产物，改值必须重新 build
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:?set NEXT_PUBLIC_BASE_URL in .env}
+        NEXT_PUBLIC_ASSETS_BASE_URL: ${NEXT_PUBLIC_ASSETS_BASE_URL:-}
+        # 该容器只装站点：页面、JS/CSS、API；媒体被构建脚本从静态根删掉
+        DEPLOY_MODE: site
+    image: cf-next-page-routes-site:local
+    environment:
+      PORT: "8787"
+      HOST: 0.0.0.0
+      STATIC_ROOT: /app/static
+      DEPLOY_MODE: site
+      POSTGRES_URL: postgres://postgres:postgres@postgres:5432/cf_next_page_routes
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # 只发布到宿主机回环：反代与 TLS 交给宿主机 Nginx。
+    ports:
+      - "127.0.0.1:8787:8787"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -137,8 +137,8 @@ apps/
 │   │   ├── pages/      # Page routes, organized by route
 │   │   │   ├── _app.tsx        # Injects global Layout and globals.css
 │   │   │   ├── _document.tsx   # HTML skeleton
-│   │   │   ├── index.tsx       # Language landing page
-│   │   │   └── [locale]/       # Localized route tree
+│   │   │   ├── index.tsx       # Default-locale home page (reuses [locale]/index)
+│   │   │   └── [locale]/       # Localized route tree (non-default locales)
 │   │   ├── components/
 │   │   │   ├── ui/     # shadcn/ui component library, do not edit directly
 │   │   │   ├── layout/ # Layout / Page / Navigate
@@ -148,20 +148,20 @@ apps/
 │   │   │           └── forms/ # Form components for the page
 │   │   │               └── <name>-form.tsx
 │   │   ├── hooks/      # React hooks
-│   │   ├── lib/        # Frontend-only utilities; api.ts is the only API entry; i18n/ is the unified translate hook
+│   │   ├── lib/        # Frontend utilities; api.ts is the only API entry; i18n/ is the translate hook; assets.ts builds media URLs
 │   │   └── styles/     # Global styles / Tailwind theme
 │   ├── public/         # Static assets (locale copy lives in @repo/i18n)
-│   ├── next.config.ts  # Static export + dev rewrites proxy + i18n codegen
+│   ├── next.config.ts  # Static export + DEPLOY_MODE trimming + dev proxy + i18n codegen
 │   └── components.json # shadcn config
-├── backend/            # Hono Worker API
+├── backend/            # Hono API + static site
 │   ├── src/
-│   │   ├── index.ts    # Worker entry; imports routes centrally
-│   │   ├── serve.ts    # Node entry (@hono/node-server) + PostgreSQL
+│   │   ├── index.ts    # App factory; imports routes centrally
+│   │   ├── serve.ts    # Node entry (@hono/node-server): static + /api/* + PostgreSQL
 │   │   ├── routes/     # Routes split by domain, as files or directories
-│   │   ├── middleware/ # Worker middleware
+│   │   ├── middleware/ # Backend middleware
 │   │   ├── db/         # pg connection + repository (schema from @repo/db)
-│   │   └── lib/        # Worker utilities
-│   └── wrangler.jsonc  # Optional Worker deployment config
+│   │   └── lib/        # static-site, static-assets, errors, validators
+│   └── scripts/build.mjs # esbuild single-file build (dist/server.mjs)
 └── tauri/              # Tauri v2 shell (Rust)
 packages/
 ├── schemas/            # Shared Zod schemas, API types and domain helpers (@repo/schemas)
@@ -179,6 +179,8 @@ packages/
 │   └── generated/      # gitignored codegen output (manifest/public/private)
 └── lib/                # Shared framework-agnostic utilities (@repo/lib)
 ```
+
+Deployment files: `Dockerfile`, `docker-compose.yml`, `docker-compose.assets.yml`, `deploy/nginx.conf`.
 
 # 7. Project Rules
 
@@ -201,9 +203,15 @@ packages/
 - Keep validation/types and table definitions separate: `@repo/schemas` is the API-level source of truth, `@repo/db` is the persistence-level source of truth.
 - PostgreSQL is the only database backend. Do not add parallel dialect directories or engine switches; to change databases, replace `packages/db` and `apps/backend/src/db` wholesale.
 
-## Worker
+## Backend
 
 - Organize routes by domain under `apps/backend/src/routes/` and mount them centrally in `apps/backend/src/index.ts`.
+
+## Deployment
+
+- `pnpm build` exports to `apps/frontend/out/` and trims it by `DEPLOY_MODE` (`both` / `site` / `assets`); media paths live in `packages/schemas/src/static-assets.ts`.
+- `apps/backend/src/serve.ts` serves `STATIC_ROOT` + `/api/*`; `assets` mode serves only the media whitelist and skips PostgreSQL.
+- Public media URLs go through `assetUrl()` with `NEXT_PUBLIC_ASSETS_BASE_URL`; do not hardcode media origins.
 
 ## Forms
 

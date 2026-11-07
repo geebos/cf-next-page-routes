@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "tsx --env-file-if-exists=.env --watch src/serve.ts",
     "start": "tsx --env-file-if-exists=.env src/serve.ts",
+    "build": "node scripts/build.mjs",
+    "preview": "node --env-file-if-exists=.env dist/server.mjs",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test \"src/**/*.test.ts\""
   },
@@ -20,11 +22,10 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260619.1",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
+    "esbuild": "^0.28.2",
     "tsx": "^4.23.0",
-    "typescript": "^5",
-    "wrangler": "^4.103.0"
+    "typescript": "^5"
   }
 }

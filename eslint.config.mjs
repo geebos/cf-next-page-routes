@@ -15,6 +15,9 @@ const eslintConfig = defineConfig([
     // Workspace build output and Rust shell:
     "apps/frontend/.next/**",
     "apps/frontend/out/**",
+    "apps/backend/dist/**",
+    "dist/**",
+    "packages/i18n/generated/**",
     "apps/tauri/**",
   ]),
 ]);

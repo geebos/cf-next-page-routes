@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -k -n i18n,next \"pnpm --filter @repo/i18n dev\" \"next dev\"",
-    "build": "next build",
-    "start": "next start",
-    "preview": "node -e \"require('fs').copyFileSync('serve.json','out/serve.json')\" && serve --listen 3001 out",
+    "build": "next build && tsx scripts/prepare-static.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test \"src/**/*.test.ts\""
   },
@@ -49,7 +47,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "concurrently": "^10.0.3",
-    "serve": "^14.2.6",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",
     "typescript": "^5"

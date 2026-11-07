@@ -1,6 +1,6 @@
 # cf-next-pages-routes
 
-一个基于 **Next.js 静态导出 + Hono** 的模板仓库。前端构建为纯静态文件部署到 Cloudflare Pages，API 以独立 Node 服务运行（PostgreSQL），开发与生产均通过同域 `/api/*` 访问后端。
+一个基于 **Next.js 静态导出 + Hono** 的模板仓库。前端构建为纯静态文件，由同一个 Hono Node 进程提供页面与 `/api/*`（PostgreSQL），可选把公共媒体拆到独立域名；开发与生产都通过同域 `/api/*` 访问后端。
 
 ## 技术栈
 
@@ -15,7 +15,8 @@
 - [Hono](https://hono.dev) — Web 框架（Node 运行时为 `@hono/node-server`）
 - [PostgreSQL](https://www.postgresql.org/) + [`pg`](https://node-postgres.com/) — 唯一 DB 后端
 - [Drizzle ORM](https://orm.drizzle.team/) / Drizzle Kit — 表定义与迁移
-- [Wrangler](https://developers.cloudflare.com/workers/wrangler/) — 可选的 Cloudflare 部署入口
+- [esbuild](https://esbuild.github.io/) — 把 Hono 应用打成单文件产物（`dist/server.mjs`）
+- [Docker](https://www.docker.com/) + Nginx — 可选的容器部署与反向代理（`Dockerfile`、`docker-compose*.yml`、`deploy/nginx.conf`）
 
 **工具链**
 - [pnpm](https://pnpm.io) 包管理
@@ -31,9 +32,9 @@
 apps/
 ├── frontend/        # Next.js 前端（静态导出，含 components / hooks / i18n / styles）
 │   └── src/lib/     # 前端专用工具（adapter/、api.ts、i18n-*）
-├── backend/         # Hono API（Node 入口 serve.ts）
-│   ├── src/         # index.ts 入口、routes/、middleware/、db/、lib/
-│   └── wrangler.jsonc      # 可选的 Worker 部署配置（静态资源）
+├── backend/         # Hono API + 静态站点（Node 入口 serve.ts）
+│   ├── src/         # index.ts 入口、serve.ts、routes/、middleware/、db/、lib/（静态服务）
+│   └── scripts/     # build.mjs：esbuild 单文件产物
 └── tauri/           # Tauri v2 壳工程（Rust + iOS gen/target）
 packages/
 ├── schemas/         # @repo/schemas：前后端共享的 Zod schema 与类型
@@ -50,11 +51,13 @@ packages/
 
 DB 后端固定为 PostgreSQL，迁移、表定义、drizzle 配置都集中在 `@repo/db`；需要变更数据库时**整体替换** `packages/db` 与 `apps/backend/src/db`，不并行维护多套目录。
 
+部署相关文件在仓库根：`Dockerfile`、`docker-compose.yml`（站点 + PostgreSQL）、`docker-compose.assets.yml`（资源域名）、`deploy/nginx.conf`（反向代理样例）。
+
 前端 `src/lib/utils.ts` 只是 `@repo/lib` 的再导出，用于保持 shadcn 的 `@/lib/utils` 别名不变。
 
 ## 快速开始
 
-需要先准备一个 PostgreSQL，并把连接串写入 `apps/backend/.env`（参考 `apps/backend/.env.example`），后端 `dev` 会自动加载该文件。
+需要先准备一个 PostgreSQL（本地可用 `docker compose -f docker-compose.dev.yml up -d`，监听 `127.0.0.1:5433`），并把连接串写入 `apps/backend/.env`（参考 `apps/backend/.env.example`），后端 `dev` 会自动加载该文件。
 
 ```bash
 pnpm install
@@ -82,7 +85,10 @@ curl http://localhost:3000/api/hello    # {"name":"John Doe"}
 其他脚本：
 
 ```bash
-pnpm build          # 静态导出到 apps/frontend/out/
+pnpm build          # 静态导出到 apps/frontend/out/，按 DEPLOY_MODE 裁剪
+pnpm start          # 源码入口启动 Hono（可带 STATIC_ROOT 同时提供页面）
+pnpm preview        # 运行 esbuild 产物 dist/server.mjs（先 pnpm --filter @repo/backend build）
+pnpm dev:api        # 只启动后端（需要 i18n codegen）
 pnpm typecheck      # 各 workspace 包 tsc --noEmit
 pnpm lint           # eslint（frontend）
 pnpm test           # 各 workspace 包 node:test
@@ -97,9 +103,9 @@ pnpm db:migrate     # drizzle-kit migrate（需 POSTGRES_URL）
 
 **开发环境**：`next dev` 与后端 `tsx src/serve.ts`（PostgreSQL）同时运行，Next.js 通过 `rewrites` 把 `/api/*` 转发到 `:8787`。前后端同域（`localhost:3000`），前端代码统一使用相对路径 `/api/*`。
 
-**生产环境**：Next.js 静态导出到 `apps/frontend/out/`，部署到 Cloudflare Pages；Hono API 作为独立 Node 服务部署并注入 `POSTGRES_URL`，通过同域 `/api/*` 反向代理访问。
+**生产环境**：`pnpm build` 静态导出到 `apps/frontend/out/`（按 `DEPLOY_MODE` 裁剪），Hono Node 进程带 `STATIC_ROOT` 同时提供页面与 `/api/*`；PostgreSQL 通过 `POSTGRES_URL` 连接。容器与反向代理见下方「部署」。
 
-> 注意：`output: "export"` 模式下 `rewrites` 仅在 `next dev` 生效，生产环境需要自行配置同域反向代理。
+> 注意：`output: "export"` 模式下 `rewrites` 仅在 `next dev` 生效；生产环境由同一个 Hono 进程保证同域 `/api/*`，不需要额外的转发规则。
 
 ## 适配层（Adapters）
 
@@ -158,18 +164,44 @@ pnpm db:migrate    # 应用迁移（读取 POSTGRES_URL）
 
 ## 部署
 
-1. **前端（Pages）**
-   - 构建命令：`pnpm build`
-   - 输出目录：`apps/frontend/out`
+生产形态是**一个 Hono 进程**：`apps/backend/src/serve.ts` 带 `STATIC_ROOT` 同时提供 Next 静态导出与 `/api/*`；`PORT`、`HOST`、`POSTGRES_URL` 是运行期变量。
 
-2. **后端（Node + PostgreSQL）**
-   - 启动入口：`apps/backend/src/serve.ts`（`@hono/node-server`，默认端口 8787，`PORT` 可覆盖）
-   - 必需配置：`POSTGRES_URL`
-   - 可选：`apps/backend/wrangler.jsonc` 保留了 `main`/assets 配置，如需部署到 Cloudflare Workers，自行注入 `POSTGRES_URL`（secret）并验证 PostgreSQL 连通性
+### 部署模式（DEPLOY_MODE）
 
-3. **同域**：生产环境把 `/api/*` 与静态站点配置为同域（反向代理或 Worker route），前端代码只使用相对路径 `/api/*`
+| 值 | `out/`（静态根） | 进程提供 | 编排 |
+| --- | --- | --- | --- |
+| `both`（默认） | 页面 + `_next` + 媒体 + `favicon.ico` | 站点 + 媒体 + `/api/*` | 默认产物 |
+| `site` | 页面 + `_next` + `favicon.ico` | 站点 + `/api/*` | `docker-compose.yml` |
+| `assets` | 只有媒体 | 只有媒体，不挂 `/api/*` | `docker-compose.assets.yml` |
 
-4. **敏感配置**：一律通过环境变量 / secret 管理，不要放入前端环境变量。
+- `pnpm build` 末尾由 `apps/frontend/scripts/prepare-static.ts` 按 `DEPLOY_MODE` 裁剪 `out/`；不设等同 `both`，非法值构建/启动直接失败。
+- 公共媒体清单在 `packages/schemas/src/static-assets.ts`（当前为空）。加入媒体后，`site` 必须给 `NEXT_PUBLIC_ASSETS_BASE_URL`，站内引用统一走 `assetUrl()`（`apps/frontend/src/lib/assets.ts`）。
+- `assets` 容器不需要 `POSTGRES_URL`。
+
+### Docker Compose
+
+```sh
+cp .env.example .env             # 至少填 NEXT_PUBLIC_BASE_URL
+docker compose up -d --build     # 站点 + PostgreSQL
+docker compose -f docker-compose.assets.yml up -d --build   # 资源域名容器
+
+# 首次部署前应用迁移（PostgreSQL 发布在宿主机 127.0.0.1:5433）
+POSTGRES_URL=postgres://postgres:postgres@127.0.0.1:5433/cf_next_page_routes pnpm db:migrate
+```
+
+站点只发布到 `127.0.0.1:8787`，反代与 TLS 见 `deploy/nginx.conf`。`NEXT_PUBLIC_*` 与 `DEPLOY_MODE` 是构建参数，改值必须重建。
+
+### 不用容器时
+
+```sh
+NEXT_PUBLIC_BASE_URL=https://example.com pnpm build
+pnpm --filter @repo/backend build
+POSTGRES_URL=... STATIC_ROOT=apps/frontend/out node apps/backend/dist/server.mjs
+```
+
+`STATIC_ROOT` 为空时只跑 API。`/en/*` → 无前缀的 301 由 `apps/backend/src/lib/static-site.ts` 自己发；只有把 `out/` 直接交给 Nginx/对象存储时才需要在反代侧重写。
+
+环境变量模板：`apps/frontend/.env.example`（构建期）、`apps/backend/.env.example`（运行期）、根 `.env.example`（compose）。
 
 ## Tauri iOS
 
