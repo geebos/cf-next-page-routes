@@ -15,7 +15,8 @@
     "test": "pnpm i18n:build && pnpm -r --if-present test",
     "db:generate": "pnpm --filter @repo/db generate",
     "db:migrate": "pnpm --filter @repo/db migrate",
-    "tauri": "pnpm --filter @repo/tauri exec tauri"
+    "tauri": "pnpm --filter @repo/tauri exec tauri",
+    "tauri:ios:build": "NEXT_PUBLIC_BASE_URL=https://template.geebosblog.com pnpm tauri ios build"
   },
   "devDependencies": {
     "concurrently": "^10.0.3",
