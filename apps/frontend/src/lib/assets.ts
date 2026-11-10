@@ -1,8 +1,10 @@
-// 公共媒体（图片/视频）的可选独立域名，构建期由 NEXT_PUBLIC_ASSETS_BASE_URL 注入。
+import { normalizeAssetsBaseUrl } from "@repo/schemas";
+
+// 公共媒体（图片/视频）与 Next 浏览器产物的独立域名，构建期由 NEXT_PUBLIC_ASSETS_BASE_URL 注入。
 // NEXT_PUBLIC_ 前缀是硬性的：Next 只把这类变量内联进浏览器产物，静态导出与浏览器必须读到同一个值。
-export const ASSETS_BASE_URL = (process.env.NEXT_PUBLIC_ASSETS_BASE_URL || "")
-  .trim()
-  .replace(/\/+$/, "");
+export const ASSETS_BASE_URL = normalizeAssetsBaseUrl(
+  process.env.NEXT_PUBLIC_ASSETS_BASE_URL,
+);
 
 // 未配置时原样返回根相对路径（同源），配置后拼成 `${base}${path}`；base 可带路径前缀。
 export function assetUrl(path: string): string {

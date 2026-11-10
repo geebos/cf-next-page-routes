@@ -171,11 +171,13 @@ pnpm db:migrate    # 应用迁移（读取 POSTGRES_URL）
 | 值 | `out/`（静态根） | 进程提供 | 编排 |
 | --- | --- | --- | --- |
 | `both`（默认） | 页面 + `_next` + 媒体 + `favicon.ico` | 站点 + 媒体 + `/api/*` | 默认产物 |
-| `site` | 页面 + `_next` + `favicon.ico` | 站点 + `/api/*` | `docker-compose.yml` |
-| `assets` | 只有媒体 | 只有媒体，不挂 `/api/*` | `docker-compose.assets.yml` |
+| `site` | 页面 + `_next/data` + `favicon.ico` | 站点 + `/api/*` | `docker-compose.yml` |
+| `assets` | `_next`（不含 `_next/data`）+ 媒体 | 浏览器产物 + 媒体，不挂 `/api/*` | `docker-compose.assets.yml` |
 
 - `pnpm build` 末尾由 `apps/frontend/scripts/prepare-static.ts` 按 `DEPLOY_MODE` 裁剪 `out/`；不设等同 `both`，非法值构建/启动直接失败。
-- 公共媒体清单在 `packages/schemas/src/static-assets.ts`（当前为空）。加入媒体后，`site` 必须给 `NEXT_PUBLIC_ASSETS_BASE_URL`，站内引用统一走 `assetUrl()`（`apps/frontend/src/lib/assets.ts`）。
+- 浏览器产物（`_next/static` 下的 JS/CSS/manifest，文件名带哈希）由资源域名提供：`site` 构建用 `assetPrefix` 让页面直接引用该域名，因此 `site` 必须给 `NEXT_PUBLIC_ASSETS_BASE_URL`；`assets` 产物里没有页面，不需要该变量。
+- `_next/data` 是客户端路由按路径同源取数的页面数据（不经 `assetPrefix`），始终留在站点产物里，也永远不在 assets 白名单内。
+- 公共媒体清单在 `packages/schemas/src/static-assets.ts`（当前为空）。站内引用统一走 `assetUrl()`（`apps/frontend/src/lib/assets.ts`）。
 - `assets` 容器不需要 `POSTGRES_URL`。
 
 ### Docker Compose

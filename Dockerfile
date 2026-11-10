@@ -18,7 +18,8 @@ ENV npm_config_registry=${NPM_REGISTRY}
 RUN npm install -g pnpm@10.12.3
 
 # NEXT_PUBLIC_* 会在构建期内联进浏览器产物，必须作为构建参数传入。
-# DEPLOY_MODE 决定静态根里装什么：both 全量、site 删媒体、assets 只留媒体
+# DEPLOY_MODE 决定静态根里装什么：both 全量、site 删 _next/static 与媒体、
+# assets 只留 _next（不含 _next/data）与媒体
 # （见 apps/frontend/scripts/prepare-static.ts）。
 ARG NEXT_PUBLIC_BASE_URL=""
 ARG NEXT_PUBLIC_ASSETS_BASE_URL=""

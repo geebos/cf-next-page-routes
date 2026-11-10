@@ -1,23 +1,34 @@
 import { existsSync } from "node:fs";
-import { cp, mkdir, rm } from "node:fs/promises";
+import { cp, readdir, rm } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import {
   MEDIA_STATIC_ENTRIES,
+  NEXT_ASSET_DIR,
+  NEXT_DATA_DIR,
+  normalizeAssetsBaseUrl,
   parseDeployMode,
   type DeployMode,
 } from "@repo/schemas";
 
 // 构建期把 next 的导出目录整理成「该部署模式的静态根」：
 //   both   → 原样：页面 + _next + 媒体 + favicon
-//   site   → 删掉媒体（由资源域名提供），页面与 JS/CSS 保留
-//   assets → 只保留媒体，页面与 JS/CSS 全部丢弃
+//   site   → 删掉媒体与 _next/static（都由资源域名提供），页面与 _next/data 保留
+//   assets → 只保留媒体与 _next（去掉 _next/data），页面全部丢弃
 // 三种模式共用同一个 out/ 与同一个 STATIC_ROOT，所以 Dockerfile 不需要按模式分支拷贝。
 const packageRoot = resolve(import.meta.dirname, "..");
 const outDir = join(packageRoot, "out");
 const publicDir = join(packageRoot, "public");
 
+// _next/data 是客户端路由同源取数的页面数据，不经 assetPrefix，必须留在站点。
+const nextDir = join(outDir, NEXT_ASSET_DIR);
+const nextStaticDir = join(nextDir, "static");
+const nextDataDir = join(nextDir, NEXT_DATA_DIR);
+
 async function main() {
   const mode = parseDeployMode(process.env.DEPLOY_MODE);
+  const assetsBaseUrl = normalizeAssetsBaseUrl(
+    process.env.NEXT_PUBLIC_ASSETS_BASE_URL,
+  );
 
   if (mode === "both") {
     assertSiteArtifact(mode);
@@ -26,28 +37,33 @@ async function main() {
   }
 
   if (mode === "site") {
-    // 清单为空时没有媒体需要拆出去，也就不必配置资源域名。
-    const hasMedia = MEDIA_STATIC_ENTRIES.length > 0;
-    if (hasMedia && !(process.env.NEXT_PUBLIC_ASSETS_BASE_URL || "").trim()) {
+    // 页面里的 JS/CSS 由 assetPrefix 指向资源域名，/_next/data 仍走同源。
+    if (!assetsBaseUrl) {
       throw new Error(
-        "DEPLOY_MODE=site 需要 NEXT_PUBLIC_ASSETS_BASE_URL：site 产物不打包媒体，缺域名会得到一片 404",
+        "DEPLOY_MODE=site 需要 NEXT_PUBLIC_ASSETS_BASE_URL：_next 与媒体都由资源域名提供",
       );
     }
     for (const entry of MEDIA_STATIC_ENTRIES) {
       await rm(join(outDir, entry.path), { recursive: true, force: true });
       assertAbsent(entry.path);
     }
+    await rm(nextStaticDir, { recursive: true, force: true });
     assertSiteArtifact(mode);
-    report(mode, hasMedia ? "已移除媒体" : "没有声明的媒体，产物不变");
+    assertAbsent(`/${NEXT_ASSET_DIR}/static`);
+    report(mode, "只余页面与 _next/data");
     return;
   }
 
-  // assets：清空导出目录后从 public/ 复制媒体，out/ 就是资源域名的静态根。
+  // assets：保留导出目录里的 _next（去掉 _next/data）与媒体，其余（页面、favicon 等）
+  // 全部丢弃，out/ 就是资源域名的静态根。
   if (!existsSync(outDir)) {
     throw new Error(`找不到 ${outDir}，先跑 next build`);
   }
-  await rm(outDir, { recursive: true, force: true });
-  await mkdir(outDir, { recursive: true });
+  await rm(nextDataDir, { recursive: true, force: true });
+  for (const name of await readdir(outDir)) {
+    if (name === NEXT_ASSET_DIR) continue;
+    await rm(join(outDir, name), { recursive: true, force: true });
+  }
   for (const entry of MEDIA_STATIC_ENTRIES) {
     await cp(join(publicDir, entry.path), join(outDir, entry.path), {
       recursive: true,
@@ -56,13 +72,19 @@ async function main() {
       throw new Error(`assets 模式缺少媒体：${entry.path}`);
     }
   }
+  if (!existsSync(nextStaticDir)) {
+    throw new Error(
+      "assets 模式缺少 Next 浏览器产物（out/_next/static）：先跑 next build，再跑本脚本",
+    );
+  }
+  assertAbsent(`/${NEXT_ASSET_DIR}/${NEXT_DATA_DIR}`);
   assertAbsent("/index.html");
-  assertAbsent("/_next");
+  assertAbsent("/404.html");
   report(
     mode,
     MEDIA_STATIC_ENTRIES.length > 0
-      ? "只余媒体"
-      : "没有声明的媒体，静态根为空",
+      ? "只余 _next（不含 data）与媒体"
+      : "只余 _next（不含 data），没有声明的媒体",
   );
 }
 

@@ -1,7 +1,8 @@
 # 站点部署编排（DEPLOY_MODE=site）：单容器，Hono 同时提供页面静态文件与 /api/*。
 #
-# 媒体不在站点容器里：由 NEXT_PUBLIC_ASSETS_BASE_URL 指向的 assets 容器 / CDN 提供。
-# 媒体清单为空时（packages/schemas/src/static-assets.ts）不会要求该域名。
+# 浏览器产物（_next/static）与媒体都不在站点容器里：由 NEXT_PUBLIC_ASSETS_BASE_URL
+# 指向的 assets 容器 / CDN 提供，页面通过 assetPrefix 直接引用该域名。
+# 因此这个域名是必填的；_next/data 仍由站点同源提供。
 #
 # 使用：
 #   1. cp .env.example .env，至少填 NEXT_PUBLIC_BASE_URL
@@ -39,8 +40,8 @@ services:
         NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
         # NEXT_PUBLIC_* 在构建期内联进浏览器产物，改值必须重新 build
         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:?set NEXT_PUBLIC_BASE_URL in .env}
-        NEXT_PUBLIC_ASSETS_BASE_URL: ${NEXT_PUBLIC_ASSETS_BASE_URL:-}
-        # 该容器只装站点：页面、JS/CSS、API；媒体被构建脚本从静态根删掉
+        NEXT_PUBLIC_ASSETS_BASE_URL: ${NEXT_PUBLIC_ASSETS_BASE_URL:?set NEXT_PUBLIC_ASSETS_BASE_URL in .env}
+        # 该容器只装站点：页面、_next/data、API；_next/static 与媒体由构建脚本删掉
         DEPLOY_MODE: site
     image: cf-next-page-routes-site:local
     environment:

@@ -79,8 +79,8 @@ Deployment files: `Dockerfile`, `docker-compose.yml`, `docker-compose.assets.yml
 
 ## Deployment
 
-- `pnpm build` exports to `apps/frontend/out/` and trims it by `DEPLOY_MODE` (`both` / `site` / `assets`); media paths live in `packages/schemas/src/static-assets.ts`.
-- `apps/backend/src/serve.ts` serves `STATIC_ROOT` + `/api/*`; `assets` mode serves only the media whitelist and skips PostgreSQL.
+- `pnpm build` exports to `apps/frontend/out/` and trims it by `DEPLOY_MODE` (`both` / `site` / `assets`); media paths and the assets whitelist (`_next` without `_next/data`) live in `packages/schemas/src/static-assets.ts`.
+- `apps/backend/src/serve.ts` serves `STATIC_ROOT` + `/api/*`; `assets` mode serves only the whitelist (media + `_next` without `_next/data`) and skips PostgreSQL.
 - Public media URLs go through `assetUrl()` with `NEXT_PUBLIC_ASSETS_BASE_URL`; do not hardcode media origins.
 
 ## Forms
