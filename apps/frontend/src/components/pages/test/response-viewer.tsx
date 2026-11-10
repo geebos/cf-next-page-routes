@@ -8,10 +8,10 @@ export type ResponseData = {
 };
 
 function statusTone(status: number) {
-  if (status >= 200 && status < 300) return "text-emerald-600";
-  if (status >= 300 && status < 400) return "text-blue-600";
-  if (status >= 400 && status < 500) return "text-amber-600";
-  return "text-red-600";
+  if (status >= 200 && status < 300) return "text-status-success";
+  if (status >= 300 && status < 400) return "text-status-info";
+  if (status >= 400 && status < 500) return "text-status-warning";
+  return "text-status-error";
 }
 
 export function ResponseViewer({ data }: { data: ResponseData }) {
@@ -20,7 +20,7 @@ export function ResponseViewer({ data }: { data: ResponseData }) {
   );
 
   return (
-    <pre className="whitespace-pre-wrap break-words rounded-lg border border-border bg-card p-4 font-mono text-xs leading-relaxed">
+    <pre className="whitespace-pre-wrap break-words rounded-xl border border-border bg-card p-4 font-mono text-xs leading-relaxed">
       <span className={statusTone(data.status)}>
         {data.status} {data.statusText}
       </span>

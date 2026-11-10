@@ -63,12 +63,12 @@ function NavButton({ item, active }: { item: NavItem; active: boolean }) {
       data-collapsed={collapsed}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center rounded-md transition-colors",
+        "flex min-h-11 items-center rounded-md font-medium transition-colors duration-[180ms]",
         collapsed
           ? "flex-col gap-1 px-1 py-2 text-[10px] leading-none"
-          : "gap-2 px-2 py-1.5 text-sm",
+          : "gap-2 px-2 py-1.5 text-[15px]",
         active
-          ? "bg-primary text-primary-foreground"
+          ? "bg-brand-red-soft font-semibold text-primary dark:bg-sidebar-accent dark:text-link-on-dark"
           : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
       )}
     >
@@ -116,7 +116,7 @@ export function Sidebar() {
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
         <LanguageSwitcher collapsed={collapsed} />
-        <SidebarTrigger className="w-full rounded-md py-2 hover:bg-sidebar-accent" />
+        <SidebarTrigger className="h-11 w-full justify-start gap-2 rounded-md px-2 hover:bg-sidebar-accent" />
       </SidebarFooter>
     </SidebarPrimitive>
   );
@@ -149,7 +149,7 @@ export function Tabbar() {
             className={cn(
               "flex flex-1 flex-col items-center gap-1 py-2 transition-colors",
               isActiveItem
-                ? "text-primary"
+                ? "text-primary dark:text-link-on-dark"
                 : "text-muted-foreground/60 hover:text-foreground",
             )}
           >

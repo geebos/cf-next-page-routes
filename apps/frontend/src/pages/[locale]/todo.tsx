@@ -107,12 +107,12 @@ export default function TodoPage() {
       />
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 py-8">
         <header>
-          <h1 className="font-heading text-[28px] font-semibold tracking-tight">
+          <h1 className="font-heading text-[28px] font-bold leading-[1.28] tracking-[-0.025em]">
             {t("todo:title")}
           </h1>
         </header>
 
-        <Section className="rounded-lg border border-border bg-card p-4">
+        <Section className="rounded-xl border border-border bg-card p-4">
           <CreateTodoForm onSubmit={handleCreate} />
         </Section>
 

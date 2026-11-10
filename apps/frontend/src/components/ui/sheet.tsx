@@ -86,7 +86,7 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "group/sheet-content fixed z-50 flex flex-col gap-4 overflow-y-auto overscroll-contain bg-popover bg-clip-padding p-4 text-sm text-popover-foreground shadow-lg ring-1 ring-foreground/10 outline-none overflow-y-hidden",
+          "group/sheet-content fixed z-50 flex flex-col gap-4 overflow-y-auto overscroll-contain bg-popover bg-clip-padding p-4 text-sm text-popover-foreground shadow-lg ring-1 ring-border outline-none overflow-y-hidden",
           "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:max-h-[calc(100svh-env(safe-area-inset-top)-0.75rem)] data-[vaul-drawer-direction=bottom]:rounded-t-2xl data-[vaul-drawer-direction=bottom]:border-t data-[vaul-drawer-direction=bottom]:pb-[calc(env(safe-area-inset-bottom)+1rem)]",
           "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:max-h-[calc(100svh-env(safe-area-inset-bottom)-0.75rem)] data-[vaul-drawer-direction=top]:rounded-b-2xl data-[vaul-drawer-direction=top]:border-b",
           "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:h-full data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm",

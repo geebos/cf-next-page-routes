@@ -30,8 +30,8 @@ type ListProps = {
 
 const PRIORITY_BADGE_CLASS: Record<Todo["priority"], string> = {
   high: "bg-destructive text-destructive-foreground",
-  medium: "bg-amber-500 text-white",
-  low: "bg-secondary text-secondary-foreground",
+  medium: "bg-status-warning text-white",
+  low: "bg-muted text-ink-secondary",
 };
 
 export function List({
@@ -87,7 +87,7 @@ export function List({
         return (
           <li
             key={todo.id}
-            className="flex items-center gap-3 rounded-md border border-border bg-card p-3"
+            className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
           >
             <Checkbox
               checked={todo.completed}

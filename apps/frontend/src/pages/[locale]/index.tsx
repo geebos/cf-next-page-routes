@@ -221,7 +221,7 @@ export default function Home() {
   }
 
   return (
-    <Page className="bg-secondary">
+    <Page className="bg-secondary px-0">
       <Seo
         title={t("demo:metaTitle")}
         description={t("demo:metaDescription")}
@@ -294,7 +294,7 @@ export default function Home() {
         </Row>
 
         <Row label={t("demo:badges.row.productIdentity")}>
-          <Badge className="bg-primary text-white">{t("demo:badges.label.new")}</Badge>
+          <Badge className="bg-primary text-primary-foreground">{t("demo:badges.label.new")}</Badge>
           <Badge className="bg-secondary text-foreground">{t("demo:badges.label.beta")}</Badge>
           <Badge className="bg-secondary text-foreground">{t("demo:badges.label.available")}</Badge>
           <Badge className="bg-foreground text-background">{t("demo:badges.label.live")}</Badge>
@@ -305,7 +305,7 @@ export default function Home() {
           <Badge variant="secondary">
             <CheckIcon /> {t("demo:badges.label.verified")}
           </Badge>
-          <Badge className="bg-primary text-white">
+          <Badge className="bg-primary text-primary-foreground">
             <SparklesIcon /> {t("demo:badges.label.featured")}
           </Badge>
         </Row>
@@ -316,32 +316,32 @@ export default function Home() {
       >
         <Row label={t("demo:cards.row.productTiles")}>
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="flex h-56 flex-col justify-between rounded-none bg-background p-6 text-foreground">
-              <Badge className="w-fit bg-primary/10 text-primary">{t("demo:badges.label.new")}</Badge>
+            <div className="flex h-56 flex-col justify-between rounded-xl border border-border bg-background p-6 text-foreground">
+              <Badge className="w-fit bg-brand-red-soft text-primary">{t("demo:badges.label.new")}</Badge>
               <div>
-                <div className="font-heading text-[40px] font-semibold leading-[1.1]">iPhone 17 Pro</div>
+                <div className="font-heading text-[40px] font-bold leading-[1.18] tracking-[-0.04em]">iPhone 17 Pro</div>
                 <p className="mt-1 text-[14px] text-muted-foreground">{t("demo:cards.desc.iphone17Pro")}</p>
               </div>
             </div>
-            <div className="flex h-56 flex-col justify-between rounded-none bg-[#272729] p-6 text-white">
-              <Badge className="w-fit bg-white/10 text-white">{t("demo:badges.label.audio")}</Badge>
+            <div className="flex h-56 flex-col justify-between rounded-xl bg-surface-technical p-6 text-ink-on-dark">
+              <Badge className="w-fit bg-white/10 text-ink-on-dark">{t("demo:badges.label.audio")}</Badge>
               <div>
-                <div className="font-heading text-[32px] font-semibold leading-[1.1]">AirPods 4</div>
-                <p className="mt-1 text-[14px] text-white/80">{t("demo:cards.desc.airpods4")}</p>
+                <div className="font-heading text-[32px] font-bold leading-[1.18] tracking-[-0.03em]">AirPods 4</div>
+                <p className="mt-1 text-[14px] text-body-on-dark">{t("demo:cards.desc.airpods4")}</p>
               </div>
             </div>
-            <div className="flex h-56 flex-col justify-between rounded-none bg-secondary p-6 text-foreground">
-              <Badge className="w-fit bg-primary/10 text-primary">{t("demo:badges.label.watch")}</Badge>
+            <div className="flex h-56 flex-col justify-between rounded-xl border border-border bg-canvas-steel p-6 text-foreground">
+              <Badge className="w-fit bg-brand-red-soft text-primary">{t("demo:badges.label.watch")}</Badge>
               <div>
-                <div className="font-heading text-[32px] font-semibold leading-[1.1]">Apple Watch</div>
+                <div className="font-heading text-[32px] font-bold leading-[1.18] tracking-[-0.03em]">Apple Watch</div>
                 <p className="mt-1 text-[14px] text-muted-foreground">{t("demo:cards.desc.appleWatch")}</p>
               </div>
             </div>
-            <div className="flex h-56 flex-col justify-between rounded-none bg-[#2a2a2c] p-6 text-white">
-              <Badge className="w-fit bg-white/10 text-white">{t("demo:badges.label.spatial")}</Badge>
+            <div className="flex h-56 flex-col justify-between rounded-xl bg-surface-technical-raised p-6 text-ink-on-dark">
+              <Badge className="w-fit bg-white/10 text-ink-on-dark">{t("demo:badges.label.spatial")}</Badge>
               <div>
-                <div className="font-heading text-[32px] font-semibold leading-[1.1]">Vision Pro</div>
-                <p className="mt-1 text-[14px] text-white/80">{t("demo:cards.desc.visionPro")}</p>
+                <div className="font-heading text-[32px] font-bold leading-[1.18] tracking-[-0.03em]">Vision Pro</div>
+                <p className="mt-1 text-[14px] text-body-on-dark">{t("demo:cards.desc.visionPro")}</p>
               </div>
             </div>
           </div>
@@ -355,12 +355,12 @@ export default function Home() {
                 {t("demo:cards.tokenPlan.description")}
               </CardDescription>
               <CardAction>
-                <Badge className="bg-primary text-white">{t("demo:badges.label.new")}</Badge>
+                <Badge className="bg-primary text-primary-foreground">{t("demo:badges.label.new")}</Badge>
               </CardAction>
             </CardHeader>
             <CardContent>
               <div className="flex items-baseline gap-1">
-                <span className="font-heading text-3xl font-semibold">$0.70</span>
+                <span className="font-heading text-3xl font-bold tracking-[-0.03em]">$0.70</span>
                 <span className="text-sm text-muted-foreground">{t("demo:cards.tokenPlan.unit")}</span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -905,7 +905,7 @@ export default function Home() {
         </Row>
 
         <Row label={t("demo:navData.row.table")}>
-          <div className="overflow-hidden rounded-sm border border-border">
+          <div className="overflow-hidden rounded-xl border border-border">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted hover:bg-muted">

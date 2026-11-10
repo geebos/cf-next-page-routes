@@ -44,7 +44,7 @@ export function LanguageSwitcher({ collapsed = false }: Props) {
           className={cn(
             "rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
             collapsed
-              ? "mx-auto size-8 p-0"
+              ? "mx-auto size-11 p-0"
               : "w-full justify-start gap-2 py-2",
           )}
         >

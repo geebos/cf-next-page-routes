@@ -28,7 +28,7 @@ export function Page({
     <div
       data-slot="page"
       className={cn(
-        "flex flex-1 flex-col bg-secondary px-4 pb-16",
+        "flex flex-1 flex-col bg-secondary px-(--gutter) pb-16",
         className,
       )}
       {...props}

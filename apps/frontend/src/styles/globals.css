@@ -4,170 +4,385 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Tactip Cool Precision design tokens.
+ * Source of truth: DESIGN.md YAML frontmatter. Keep values in sync there.
+ */
 :root {
-  /* Apple design tokens — see DESIGN.md */
+  /* Brand */
+  --brand-ink: #47464b;
+  --brand-red: #dc3826;
+  --brand-red-action: #c63121;
+  --brand-red-hover: #ae2d21;
+  --brand-red-pressed: #a9271b;
+  --brand-red-soft: #fcedeb;
 
-  --background: #ffffff; /* canvas */
-  --foreground: #1d1d1f; /* ink */
+  /* Light surfaces */
+  --canvas: #ffffff;
+  --canvas-cool: #f7f9fc;
+  --canvas-subtle: #f4f7fa;
+  --canvas-steel: #edf1f5;
+  --surface-soft: #f1f5f9;
+  --surface-card: #ffffff;
+  --surface-feature: #e9f2f7;
+  --surface-feature-alt: #e8eef4;
+  --surface-feature-3: #e6eef5;
 
-  --card: #ffffff; /* canvas — store-utility-card */
-  --card-foreground: #1d1d1f;
+  /* Dark technical surfaces */
+  --surface-technical: #121c2a;
+  --surface-technical-deep: #101b29;
+  --surface-technical-raised: #1d2a3a;
+  --surface-technical-toolbar: #172637;
+  --surface-technical-panel: #1c2a3b;
+  --surface-research-feature: #20384f;
+  --surface-careers: #172638;
+  --surface-footer: #111c29;
 
-  --popover: #ffffff;
-  --popover-foreground: #1d1d1f;
+  /* Text */
+  --ink: #161d28;
+  --ink-secondary: #26384a;
+  --body: #4b5868;
+  --body-muted: #5b6e7f;
+  --body-disabled: #8191a0;
+  --ink-on-dark: #f7fafd;
+  --body-on-dark: #c2ceda;
+  --body-muted-on-dark: #9ab0c1;
+  --on-primary: #ffffff;
+  --link: #c63121;
+  --link-on-dark: #ff9689;
 
-  /* Action Blue — the single accent for every interactive element */
-  --primary: #0066cc;
-  --primary-foreground: #ffffff;
+  /* Cool technical auxiliary colors */
+  --technical-blue: #647d98;
+  --technical-blue-mid: #7394ac;
+  --technical-blue-bright: #98c0d8;
+  --technical-blue-line: #3d566d;
+  --technical-blue-pale: #deeaf4;
 
-  --secondary: #f5f5f7; /* canvas-parchment */
-  --secondary-foreground: #1d1d1f;
+  /* Borders, focus and neutral states */
+  --line: #dce3eb;
+  --line-subtle: #e7ecf1;
+  --line-strong: #a9b7c5;
+  --line-interactive: #9fb2c5;
+  --line-on-dark: #344e65;
+  --focus: #537fa2;
+  --focus-soft: #dceaf4;
+  --selection: #deeaf4;
 
-  --muted: #f5f5f7; /* canvas-parchment */
-  --muted-foreground: #7a7a7a; /* ink-muted-48 */
+  /* Semantic status colors */
+  --status-success: #1d765b;
+  --status-warning: #8d6217;
+  --status-error: #b32b28;
+  --status-info: #315f9a;
 
-  --accent: #f5f5f7; /* canvas-parchment — hover surface */
-  --accent-foreground: #1d1d1f;
+  /* Data visualization semantics */
+  --data-contact: #dc3826;
+  --data-force: #77b8d8;
+  --data-motion: #98c0d8;
+  --data-reference: #7394ac;
+  --data-neutral: #91aec4;
 
-  --destructive: #d70015; /* Apple system red */
+  /* Layout */
+  --container: 1360px;
+  --gutter: 40px;
+  --section-space: 102px;
+  --article-max: 800px;
+  --nav-height: 76px;
+  --nav-height-mobile: 68px;
 
-  --border: #e0e0e0; /* hairline */
-  --input: #e0e0e0;
-  --ring: #0071e3; /* primary-focus */
+  /* Geometry: buttons/inputs 8px, cards 12px, tags may be pill */
+  --radius-button: 8px;
+  --radius-input: 8px;
+  --radius-card: 12px;
+  --radius: 8px;
 
-  --chart-1: #0066cc;
-  --chart-2: #2997ff;
-  --chart-3: #0071e3;
-  --chart-4: #7a7a7a;
-  --chart-5: #1d1d1f;
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+  --duration-slow: 220ms;
+  --duration-reveal: 420ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
-  --radius: 11px; /* Apple md anchor */
+  /* App semantic aliases (shadcn) */
+  --background: var(--canvas-cool);
+  --foreground: var(--ink);
 
-  /* Sidebar — parchment + ink for a frosted sub-nav feel */
-  --sidebar: #f5f5f7; /* canvas-parchment */
-  --sidebar-foreground: #1d1d1f;
-  --sidebar-primary: #0066cc;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e0e0e0; /* hairline as hover tint */
-  --sidebar-accent-foreground: #1d1d1f;
-  --sidebar-border: #e0e0e0;
-  --sidebar-ring: #0071e3;
+  --card: var(--surface-card);
+  --card-foreground: var(--ink);
+
+  --popover: var(--canvas);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--brand-red-action);
+  --primary-hover: var(--brand-red-hover);
+  --primary-pressed: var(--brand-red-pressed);
+  --primary-foreground: var(--on-primary);
+
+  --secondary: var(--canvas-cool);
+  --secondary-foreground: var(--ink-secondary);
+
+  --muted: var(--surface-soft);
+  --muted-foreground: var(--body-muted);
+
+  --accent: var(--surface-soft);
+  --accent-foreground: var(--ink-secondary);
+
+  --destructive: var(--status-error);
+  --destructive-foreground: var(--on-primary);
+
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--focus);
+
+  --chart-1: var(--data-contact);
+  --chart-2: var(--data-force);
+  --chart-3: var(--data-motion);
+  --chart-4: var(--data-reference);
+  --chart-5: var(--data-neutral);
+
+  --sidebar: var(--canvas);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--brand-red-action);
+  --sidebar-primary-foreground: var(--on-primary);
+  --sidebar-accent: var(--surface-soft);
+  --sidebar-accent-foreground: var(--ink-secondary);
+  --sidebar-border: var(--line-subtle);
+  --sidebar-ring: var(--focus);
   --sidebar-width-icon: 4rem;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --gutter: 24px;
+    --section-space: 86px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --gutter: 20px;
+    --section-space: 64px;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "SF Pro Display", "SF Pro Text", system-ui, -apple-system,
-    BlinkMacSystemFont, "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "Menlo", "Monaco", "Consolas",
-    monospace;
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-xs: 5px; /* Apple xs */
-  --radius-sm: 8px; /* Apple sm */
-  --radius-md: 11px; /* Apple md */
-  --radius-lg: 18px; /* Apple lg — store-utility-card */
-  --radius-xl: 18px; /* Apple lg — Card uses rounded-xl */
-  --radius-2xl: 18px;
-  --radius-3xl: 9999px; /* pill */
-  --radius-4xl: 9999px; /* pill */
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Cool Precision palette */
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-action: var(--brand-red-action);
+  --color-brand-red-hover: var(--brand-red-hover);
+  --color-brand-red-pressed: var(--brand-red-pressed);
+  --color-brand-red-soft: var(--brand-red-soft);
+
+  --color-canvas: var(--canvas);
+  --color-canvas-cool: var(--canvas-cool);
+  --color-canvas-subtle: var(--canvas-subtle);
+  --color-canvas-steel: var(--canvas-steel);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-card: var(--surface-card);
+  --color-surface-feature: var(--surface-feature);
+  --color-surface-feature-alt: var(--surface-feature-alt);
+  --color-surface-feature-3: var(--surface-feature-3);
+
+  --color-surface-technical: var(--surface-technical);
+  --color-surface-technical-deep: var(--surface-technical-deep);
+  --color-surface-technical-raised: var(--surface-technical-raised);
+  --color-surface-technical-toolbar: var(--surface-technical-toolbar);
+  --color-surface-technical-panel: var(--surface-technical-panel);
+  --color-surface-research-feature: var(--surface-research-feature);
+  --color-surface-careers: var(--surface-careers);
+  --color-surface-footer: var(--surface-footer);
+
+  --color-ink: var(--ink);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-body: var(--body);
+  --color-body-muted: var(--body-muted);
+  --color-body-disabled: var(--body-disabled);
+  --color-ink-on-dark: var(--ink-on-dark);
+  --color-body-on-dark: var(--body-on-dark);
+  --color-body-muted-on-dark: var(--body-muted-on-dark);
+  --color-on-primary: var(--on-primary);
+  --color-link: var(--link);
+  --color-link-on-dark: var(--link-on-dark);
+
+  --color-technical-blue: var(--technical-blue);
+  --color-technical-blue-mid: var(--technical-blue-mid);
+  --color-technical-blue-bright: var(--technical-blue-bright);
+  --color-technical-blue-line: var(--technical-blue-line);
+  --color-technical-blue-pale: var(--technical-blue-pale);
+
+  --color-border-strong: var(--line-strong);
+  --color-border-interactive: var(--line-interactive);
+  --color-border-on-dark: var(--line-on-dark);
+  --color-focus-ring: var(--focus);
+  --color-focus-ring-soft: var(--focus-soft);
+  --color-selection: var(--selection);
+
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-error: var(--status-error);
+  --color-status-info: var(--status-info);
+
+  --color-data-contact: var(--data-contact);
+  --color-data-force: var(--data-force);
+  --color-data-motion: var(--data-motion);
+  --color-data-reference: var(--data-reference);
+  --color-data-neutral: var(--data-neutral);
+
+  /* Typography */
+  --font-sans: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  --font-display: Manrope, Inter, "Noto Sans SC", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --font-heading: Manrope, Inter, "Noto Sans SC", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  /* Shape: interactive controls 8px, cards 12px, tags may be pill */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 8px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 9999px;
+  --radius-4xl: 9999px;
 }
 
 .dark {
-  --background: #1d1d1f; /* ink */
-  --foreground: #ffffff; /* body-on-dark */
+  --background: var(--surface-technical);
+  --foreground: var(--ink-on-dark);
 
-  --card: #272729; /* surface-tile-1 */
-  --card-foreground: #ffffff;
+  --card: var(--surface-technical-raised);
+  --card-foreground: var(--ink-on-dark);
 
-  --popover: #272729;
-  --popover-foreground: #ffffff;
+  --popover: var(--surface-technical-raised);
+  --popover-foreground: var(--ink-on-dark);
 
-  --primary: #2997ff; /* primary-on-dark — Sky Link Blue */
-  --primary-foreground: #1d1d1f;
+  --primary: var(--brand-red-action);
+  --primary-hover: var(--brand-red-hover);
+  --primary-pressed: var(--brand-red-pressed);
+  --primary-foreground: var(--on-primary);
 
-  --secondary: #2a2a2c; /* surface-tile-2 */
-  --secondary-foreground: #ffffff;
+  --secondary: var(--surface-technical-toolbar);
+  --secondary-foreground: var(--ink-on-dark);
 
-  --muted: #2a2a2c;
-  --muted-foreground: #cccccc; /* body-muted */
+  --muted: var(--surface-technical-toolbar);
+  --muted-foreground: var(--body-muted-on-dark);
 
-  --accent: #2a2a2c;
-  --accent-foreground: #ffffff;
+  --accent: var(--surface-technical-raised);
+  --accent-foreground: var(--ink-on-dark);
 
-  --destructive: #d70015;
+  --destructive: var(--link-on-dark);
+  --destructive-foreground: var(--surface-technical-deep);
 
-  --border: #2a2a2c;
-  --input: #2a2a2c;
-  --ring: #2997ff;
+  --border: var(--line-on-dark);
+  --input: var(--line-on-dark);
+  --ring: var(--technical-blue-bright);
 
-  --chart-1: #2997ff;
-  --chart-2: #0066cc;
-  --chart-3: #0071e3;
-  --chart-4: #cccccc;
-  --chart-5: #ffffff;
-
-  --sidebar: #272729;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #2997ff;
-  --sidebar-primary-foreground: #1d1d1f;
-  --sidebar-accent: #2a2a2c;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2a2a2c;
-  --sidebar-ring: #2997ff;
+  --sidebar: var(--surface-technical);
+  --sidebar-foreground: var(--ink-on-dark);
+  --sidebar-primary: var(--brand-red-action);
+  --sidebar-primary-foreground: var(--on-primary);
+  --sidebar-accent: var(--surface-technical-raised);
+  --sidebar-accent-foreground: var(--ink-on-dark);
+  --sidebar-border: var(--line-on-dark);
+  --sidebar-ring: var(--technical-blue-bright);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring;
   }
+
+  html {
+    @apply font-sans;
+  }
+
   body {
     @apply bg-background text-foreground;
-    /* Apple body typography — 17px, line-height 1.47, -0.374px tracking */
-    font-size: 17px;
-    line-height: 1.47;
-    letter-spacing: -0.374px;
+    /* Cool Precision body: 16px / 1.7, no legacy negative tracking. */
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0;
   }
+
+  ::selection {
+    background: var(--selection);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
-  /* Apple system-wide micro-interaction: scale(0.95) on press */
-  button:not(:disabled):active,
-  [role="button"]:not(:disabled):active {
-    transform: scale(0.95);
-    transition: transform 120ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
-  html {
-    @apply font-sans;
+}
+
+@layer components {
+  .page-container {
+    width: min(calc(100% - 2 * var(--gutter)), var(--container));
+    margin-inline: auto;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 }

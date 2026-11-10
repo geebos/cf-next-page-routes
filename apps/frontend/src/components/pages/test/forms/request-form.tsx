@@ -87,7 +87,7 @@ export function RequestForm({
         <InputGroupAddon align="inline-start">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <InputGroupButton className="font-mono font-semibold text-foreground">
+              <InputGroupButton size="sm" className="font-mono font-semibold text-foreground">
                 {method}
                 <ChevronDownIcon className="size-3.5 opacity-60" />
               </InputGroupButton>
@@ -109,7 +109,7 @@ export function RequestForm({
           autoComplete="off"
         />
         <InputGroupAddon align="inline-end">
-          <InputGroupButton type="submit" disabled={loading}>
+          <InputGroupButton type="submit" size="sm" disabled={loading}>
             {loading ? (
               <Spinner className="size-3.5" />
             ) : (
@@ -137,7 +137,7 @@ export function RequestForm({
             />
             <InputGroupAddon align="inline-end">
               <InputGroupButton
-                size="icon-xs"
+                size="icon-sm"
                 onClick={() => removeHeader(h.id)}
                 disabled={headers.length <= 1}
                 aria-label={t("test:aria.deleteHeader")}

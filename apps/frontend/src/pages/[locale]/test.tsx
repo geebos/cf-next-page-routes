@@ -67,12 +67,12 @@ export default function TestPage() {
       />
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 py-8">
         <header>
-          <h1 className="font-heading text-[28px] font-semibold tracking-tight">
+          <h1 className="font-heading text-[28px] font-bold leading-[1.28] tracking-[-0.025em]">
             {t("test:title")}
           </h1>
         </header>
 
-        <Section className="sticky top-[env(safe-area-inset-top,0px)] z-10 rounded-lg border border-border bg-card p-4">
+        <Section className="sticky top-[env(safe-area-inset-top,0px)] z-10 rounded-xl border border-border bg-card p-4">
           <RequestForm loading={loading} onSubmit={handleSubmit} />
         </Section>
 
@@ -80,7 +80,7 @@ export default function TestPage() {
           {response ? (
             <ResponseViewer data={response} />
           ) : (
-            <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
+            <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
               {t("test:empty")}
             </div>
           )}
